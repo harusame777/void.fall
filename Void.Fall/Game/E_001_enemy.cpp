@@ -4,6 +4,8 @@
 ///////////////////////////////////////////////////////////
 #include <time.h>
 #include <stdlib.h>
+///////////////////////////////////////////////////////////
+#define enemyspeed 100.0f
 
 bool E_001_enemy::Start()
 {
@@ -50,11 +52,12 @@ void E_001_enemy::Chase()
 	}
 	//エネミーを移動させる。
 	m_position = m_charaCon.Execute(m_movespeed, g_gameTime->GetFrameDeltaTime());
-	if (m_charaCon.IsOnGround()) {
-		//地面についた。
-		//重力を0にする。
-		m_movespeed.y = 0.0f;
-	}
+	//if (m_charaCon.IsOnGround()) {
+	//	//地面についた。
+	//	//重力を0にする。
+	//	m_movespeed.y = 0.0f;
+	//}
+	m_movespeed.y = 0.0f;
 	Vector3 modelPosition = m_position;
 	//ちょっとだけモデルの座標を挙げる。
 	modelPosition.y += 2.5f;
@@ -145,7 +148,7 @@ void E_001_enemy::ProcessCommonStateTransition()
 		//ベクトルを正規化する。
 		diff.Normalize();
 		//移動速度を設定する。
-		m_movespeed = diff * 100.0f;
+		m_movespeed = diff * enemyspeed;
 		m_enemystate = enEnemyState_Chase;
 	}
 	//プレイヤーを見つけられなければ。
