@@ -37,6 +37,8 @@ void E_001_enemy::Update()
 	Chase();
 	//回転処理
 	Rotation();
+	//攻撃処理
+	Attack();
 	//ステート遷移処理
 	ManageState();
 	//描画更新
@@ -48,6 +50,12 @@ void E_001_enemy::Chase()
 	//追跡ステートでないなら、追跡処理はしない。
 	if (m_enemystate != enEnemyState_Chase)
 	{
+		return;
+	}
+	//プレイヤーが射程圏内に入ったら攻撃処理
+	if (SearchAttackDistance() == true)
+	{
+		m_enemystate = enEnemyState_Attack;
 		return;
 	}
 	//エネミーを移動させる。
@@ -115,6 +123,31 @@ const bool E_001_enemy::SearchPlayer() const
 	return false;
 }
 
+const bool E_001_enemy::SearchAttackDistance() const
+{
+	Vector3 diff = m_player->Getposition() - m_position;
+	//プレイヤーにある程度近かったら.。
+
+	if (diff.LengthSq() <= 200.0 * 200.0f)
+	{
+		//エネミーからプレイヤーに向かうベクトルを正規化する。
+		diff.Normalize();
+		//エネミーの正面のベクトルと、エネミーからプレイヤーに向かうベクトルの。
+		//内積(cosθ)を求める。
+		float cos = m_forward.Dot(diff);
+		//内積(cosθ)から角度(θ)を求める。
+		float angle = acosf(cos);
+		//プレイヤーが射程圏内に入った！
+		return true;
+	}
+	//プレイヤーが射程圏外だった。
+	return false;
+}
+
+void E_001_enemy::Attack()
+{
+
+}
 
 void E_001_enemy::ManageState()
 {
@@ -130,6 +163,9 @@ void E_001_enemy::ManageState()
 		//追跡ステート遷移
 		ProcessChaseStateTransition();
 		break;
+	case enEnemyState_Attack:
+		//攻撃ステート遷移
+
 	}
 }
 
@@ -171,12 +207,10 @@ void E_001_enemy::ProcessIdleStateTransition()
 		//他のステートへ遷移する。
 		ProcessCommonStateTransition();
 	}
-
 }
 
 void E_001_enemy::ProcessChaseStateTransition()
 {
-
 	//攻撃は未実装
 	//if (IsCanAttack() == true)
 	//{

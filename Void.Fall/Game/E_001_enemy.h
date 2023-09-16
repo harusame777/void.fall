@@ -9,12 +9,14 @@ public:
 	enum EnEnemyState {
 		enEnemyState_Idle,//‘Ò‹@
 		enEnemyState_Chase,//’ÇÕ
+		enEnemyState_Attack//UŒ‚
 	};
 	//ƒXƒe[ƒg‘JˆÚŠÖ”/////////////////////////////////////////
 	void ManageState();//‘JˆÚˆ—
 	void ProcessCommonStateTransition();//‹¤’Ê‘JˆÚˆ—
 	void ProcessIdleStateTransition();//‘Ò‹@‘JˆÚ
 	void ProcessChaseStateTransition();//’ÇÕ‘JˆÚ
+	//void ProcessAttackStateTransition();//UŒ‚‘JˆÚ
 	///////////////////////////////////////////////////////////
 	E_001_enemy(){}
 	~E_001_enemy(){}
@@ -23,7 +25,9 @@ public:
 	void Render(RenderContext& rc);                        //ƒ‚ƒfƒ‹ƒŒƒ“ƒ_[
 	void Chase();                                          //’ÇÕ
 	void Rotation();                                       //‰ñ“]
+	void Attack();										   //UŒ‚
 	const bool SearchPlayer() const;                       //ƒvƒŒƒCƒ„[’T’m
+	const bool SearchAttackDistance() const;               //UŒ‚‹——£’T’m
 ///////////////////////////////////////////////////////////
 //‰Šúİ’èŒn“
 	void Setposition(const Vector3& position)//À•W
