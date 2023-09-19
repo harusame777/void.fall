@@ -146,7 +146,7 @@ void E_001_enemy::Attack()
 	
 	if (m_isUnderAttack == true)
 	{
-
+		//“–‚½‚è”»’è‚Ì‚Æ‚±
 	}
 }
 

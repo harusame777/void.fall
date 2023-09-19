@@ -5,7 +5,7 @@ class P_main_Player;
 class E_001_enemy : public IGameObject
 {
 public:
-	//ステート
+	//行動ステート
 	enum EnEnemyState {
 		enEnemyState_Idle,//待機
 		enEnemyState_Chase,//追跡
