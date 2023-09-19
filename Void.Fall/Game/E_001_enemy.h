@@ -60,6 +60,7 @@ public:
 	EnEnemyState m_enemystate = enEnemyState_Idle;          //エネミーステート
 	CharacterController	m_charaCon;							//キャラクターコントローラー。
 	P_main_Player* m_player = nullptr;                      //プレイヤー
+	bool m_isUnderAttack = false;							//攻撃中かどうか(初期状態はfalse攻撃中ではない)
 	int m_hp = 0;                                           //HP
 	float m_chaseTimer = 0.0f;						        //追跡タイマー。
 	float m_idleTimer = 0.0f;							    //待機タイマー。

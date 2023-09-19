@@ -130,13 +130,6 @@ const bool E_001_enemy::SearchAttackDistance() const
 
 	if (diff.LengthSq() <= 200.0 * 200.0f)
 	{
-		//エネミーからプレイヤーに向かうベクトルを正規化する。
-		diff.Normalize();
-		//エネミーの正面のベクトルと、エネミーからプレイヤーに向かうベクトルの。
-		//内積(cosθ)を求める。
-		float cos = m_forward.Dot(diff);
-		//内積(cosθ)から角度(θ)を求める。
-		float angle = acosf(cos);
 		//プレイヤーが射程圏内に入った！
 		return true;
 	}
@@ -146,7 +139,15 @@ const bool E_001_enemy::SearchAttackDistance() const
 
 void E_001_enemy::Attack()
 {
+	if (m_enemystate != enEnemyState_Attack)
+	{
+		return;
+	}
+	
+	if (m_isUnderAttack == true)
+	{
 
+	}
 }
 
 void E_001_enemy::ManageState()
@@ -177,7 +178,6 @@ void E_001_enemy::ProcessCommonStateTransition()
 
 	//エネミーからプレイヤーに向かうベクトルを計算する。
 	Vector3 diff = m_player->Getposition() - m_position;
-
 	//プレイヤーを見つけたら。
 	if (SearchPlayer() == true)
 	{
@@ -185,7 +185,34 @@ void E_001_enemy::ProcessCommonStateTransition()
 		diff.Normalize();
 		//移動速度を設定する。
 		m_movespeed = diff * enemyspeed;
-		m_enemystate = enEnemyState_Chase;
+		//攻撃できる距離かどうか
+		if (SearchAttackDistance() == true)
+		{
+			//乱数によって攻撃するかどうかを決める
+			int ram = rand() % 100;
+			if (ram > 30)
+			{
+				//追跡
+				m_enemystate = enEnemyState_Chase;
+			}
+			else
+			{
+				//現在のステートが攻撃
+				if (m_enemystate == enEnemyState_Attack)
+				{
+					//連続で撃たせないように
+					//追跡
+					m_enemystate = enEnemyState_Chase;
+					return;
+				}
+				//現在のステートが攻撃でない
+				else
+				{
+					m_enemystate = enEnemyState_Attack;
+					return;
+				}
+			}
+		}
 	}
 	//プレイヤーを見つけられなければ。
 	else
@@ -211,13 +238,13 @@ void E_001_enemy::ProcessIdleStateTransition()
 
 void E_001_enemy::ProcessChaseStateTransition()
 {
-	//攻撃は未実装
-	//if (IsCanAttack() == true)
-	//{
-	//	//他のステートに遷移する。
-	//	ProcessCommonStateTransition();
-	//	return;
-	//}
+	//射程圏内に入ったら
+	if (SearchAttackDistance() == true)
+	{
+	//他のステートに遷移する。
+	ProcessCommonStateTransition();
+	return;
+	}
 	m_chaseTimer += g_gameTime->GetFrameDeltaTime();
 	//追跡時間がある程度経過したら。
 	if (m_chaseTimer >= 0.8f)
