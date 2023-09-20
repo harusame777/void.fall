@@ -11,12 +11,21 @@ public:
 		enEnemyState_Chase,//追跡
 		enEnemyState_Attack//攻撃
 	};
+	//アニメーションステート
+	enum EnAnimationClip
+	{
+		enAnimationClip_Walk,//歩き
+		//enAnimationClip_Attack,//攻撃
+		//enAnimationClip_Idle,//棒立ち
+		enAnimationClip_Num//アニメーション数
+	};
 	//ステート遷移関数/////////////////////////////////////////
 	void ManageState();//遷移処理
 	void ProcessCommonStateTransition();//共通遷移処理
 	void ProcessIdleStateTransition();//待機遷移
 	void ProcessChaseStateTransition();//追跡遷移
 	//void ProcessAttackStateTransition();//攻撃遷移
+	void PlayAnimation();
 	///////////////////////////////////////////////////////////
 	E_001_enemy(){}
 	~E_001_enemy(){}
@@ -51,7 +60,8 @@ public:
 		m_hp = hp;
 	}
 	//メンバ関数宣言
-	ModelRender* m_modelrender = nullptr;					//モデルレンダー
+	AnimationClip m_animationclips[enAnimationClip_Num];     //アニメーションクリップ
+	ModelRender*  m_modelrender = nullptr;								//モデルレンダー
 	Vector3 m_position;										//座標
 	Vector3 m_scale = Vector3::One;							//大きさ
 	Quaternion m_rotation;									//回転

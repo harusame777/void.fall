@@ -9,8 +9,12 @@
 
 bool E_001_enemy::Start()
 {
+	//アニメーション読み込み
+	m_animationclips[enAnimationClip_Walk].Load("Assets/animData/Enemy/enemy_001/walk.tka");
+	m_animationclips[enAnimationClip_Walk].SetLoopFlag(true);
+	//モデル読み込み
 	m_modelrender = new ModelRender;
-	m_modelrender->Init("Assets/modelData/Enemy/enemy_001/enemy_001.tkm");
+	m_modelrender->Init("Assets/modelData/Enemy/enemy_001/enemy_001.tkm",m_animationclips,enAnimationClip_Num);
 	//回転
 	m_modelrender->SetRotation(m_rotation);
 	//座標
@@ -23,6 +27,7 @@ bool E_001_enemy::Start()
 		100.0f,			//高さ。
 		m_position		//座標。
 	);
+
 	m_player = FindGO<P_main_Player>("player");
 	//乱数を初期化。
 	srand((unsigned)time(NULL));
@@ -39,6 +44,8 @@ void E_001_enemy::Update()
 	Rotation();
 	//攻撃処理
 	Attack();
+	//アニメーション
+	PlayAnimation();
 	//ステート遷移処理
 	ManageState();
 	//描画更新
@@ -50,12 +57,6 @@ void E_001_enemy::Chase()
 	//追跡ステートでないなら、追跡処理はしない。
 	if (m_enemystate != enEnemyState_Chase)
 	{
-		return;
-	}
-	//プレイヤーが射程圏内に入ったら攻撃処理
-	if (SearchAttackDistance() == true)
-	{
-		m_enemystate = enEnemyState_Attack;
 		return;
 	}
 	//エネミーを移動させる。
@@ -105,19 +106,7 @@ const bool E_001_enemy::SearchPlayer() const
 	//プレイヤーにある程度近かったら.。
 	if (diff.LengthSq() <= 700.0 * 700.0f)
 	{
-		//エネミーからプレイヤーに向かうベクトルを正規化する。
-		diff.Normalize();
-		//エネミーの正面のベクトルと、エネミーからプレイヤーに向かうベクトルの。
-		//内積(cosθ)を求める。
-		float cos = m_forward.Dot(diff);
-		//内積(cosθ)から角度(θ)を求める。
-		float angle = acosf(cos);
-		//角度(θ)が120°より小さければ。
-		//if (angle <= (Math::PI / 180.0f) * 140.0f)
-		//{
-			//プレイヤーを見つけた！
 			return true;
-		//}
 	}
 	//プレイヤーを見つけられなかった。
 	return false;
@@ -128,7 +117,7 @@ const bool E_001_enemy::SearchAttackDistance() const
 	Vector3 diff = m_player->Getposition() - m_position;
 	//プレイヤーにある程度近かったら.。
 
-	if (diff.LengthSq() <= 200.0 * 200.0f)
+	if (diff.LengthSq() <= 1.0 * 1.0f)
 	{
 		//プレイヤーが射程圏内に入った！
 		return true;
@@ -164,10 +153,29 @@ void E_001_enemy::ManageState()
 		//追跡ステート遷移
 		ProcessChaseStateTransition();
 		break;
-	case enEnemyState_Attack:
-		//攻撃ステート遷移
-
+	//case enEnemyState_Attack:
+	//	//攻撃ステート遷移
+	//	break;
 	}
+}
+
+void E_001_enemy::PlayAnimation()
+{
+	m_modelrender->SetAnimationSpeed(1.0f);
+	switch (m_enemystate)
+	{
+	//待機
+	case enEnemyState_Idle:
+		break;
+	//移動
+	case enEnemyState_Chase:
+		m_modelrender->PlayAnimation(enAnimationClip_Walk, 0.1f);
+		break;
+	//攻撃
+	//case enEnemyState_Attack:
+	//	break;
+	}
+
 }
 
 void E_001_enemy::ProcessCommonStateTransition()
@@ -186,33 +194,34 @@ void E_001_enemy::ProcessCommonStateTransition()
 		//移動速度を設定する。
 		m_movespeed = diff * enemyspeed;
 		//攻撃できる距離かどうか
-		if (SearchAttackDistance() == true)
-		{
-			//乱数によって攻撃するかどうかを決める
-			int ram = rand() % 100;
-			if (ram > 30)
-			{
-				//追跡
-				m_enemystate = enEnemyState_Chase;
-			}
-			else
-			{
-				//現在のステートが攻撃
-				if (m_enemystate == enEnemyState_Attack)
-				{
-					//連続で撃たせないように
-					//追跡
-					m_enemystate = enEnemyState_Chase;
-					return;
-				}
-				//現在のステートが攻撃でない
-				else
-				{
-					m_enemystate = enEnemyState_Attack;
-					return;
-				}
-			}
-		}
+		m_enemystate = enEnemyState_Chase;
+		//if (SearchAttackDistance() == true)
+		//{
+		//	//乱数によって攻撃するかどうかを決める
+		//	int ram = rand() % 100;
+		//	if (ram > 30)
+		//	{
+		//		//追跡
+		//		m_enemystate = enEnemyState_Chase;
+		//	}
+		//	else
+		//	{
+		//		//現在のステートが攻撃
+		//		if (m_enemystate == enEnemyState_Attack)
+		//		{
+		//			//連続で撃たせないように
+		//			//追跡
+		//			m_enemystate = enEnemyState_Chase;
+		//			return;
+		//		}
+		//		//現在のステートが攻撃でない
+		//		else
+		//		{
+		//			m_enemystate = enEnemyState_Attack;
+		//			return;
+		//		}
+		//	}
+		//}
 	}
 	//プレイヤーを見つけられなければ。
 	else
@@ -253,6 +262,7 @@ void E_001_enemy::ProcessChaseStateTransition()
 		ProcessCommonStateTransition();
 	}
 }
+
 
 void E_001_enemy::Render(RenderContext& rc)
 {
