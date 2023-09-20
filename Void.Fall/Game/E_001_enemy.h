@@ -11,6 +11,7 @@ public:
 		enEnemyState_Chase,//追跡
 		enEnemyState_Attack//攻撃
 	};
+	//アニメーション類/////////////////////////////////////////
 	//アニメーションステート
 	enum EnAnimationClip
 	{
@@ -19,6 +20,7 @@ public:
 		//enAnimationClip_Idle,//棒立ち
 		enAnimationClip_Num//アニメーション数
 	};
+	//アニメーション関数///////////////////////////////////////
 	//ステート遷移関数/////////////////////////////////////////
 	void ManageState();//遷移処理
 	void ProcessCommonStateTransition();//共通遷移処理
@@ -29,7 +31,7 @@ public:
 	///////////////////////////////////////////////////////////
 	E_001_enemy(){}
 	~E_001_enemy(){}
-	bool Start();
+	bool Start();				
 	void Update();                                         //アップデート
 	void Render(RenderContext& rc);                        //モデルレンダー
 	void Chase();                                          //追跡
@@ -37,8 +39,8 @@ public:
 	void Attack();										   //攻撃
 	const bool SearchPlayer() const;                       //プレイヤー探知
 	const bool SearchAttackDistance() const;               //攻撃距離探知
-///////////////////////////////////////////////////////////
-//初期設定系統
+	///////////////////////////////////////////////////////////
+	//初期設定系統
 	void Setposition(const Vector3& position)//座標
 	{
 		m_position = position;

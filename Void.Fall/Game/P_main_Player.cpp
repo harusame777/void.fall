@@ -1,5 +1,8 @@
 #include "stdafx.h"
 #include "P_main_Player.h"
+///////////////////////////////////////////////////////////
+#define playerspeed 250.0f
+#define playerjamp 400.0f
 
 bool P_main_Player::Start()
 {
@@ -15,9 +18,6 @@ void P_main_Player::Update()
 	Move();
 	//ホバー処理
 	Movefry();
-	if (timerfry > 0.0f) {
-		timerfry -= g_gameTime->GetFrameDeltaTime();
-	}
 	//回転処理
 	Rotation();
 	//ステートの遷移処理
@@ -55,11 +55,11 @@ void P_main_Player::Move()
 	cameraRight.y = 0.0f;
 	cameraRight.Normalize();
 	//XZ成分の移動速度をクリア。
-	m_movespeed += cameraForward * lStick_y * 250.0f;	//奥方向への移動速度を加算。
-	m_movespeed += cameraRight * lStick_x * 250.0f;		//右方向への移動速度を加算。
-	if (m_charaCon.IsOnGround() == false && 0 < m_fry && m_fryflag == 1 && g_pad[0]->IsTrigger(enButtonA))
+	m_movespeed += cameraForward * lStick_y * playerspeed;	//奥方向への移動速度を加算。
+	m_movespeed += cameraRight * lStick_x * playerspeed;		//右方向への移動速度を加算。
+	if (m_charaCon.IsOnGround() == false && 0 < m_fry && m_fryflag == true && g_pad[0]->IsTrigger(enButtonA))
 	{
-		m_fryflag = 0;
+		m_fryflag = false;
 		m_playerstate = enPlayerState_Idlefry;
 		return;
 	}
@@ -67,15 +67,15 @@ void P_main_Player::Move()
 		&& m_charaCon.IsOnGround()   //かつ、地面に居たら
 		) {
 		//ジャンプする。
-		m_fryflag = 1;
-		m_movespeed.y = 400.0f;	//上方向に速度を設定して、
+		m_fryflag = true;
+		m_movespeed.y = playerjamp;	//上方向に速度を設定して、
 	}
 	m_movespeed.y -= 980.0f * g_gameTime->GetFrameDeltaTime();
 	//キャラクターコントローラーを使用して、座標を更新。
 	m_position = m_charaCon.Execute(m_movespeed, g_gameTime->GetFrameDeltaTime());
 	if (m_charaCon.IsOnGround()) {
 		//地面についた。
-		m_fryflag = 0;
+		m_fryflag = false;
 		m_movespeed.y = 0.0f;
 	}
 	Vector3 modelPosition = m_position;
@@ -107,9 +107,9 @@ void P_main_Player::Movefry()
 	cameraRight.y = 0.0f;
 	cameraRight.Normalize();
 	//XZ成分の移動速度をクリア。
-	m_movespeed += cameraForward * lStick_y * 250.0f;	//奥方向への移動速度を加算。
-	m_movespeed += cameraRight * lStick_x * 250.0f;		//右方向への移動速度を加算。
-	if (m_fryflag == 1 && g_pad[0]->IsTrigger(enButtonA) || m_fry < 0)
+	m_movespeed += cameraForward * lStick_y * playerspeed;	//奥方向への移動速度を加算。
+	m_movespeed += cameraRight * lStick_x * playerspeed;		//右方向への移動速度を加算。
+	if (m_fryflag == true && g_pad[0]->IsTrigger(enButtonA) || m_fry == 0)
 	{
 		m_playerstate = enPlayerState_Idle;
 	}
@@ -186,7 +186,7 @@ void P_main_Player::ProcessCommonStateTransition()
 		else if (m_charaCon.IsOnGround() == false && IsEnableMove() == false)
 		{
 			m_playerstate = enPlayerState_Walkfry;
-			m_fryflag = 1;
+			m_fryflag = true;
 		}
 		return;
 	}

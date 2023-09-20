@@ -5,7 +5,9 @@
 #include <time.h>
 #include <stdlib.h>
 ///////////////////////////////////////////////////////////
-#define enemyspeed 100.0f
+#define enemyspeed 100.0f                                //移動速度の数値
+#define enemyserch 700.0f * 700.0f						//追跡可能範囲
+#define enemyserchattack 10.0f * 10.0f                 //攻撃可能範囲
 
 bool E_001_enemy::Start()
 {
@@ -104,7 +106,7 @@ const bool E_001_enemy::SearchPlayer() const
 	Vector3 diff = m_player->Getposition() - m_position;
 
 	//プレイヤーにある程度近かったら.。
-	if (diff.LengthSq() <= 700.0 * 700.0f)
+	if (diff.LengthSq() <= enemyserch)
 	{
 			return true;
 	}
@@ -117,7 +119,7 @@ const bool E_001_enemy::SearchAttackDistance() const
 	Vector3 diff = m_player->Getposition() - m_position;
 	//プレイヤーにある程度近かったら.。
 
-	if (diff.LengthSq() <= 1.0 * 1.0f)
+	if (diff.LengthSq() <= enemyserchattack)
 	{
 		//プレイヤーが射程圏内に入った！
 		return true;
@@ -194,34 +196,23 @@ void E_001_enemy::ProcessCommonStateTransition()
 		//移動速度を設定する。
 		m_movespeed = diff * enemyspeed;
 		//攻撃できる距離かどうか
-		m_enemystate = enEnemyState_Chase;
-		//if (SearchAttackDistance() == true)
-		//{
-		//	//乱数によって攻撃するかどうかを決める
-		//	int ram = rand() % 100;
-		//	if (ram > 30)
-		//	{
-		//		//追跡
-		//		m_enemystate = enEnemyState_Chase;
-		//	}
-		//	else
-		//	{
-		//		//現在のステートが攻撃
-		//		if (m_enemystate == enEnemyState_Attack)
-		//		{
-		//			//連続で撃たせないように
-		//			//追跡
-		//			m_enemystate = enEnemyState_Chase;
-		//			return;
-		//		}
-		//		//現在のステートが攻撃でない
-		//		else
-		//		{
-		//			m_enemystate = enEnemyState_Attack;
-		//			return;
-		//		}
-		//	}
-		//}
+		if (SearchAttackDistance() == true)
+		{
+			//現在のステートが攻撃
+			if (m_enemystate == enEnemyState_Attack)
+			{
+				//連続で撃たせないように
+				//追跡
+				m_enemystate = enEnemyState_Chase;
+				return;
+			}
+			//現在のステートが攻撃でない
+			else
+			{
+				m_enemystate = enEnemyState_Attack;
+				return;
+			}
+		}
 	}
 	//プレイヤーを見つけられなければ。
 	else

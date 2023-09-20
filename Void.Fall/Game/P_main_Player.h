@@ -61,9 +61,10 @@ public:
 	CharacterController	m_charaCon;							//キャラクターコントローラー。
 	ModelRender* m_modelrender = nullptr;					//モデルレンダー
 	//変数宣言
-	int m_hp = 3; //HP
-	int m_fryflag = 0;//ホバーフラグ
-	int m_fry = 100;//ホバーゲージ
+	int m_hp = 3;											//HP
+	bool m_fryflag = false;									//ホバーフラグ1.true飛べる||0.false飛べない
+	int m_fry = 100;										//ホバーゲージ
+	int m_frymax = 100;										//ホバーゲージ最大
 	float timerfry = 0.0f;
 	void Addfry()
 	{
@@ -90,6 +91,5 @@ public:
 			timerfry = 0.1f;
 		}
 	}
-	int m_frymax = 100;//ホバーゲージ最大
 };
 
