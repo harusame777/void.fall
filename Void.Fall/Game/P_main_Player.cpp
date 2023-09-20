@@ -1,8 +1,10 @@
 #include "stdafx.h"
 #include "P_main_Player.h"
 ///////////////////////////////////////////////////////////
-#define playerspeed 250.0f
-#define playerjamp 400.0f
+#define playerspeed 250.0f			//プレイヤースピード
+#define playerjamp 400.0f			//プレイヤージャンプ
+#define fryOK true					//ホバーフラグ1
+#define fryNO false					//ホバーフラグ0
 
 bool P_main_Player::Start()
 {
@@ -57,9 +59,9 @@ void P_main_Player::Move()
 	//XZ成分の移動速度をクリア。
 	m_movespeed += cameraForward * lStick_y * playerspeed;	//奥方向への移動速度を加算。
 	m_movespeed += cameraRight * lStick_x * playerspeed;		//右方向への移動速度を加算。
-	if (m_charaCon.IsOnGround() == false && 0 < m_fry && m_fryflag == true && g_pad[0]->IsTrigger(enButtonA))
+	if (m_charaCon.IsOnGround() == false && 0 < m_fry && m_fryflag == fryOK && g_pad[0]->IsTrigger(enButtonA))
 	{
-		m_fryflag = false;
+		m_fryflag = fryNO;
 		m_playerstate = enPlayerState_Idlefry;
 		return;
 	}
@@ -67,7 +69,7 @@ void P_main_Player::Move()
 		&& m_charaCon.IsOnGround()   //かつ、地面に居たら
 		) {
 		//ジャンプする。
-		m_fryflag = true;
+		m_fryflag = fryOK;
 		m_movespeed.y = playerjamp;	//上方向に速度を設定して、
 	}
 	m_movespeed.y -= 980.0f * g_gameTime->GetFrameDeltaTime();
@@ -75,7 +77,7 @@ void P_main_Player::Move()
 	m_position = m_charaCon.Execute(m_movespeed, g_gameTime->GetFrameDeltaTime());
 	if (m_charaCon.IsOnGround()) {
 		//地面についた。
-		m_fryflag = false;
+		m_fryflag = fryNO;
 		m_movespeed.y = 0.0f;
 	}
 	Vector3 modelPosition = m_position;
@@ -109,7 +111,7 @@ void P_main_Player::Movefry()
 	//XZ成分の移動速度をクリア。
 	m_movespeed += cameraForward * lStick_y * playerspeed;	//奥方向への移動速度を加算。
 	m_movespeed += cameraRight * lStick_x * playerspeed;		//右方向への移動速度を加算。
-	if (m_fryflag == true && g_pad[0]->IsTrigger(enButtonA) || m_fry == 0)
+	if (m_fryflag == fryOK && g_pad[0]->IsTrigger(enButtonA) || m_fry == 0)
 	{
 		m_playerstate = enPlayerState_Idle;
 	}
@@ -186,7 +188,7 @@ void P_main_Player::ProcessCommonStateTransition()
 		else if (m_charaCon.IsOnGround() == false && IsEnableMove() == false)
 		{
 			m_playerstate = enPlayerState_Walkfry;
-			m_fryflag = true;
+			m_fryflag = fryOK;
 		}
 		return;
 	}
