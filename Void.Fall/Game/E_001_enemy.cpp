@@ -12,11 +12,12 @@
 bool E_001_enemy::Start()
 {
 	//アニメーション読み込み
-	m_animationclips[enAnimationClip_Walk].Load("Assets/animData/Enemy/enemy_001/walk.tka");
-	m_animationclips[enAnimationClip_Walk].SetLoopFlag(true);
+	//m_animationclips[enAnimationClip_Walk].Load("Assets/animData/Enemy/enemy_001/walk.tka");
+	//m_animationclips[enAnimationClip_Walk].SetLoopFlag(true);
 	//モデル読み込み
 	m_modelrender = new ModelRender;
-	m_modelrender->Init("Assets/modelData/Enemy/enemy_001/enemy_001.tkm",m_animationclips,enAnimationClip_Num);
+	m_modelrender->Init("Assets/modelData/Enemy/enemy_001/enemy_001.tkm"/*,m_animationclips, enAnimationClip_Num*/);
+	
 	//回転
 	m_modelrender->SetRotation(m_rotation);
 	//座標

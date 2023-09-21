@@ -63,7 +63,7 @@ public:
 	}
 	//メンバ関数宣言
 	AnimationClip m_animationclips[enAnimationClip_Num];     //アニメーションクリップ
-	ModelRender*  m_modelrender = nullptr;								//モデルレンダー
+	ModelRender*  m_modelrender;								//モデルレンダー
 	Vector3 m_position;										//座標
 	Vector3 m_scale = Vector3::One;							//大きさ
 	Quaternion m_rotation;									//回転
