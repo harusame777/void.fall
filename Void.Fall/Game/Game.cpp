@@ -42,7 +42,7 @@ bool Game::Start()
 		}
 		//åªç›ñºenemy_001
 		//ìGÇP
-		else if (objData.ForwardMatchName(L"enemy_001") == true)
+		else if (objData.ForwardMatchName(L"enemy_001bone") == true)
 		{
 			E_001_enemy* enemy_001 = NewGO<E_001_enemy>(0, "enemy_001");
 			enemy_001->Setposition(objData.position);
