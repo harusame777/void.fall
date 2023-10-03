@@ -18,7 +18,7 @@ bool E_001_enemy::Start()
 
 	//モデル読み込み
 	m_modelrender = new ModelRender;
-	m_modelrender->Init("Assets/modelData/Enemy/enemy_001/enemy_001bone.tkm"/*m_animationclips, enAnimationClip_Num*/);
+	m_modelrender->Init("Assets/modelData/Enemy/enemy_001/enemy_001bone.tkm",m_animationclips, enAnimationClip_Num);
 
 	//回転
 	m_modelrender->SetRotation(m_rotation);
@@ -27,11 +27,7 @@ bool E_001_enemy::Start()
 	//スケール
 	m_modelrender->SetScale(m_scale);
 	//キャラコン初期化
-	m_charaCon.Init(
-		20.0f,			//半径。
-		100.0f,			//高さ。
-		m_position		//座標。
-	);
+	m_charaCon.Init(20.0f,100.0f,m_position);
 
 	m_player = FindGO<P_main_Player>("player");
 	//乱数を初期化。
@@ -174,7 +170,7 @@ void E_001_enemy::PlayAnimation()
 		break;
 	//移動
 	case enEnemyState_Chase:
-		//m_modelrender->PlayAnimation(enAnimationClip_Walk, 0.1f);
+		m_modelrender->PlayAnimation(enAnimationClip_Walk, 0.1f);
 		break;
 	//攻撃
 	case enEnemyState_Attack:
