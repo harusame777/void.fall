@@ -18,7 +18,7 @@ bool E_001_enemy::Start()
 
 	//ƒ‚ƒfƒ‹“Ç‚Ýž‚Ý
 	m_modelrender = new ModelRender;
-	m_modelrender->Init("Assets/modelData/Enemy/enemy_001/enemy_001bone.tkm",m_animationclips, enAnimationClip_Num);
+	m_modelrender->Init("Assets/modelData/Enemy/enemy_001/enemy_001bone.tkm"/*,m_animationclips, enAnimationClip_Num*/);
 
 	//‰ñ“]
 	m_modelrender->SetRotation(m_rotation);
