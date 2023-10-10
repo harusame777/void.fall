@@ -3,6 +3,7 @@
 ///////////////////////////////////////////////////////////
 #include "P_main_Player.h"
 #include "E_001_enemy.h"
+#include "E_002_enemy.h"
 #include "Map_home1.h"
 #include "Ca_maincamera.h"
 ///////////////////////////////////////////////////////////
@@ -18,7 +19,7 @@ bool Game::Start()
 	g_camera3D->SetFar(40000.0f);
 	//カメラ作成
 	m_camera = NewGO<Ca_maincamera>(0, "camera");
-	m_levelrender.Init("Assets/modelData/A_leveltest/testlevel1.tkl",[&](LevelObjectData& objData) 
+	m_levelrender.Init("Assets/modelData/A_leveltest/testlevel1.tkl",[&](LevelObjectData& objData)
 	{
 		//現在名testPlayer
 		//プレイヤー
@@ -40,14 +41,25 @@ bool Game::Start()
 			m_home1->Setscale(objData.scale);
 			return true;
 		}
-		//現在名enemy_001
+		//現在名
 		//敵１
 		else if (objData.ForwardMatchName(L"enemy_001bone") == true)
 		{
 			E_001_enemy* enemy_001 = NewGO<E_001_enemy>(0, "enemy_001");
 			enemy_001->Setposition(objData.position);
 			enemy_001->Setrotation(objData.rotation);
+			enemy_001->Setscale(objData.scale);
 			enemy_001->SetHP(5);
+			m_numenemy++;
+			return true;
+		}
+		else if (objData.ForwardMatchName(L"enemy_002") == true)
+		{
+			E_002_enemy* enemy_002 = NewGO<E_002_enemy>(0, "enemy_002");
+			enemy_002->Setposition(objData.position);
+			enemy_002->Setrotation(objData.rotation);
+			enemy_002->Setscale(objData.scale);
+			enemy_002->SetHP(5);
 			m_numenemy++;
 			return true;
 		}
@@ -56,10 +68,3 @@ bool Game::Start()
 	return true;
 }
 
-void Game::Update()
-{
-}
-
-void Game::Render(RenderContext& rc)
-{
-}

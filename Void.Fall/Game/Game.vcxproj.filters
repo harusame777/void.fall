@@ -16,6 +16,7 @@
     <ClCompile Include="Map_home1.cpp" />
     <ClCompile Include="Ca_maincamera.cpp" />
     <ClCompile Include="E_001_enemy.cpp" />
+    <ClCompile Include="E_002_enemy.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -28,6 +29,7 @@
     <ClInclude Include="Map_home1.h" />
     <ClInclude Include="Ca_maincamera.h" />
     <ClInclude Include="E_001_enemy.h" />
+    <ClInclude Include="E_002_enemy.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Game.rc" />
