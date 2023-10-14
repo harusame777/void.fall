@@ -11,6 +11,8 @@ bool P_main_Player::Start()
 	//アニメーション読み込み
 	m_animationclips[enAnimationClip_Idle].Load("Assets/animData/Player/idle.tka");
 	m_animationclips[enAnimationClip_Idle].SetLoopFlag(true);
+	m_animationclips[enAnimationClip_Walk].Load("Assets/animData/Player/walk.tka");
+	m_animationclips[enAnimationClip_Walk].SetLoopFlag(true);
 
 	m_modelrender = new ModelRender;
 	m_modelrender->Init("Assets/modelData/A_testPlayer/RE_Player.tkm", m_animationclips, enAnimationClip_Num);
@@ -43,6 +45,10 @@ void P_main_Player::PlayAnimation()
 		//待機
 	case enPlayerState_Idle:
 		m_modelrender->PlayAnimation(enAnimationClip_Idle, 0.1f);
+		break;
+		//歩き
+	case enPlayerState_Walk:
+		m_modelrender->PlayAnimation(enAnimationClip_Walk, 0.1f);
 		break;
 	}
 

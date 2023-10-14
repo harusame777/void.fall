@@ -22,7 +22,7 @@ public:
 	//アニメーション類/////////////////////////////////////////
 //アニメーションステート
 	enum EnAnimationClip {
-		//enAnimationClip_Walk,//歩き
+		enAnimationClip_Walk,//歩き
 		//enAnimationClip_Attack,//攻撃
 		enAnimationClip_Idle,//棒立ち
 		enAnimationClip_Num//アニメーション数
