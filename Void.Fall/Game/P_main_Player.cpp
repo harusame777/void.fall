@@ -8,8 +8,12 @@
 
 bool P_main_Player::Start()
 {
+	//アニメーション読み込み
+	m_animationclips[enAnimationClip_Idle].Load("Assets/animData/Player/idle.tka");
+	m_animationclips[enAnimationClip_Idle].SetLoopFlag(true);
+
 	m_modelrender = new ModelRender;
-	m_modelrender->Init("Assets/modelData/A_testPlayer/testPlayer.tkm");
+	m_modelrender->Init("Assets/modelData/A_testPlayer/RE_Player.tkm", m_animationclips, enAnimationClip_Num);
 	m_charaCon.Init(25.0f, 70.0f, m_position);
 	return true;
 }
@@ -22,10 +26,25 @@ void P_main_Player::Update()
 	Movefry();
 	//回転処理
 	Rotation();
+	//アニメーション
+	PlayAnimation();
 	//ステートの遷移処理
 	ManageState();
 	//描画処理
 	m_modelrender->Update();
+
+}
+
+void P_main_Player::PlayAnimation()
+{
+	m_modelrender->SetAnimationSpeed(1.0f);
+	switch (m_playerstate)
+	{
+		//待機
+	case enPlayerState_Idle:
+		m_modelrender->PlayAnimation(enAnimationClip_Idle, 0.1f);
+		break;
+	}
 
 }
 

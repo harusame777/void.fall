@@ -19,6 +19,16 @@ public:
 	void Movefry();//ホバー
 	void Rotation();//回転
 	void ManageState();//ステート遷移処理
+	//アニメーション類/////////////////////////////////////////
+//アニメーションステート
+	enum EnAnimationClip {
+		//enAnimationClip_Walk,//歩き
+		//enAnimationClip_Attack,//攻撃
+		enAnimationClip_Idle,//棒立ち
+		enAnimationClip_Num//アニメーション数
+	};
+	//アニメーション関数///////////////////////////////////////
+	void PlayAnimation();
 	//ステート遷移関数/////////////////////////////////////////
 	void ProcessCommonStateTransition();//共通処理
 	void ProcessIdleStateTransition();//待機遷移
@@ -52,6 +62,7 @@ public:
 		m_scale = scale;
 	}
 	//メンバ関数宣言
+	AnimationClip m_animationclips[enAnimationClip_Num];     //アニメーションクリップ
 	Vector3 m_position;										//座標
 	Vector3 m_scale = Vector3::One;							//大きさ
 	Quaternion m_rotation;									//回転

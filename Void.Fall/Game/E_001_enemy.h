@@ -20,13 +20,13 @@ public:
 		enAnimationClip_Num//アニメーション数
 	};
 	//アニメーション関数///////////////////////////////////////
+	void PlayAnimation();
 	//ステート遷移関数/////////////////////////////////////////
 	void ManageState();//遷移処理
 	void ProcessCommonStateTransition();//共通遷移処理
 	void ProcessIdleStateTransition();//待機遷移
 	void ProcessChaseStateTransition();//追跡遷移
 	//void ProcessAttackStateTransition();//攻撃遷移
-	void PlayAnimation();
 	///////////////////////////////////////////////////////////
 	E_001_enemy(){}
 	~E_001_enemy(){}

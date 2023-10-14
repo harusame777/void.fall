@@ -10,7 +10,7 @@ bool E_002_enemy::Start()
 
 	//ƒ‚ƒfƒ‹“Ç‚Ýž‚Ý
 	m_modelrender = new ModelRender;
-	m_modelrender->Init("Assets/modelData/Enemy/enemy_002/enemy_002test.tkm", m_animationclips, enAnimationClip_Num);
+	m_modelrender->Init("Assets/modelData/Enemy/enemy_002/enemy_002.tkm", m_animationclips, enAnimationClip_Num);
 
 	//‰ñ“]
 	m_modelrender->SetRotation(m_rotation);
