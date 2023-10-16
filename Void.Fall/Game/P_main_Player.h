@@ -23,12 +23,13 @@ public:
 //アニメーションステート
 	enum EnAnimationClip {
 		enAnimationClip_Walk,//歩き
-		//enAnimationClip_Attack,//攻撃
+		enAnimationClip_Attack,//攻撃
 		enAnimationClip_Idle,//棒立ち
 		enAnimationClip_Num//アニメーション数
 	};
 	//アニメーション関数///////////////////////////////////////
 	void PlayAnimation();
+	void OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName);
 	//ステート遷移関数/////////////////////////////////////////
 	void ProcessCommonStateTransition();//共通処理
 	void ProcessIdleStateTransition();//待機遷移

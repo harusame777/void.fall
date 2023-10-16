@@ -13,10 +13,20 @@ bool P_main_Player::Start()
 	m_animationclips[enAnimationClip_Idle].SetLoopFlag(true);
 	m_animationclips[enAnimationClip_Walk].Load("Assets/animData/Player/walk.tka");
 	m_animationclips[enAnimationClip_Walk].SetLoopFlag(true);
+	//enAnimationClip_Attack:アニメーションキーname(magic_attack)
+	m_animationclips[enAnimationClip_Attack].Load("Assets/animData/Player/attack1.tka");
+	m_animationclips[enAnimationClip_Attack].SetLoopFlag(false);
+
 
 	m_modelrender = new ModelRender;
 	m_modelrender->Init("Assets/modelData/A_testPlayer/RE_Player.tkm", m_animationclips, enAnimationClip_Num);
 	m_charaCon.Init(25.0f, 70.0f, m_position);
+
+	//アニメーションイベント用関数設定
+	m_modelrender->AddAnimationEvent([&](const wchar_t* clipName, const wchar_t* eventName) {
+		OnAnimationEvent(clipName, eventName);
+		});
+
 	return true;
 }
 
@@ -44,10 +54,12 @@ void P_main_Player::PlayAnimation()
 	{
 		//待機
 	case enPlayerState_Idle:
+	case enPlayerState_Idlefry:
 		m_modelrender->PlayAnimation(enAnimationClip_Idle, 0.1f);
 		break;
 		//歩き
 	case enPlayerState_Walk:
+	case enPlayerState_Walkfry:
 		m_modelrender->PlayAnimation(enAnimationClip_Walk, 0.1f);
 		break;
 	}
@@ -57,6 +69,12 @@ void P_main_Player::PlayAnimation()
 void P_main_Player::Render(RenderContext& rc)
 {
 	m_modelrender->Draw(rc);
+}
+
+void P_main_Player::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
+{
+	if (wcscmp(eventName, L"magic_attack") == 0) {
+	}
 }
 
 void P_main_Player::Move()
