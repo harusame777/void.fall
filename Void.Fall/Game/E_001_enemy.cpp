@@ -13,12 +13,14 @@ bool E_001_enemy::Start()
 {
 
 	//アニメーション読み込み
-	m_animationclips[enAnimationClip_Walk].Load("Assets/animData/Enemy/enemy_001/walkbone.tka");
-	m_animationclips[enAnimationClip_Walk].SetLoopFlag(true);
+	m_animationclips[enAnimationClip_Idle].Load("Assets/animData/Enemy/enemy_001/idle.tka");
+	m_animationclips[enAnimationClip_Idle].SetLoopFlag(true);
 
 	//モデル読み込み
 	m_modelrender = new ModelRender;
-	m_modelrender->Init("Assets/modelData/Enemy/enemy_001/enemy_001bone.tkm"/*,m_animationclips, enAnimationClip_Num*/);
+	m_modelrender->Init("Assets/modelData/Enemy/enemy_001/RE_enemy_001.tkm",m_animationclips, enAnimationClip_Num);
+
+	//アニメーションイベント用関数設定
 
 	//回転
 	m_modelrender->SetRotation(m_rotation);
@@ -40,15 +42,15 @@ bool E_001_enemy::Start()
 void E_001_enemy::Update()
 {
 	//追跡処理
-	Chase();
+	//Chase();
 	//回転処理
-	Rotation();
+	//Rotation();
 	//攻撃処理
-	Attack();
+	//Attack();
 	//アニメーション
 	PlayAnimation();
 	//ステート遷移処理
-	ManageState();
+	//ManageState();
 	//描画更新
 	m_modelrender->Update();
 }
@@ -167,10 +169,10 @@ void E_001_enemy::PlayAnimation()
 	{
 	//待機
 	case enEnemyState_Idle:
+		m_modelrender->PlayAnimation(enAnimationClip_Idle, 0.1f);
 		break;
 	//移動
 	case enEnemyState_Chase:
-		m_modelrender->PlayAnimation(enAnimationClip_Walk, 0.1f);
 		break;
 	//攻撃
 	case enEnemyState_Attack:

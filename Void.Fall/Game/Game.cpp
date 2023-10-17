@@ -23,7 +23,7 @@ bool Game::Start()
 	{
 		//åªç›ñºtestPlayer
 		//ÉvÉåÉCÉÑÅ[
-		if (objData.EqualObjectName(L"testPlayer") == true)
+		if (objData.EqualObjectName(L"voidPlayer") == true)
 		{
 			m_player = NewGO<P_main_Player>(0, "player");
 			m_player->Setposition(objData.position);
@@ -43,7 +43,7 @@ bool Game::Start()
 		}
 		//åªç›ñº
 		//ìGÇP
-		else if (objData.ForwardMatchName(L"enemy_001bone") == true)
+		else if (objData.ForwardMatchName(L"RE_enemy_001") == true)
 		{
 			E_001_enemy* enemy_001 = NewGO<E_001_enemy>(0, "enemy_001");
 			enemy_001->Setposition(objData.position);
