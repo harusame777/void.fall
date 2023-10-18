@@ -7,7 +7,6 @@
 ///////////////////////////////////////////////////////////
 #define enemyspeed 100.0f                                //移動速度の数値
 #define enemyserch 700.0f * 700.0f						//追跡可能範囲
-#define enemyserchattack 10.0f * 10.0f                 //攻撃可能範囲
 
 bool E_001_enemy::Start()
 {
@@ -53,13 +52,13 @@ void E_001_enemy::Update()
 	//追跡処理
 	//Chase();
 	//回転処理
-	//Rotation();
+	Rotation();
 	//攻撃処理
-	//Attack();
+	Attack();
 	//アニメーション
 	PlayAnimation();
 	//ステート遷移処理
-	//ManageState();
+	ManageState();
 	//描画更新
 	m_modelrender->Update();
 }
@@ -71,19 +70,6 @@ void E_001_enemy::Chase()
 	{
 		return;
 	}
-	//エネミーを移動させる。
-	m_position = m_charaCon.Execute(m_movespeed, g_gameTime->GetFrameDeltaTime());
-	//if (m_charaCon.IsOnGround()) {
-	//	//地面についた。
-	//	//重力を0にする。
-	//	m_movespeed.y = 0.0f;
-	//}
-	m_movespeed.y = 0.0f;
-	Vector3 modelPosition = m_position;
-	//ちょっとだけモデルの座標を挙げる。
-	modelPosition.y += 2.5f;
-	//座標を設定する。
-	m_modelrender->SetPosition(modelPosition);
 }
 
 void E_001_enemy::Rotation()
@@ -129,7 +115,7 @@ const bool E_001_enemy::SearchAttackDistance() const
 	Vector3 diff = m_player->Getposition() - m_position;
 	//プレイヤーにある程度近かったら.。
 
-	if (diff.LengthSq() <= enemyserchattack)
+	if (diff.LengthSq() <= enemyserch)
 	{
 		//プレイヤーが射程圏内に入った！
 		return true;
@@ -165,9 +151,10 @@ void E_001_enemy::ManageState()
 		//追跡ステート遷移
 		ProcessChaseStateTransition();
 		break;
-	//case enEnemyState_Attack:
-	//	//攻撃ステート遷移
-	//	break;
+	case enEnemyState_Attack:
+		//攻撃ステート遷移
+		ProcessAttackStateTransition();
+		break;
 	}
 }
 
@@ -179,6 +166,12 @@ void E_001_enemy::PlayAnimation()
 	//待機
 	case enEnemyState_Idle:
 		m_modelrender->PlayAnimation(enAnimationClip_Idle, 0.1f);
+		break;
+	case enEnemyState_Chase:
+		m_modelrender->PlayAnimation(enAnimationClip_Chase, 0.1f);
+		break;
+	case enEnemyState_Attack:
+		m_modelrender->PlayAnimation(enAnimationClip_Attack, 0.1f);
 		break;
 	}
 }
@@ -194,7 +187,6 @@ void E_001_enemy::ProcessCommonStateTransition()
 	//各タイマーを初期化。
 	m_idleTimer = 0.0f;
 	m_chaseTimer = 0.0f;
-
 	//エネミーからプレイヤーに向かうベクトルを計算する。
 	Vector3 diff = m_player->Getposition() - m_position;
 	//プレイヤーを見つけたら。
@@ -207,6 +199,12 @@ void E_001_enemy::ProcessCommonStateTransition()
 		//攻撃できる距離かどうか
 		if (SearchAttackDistance() == true)
 		{
+			if (m_attackTimer < 0.0f)
+			{
+				m_enemystate = enEnemyState_Attack;
+				m_attackTimer = 5.0f;
+				return;
+			}
 			//現在のステートが攻撃
 			if (m_enemystate == enEnemyState_Attack)
 			{
@@ -218,7 +216,7 @@ void E_001_enemy::ProcessCommonStateTransition()
 			//現在のステートが攻撃でない
 			else
 			{
-				m_enemystate = enEnemyState_Attack;
+				m_enemystate = enEnemyState_Chase;
 				return;
 			}
 		}
@@ -227,6 +225,7 @@ void E_001_enemy::ProcessCommonStateTransition()
 	else
 	{
 		//待機ステートに遷移する。
+		m_attackTimer = 5.0f;
 		m_enemystate = enEnemyState_Idle;
 		return;
 
@@ -250,9 +249,10 @@ void E_001_enemy::ProcessChaseStateTransition()
 	//射程圏内に入ったら
 	if (SearchAttackDistance() == true)
 	{
-	//他のステートに遷移する。
-	ProcessCommonStateTransition();
-	return;
+		//他のステートに遷移する。
+		m_attackTimer -= g_gameTime->GetFrameDeltaTime();
+		ProcessCommonStateTransition();
+		return;
 	}
 	m_chaseTimer += g_gameTime->GetFrameDeltaTime();
 	//追跡時間がある程度経過したら。
@@ -263,6 +263,15 @@ void E_001_enemy::ProcessChaseStateTransition()
 	}
 }
 
+void E_001_enemy::ProcessAttackStateTransition()
+{
+	//攻撃アニメーションの再生が終わったら。
+	if (m_modelrender->IsPlayingAnimation() == false)
+	{
+		//他のステートに遷移する。
+		ProcessCommonStateTransition();
+	}
+}
 
 void E_001_enemy::Render(RenderContext& rc)
 {

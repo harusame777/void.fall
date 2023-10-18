@@ -27,7 +27,7 @@ public:
 	void ProcessCommonStateTransition();//共通遷移処理
 	void ProcessIdleStateTransition();//待機遷移
 	void ProcessChaseStateTransition();//追跡遷移
-	//void ProcessAttackStateTransition();//攻撃遷移
+	void ProcessAttackStateTransition();//攻撃遷移
 	///////////////////////////////////////////////////////////
 	E_001_enemy(){}
 	~E_001_enemy(){}
@@ -76,5 +76,6 @@ public:
 	int m_hp = 0;                                           //HP
 	float m_chaseTimer = 0.0f;						        //追跡タイマー。
 	float m_idleTimer = 0.0f;							    //待機タイマー。
+	float m_attackTimer = 5.0f;								//攻撃待機タイマー。
 };
 
