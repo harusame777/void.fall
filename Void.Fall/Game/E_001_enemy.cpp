@@ -1,12 +1,16 @@
 #include "stdafx.h"
 #include "E_001_enemy.h"
 #include "P_main_Player.h"
+#include "collision/CollisionObject.h"
 ///////////////////////////////////////////////////////////
 #include <time.h>
 #include <stdlib.h>
 ///////////////////////////////////////////////////////////
-#define enemyspeed 100.0f                                //移動速度の数値
+#define enemyspeed 100.0f                               //移動速度の数値
 #define enemyserch 700.0f * 700.0f						//追跡可能範囲
+#define enemyserchnear 200.0f * 200.0f					//追跡可能範囲
+#define attacktime 5.0f									//アタックタイマー
+
 
 bool E_001_enemy::Start()
 {
@@ -17,13 +21,20 @@ bool E_001_enemy::Start()
 	m_animationclips[enAnimationClip_Chase].Load("Assets/animData/Enemy/enemy_001/chase.tka");
 	m_animationclips[enAnimationClip_Chase].SetLoopFlag(true);
 	//enAnimationClip_Attack:アニメーションキーname(attack_point)
-	//bone情報(sub1)
 	m_animationclips[enAnimationClip_Attack].Load("Assets/animData/Enemy/enemy_001/attack.tka");
 	m_animationclips[enAnimationClip_Attack].SetLoopFlag(false);
+	//enAnimationClip_AttackNear:アニメーションキーname(attack_start)
+	//enAnimationClip_AttackNear:アニメーションキーname(attack_end)
+	//bone情報(sub1)
+	m_animationclips[enAnimationClip_AttackNear].Load("Assets/animData/Enemy/enemy_001/attacknear.tka");
+	m_animationclips[enAnimationClip_AttackNear].SetLoopFlag(false);
 
 	//モデル読み込み
 	m_modelrender = new ModelRender;
 	m_modelrender->Init("Assets/modelData/Enemy/enemy_001/RE_enemy_001.tkm",m_animationclips, enAnimationClip_Num);
+
+	//剣のボーンのIDを取得する。
+	m_attacknearboneID = m_modelrender->FindBoneID(L"sub1");
 
 	//アニメーションイベント用関数設定
 	m_modelrender->AddAnimationEvent([&](const wchar_t* clipName, const wchar_t* eventName) {
@@ -49,8 +60,6 @@ bool E_001_enemy::Start()
 
 void E_001_enemy::Update()
 {
-	//追跡処理
-	//Chase();
 	//回転処理
 	Rotation();
 	//攻撃処理
@@ -61,15 +70,6 @@ void E_001_enemy::Update()
 	ManageState();
 	//描画更新
 	m_modelrender->Update();
-}
-
-void E_001_enemy::Chase()
-{
-	//追跡ステートでないなら、追跡処理はしない。
-	if (m_enemystate != enEnemyState_Chase)
-	{
-		return;
-	}
 }
 
 void E_001_enemy::Rotation()
@@ -124,9 +124,23 @@ const bool E_001_enemy::SearchAttackDistance() const
 	return false;
 }
 
+const bool E_001_enemy::SearchAttackDistanceNear() const
+{
+	Vector3 diff2 = m_player->Getposition() - m_position;
+	//プレイヤーにある程度近かったら.。
+
+	if (diff2.LengthSq() <= enemyserchnear)
+	{
+		//プレイヤーが射程圏内に入った！
+		return true;
+	}
+	//プレイヤーが射程圏外だった。
+	return false;
+}
+
 void E_001_enemy::Attack()
 {
-	if (m_enemystate != enEnemyState_Attack)
+	if (m_enemystate != enEnemyState_AttackNear)
 	{
 		return;
 	}
@@ -134,7 +148,20 @@ void E_001_enemy::Attack()
 	if (m_isUnderAttack == true)
 	{
 		//当たり判定のとこ
+		MakeAttackCollision();
 	}
+}
+
+void E_001_enemy::MakeAttackCollision()
+{
+	//攻撃当たり判定用のコリジョンオブジェクトを作成する。
+	auto collisionObject = NewGO<CollisionObject>(0);
+	//剣のボーンのワールド行列を取得する。
+	Matrix matrix = m_modelrender->GetBone(m_attacknearboneID)->GetWorldMatrix();
+	//ボックス状のコリジョンを作成する。
+	collisionObject->CreateBox(m_position, Quaternion::Identity, Vector3(100.0f, 10.0f, 10.0f));
+	collisionObject->SetWorldMatrix(matrix);
+	collisionObject->SetName("enemy_attacknear");
 }
 
 void E_001_enemy::ManageState()
@@ -152,6 +179,7 @@ void E_001_enemy::ManageState()
 		ProcessChaseStateTransition();
 		break;
 	case enEnemyState_Attack:
+	case enEnemyState_AttackNear:
 		//攻撃ステート遷移
 		ProcessAttackStateTransition();
 		break;
@@ -173,12 +201,24 @@ void E_001_enemy::PlayAnimation()
 	case enEnemyState_Attack:
 		m_modelrender->PlayAnimation(enAnimationClip_Attack, 0.1f);
 		break;
+	case enEnemyState_AttackNear:
+		m_modelrender->PlayAnimation(enAnimationClip_AttackNear, 0.1f);
+		break;
 	}
 }
 
 void E_001_enemy::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 {
-	if (wcscmp(eventName, L"attack_point") == 0) {
+	(void)clipName;
+	//キーの名前が色々
+	if (wcscmp(eventName, L"attack_start") == 0){
+		m_isUnderAttack = true;
+	}
+	else if (wcscmp(eventName, L"attack_end") == 0){
+		m_isUnderAttack = false;
+	}
+	else if (wcscmp(eventName, L"attack_point") == 0) {
+
 	}
 }
 
@@ -201,12 +241,18 @@ void E_001_enemy::ProcessCommonStateTransition()
 		{
 			if (m_attackTimer < 0.0f)
 			{
-				m_enemystate = enEnemyState_Attack;
-				m_attackTimer = 5.0f;
+				if (SearchAttackDistanceNear() == true){
+					m_enemystate = enEnemyState_AttackNear;
+				}
+				else {
+					m_enemystate = enEnemyState_Attack;
+				}
+				m_attackTimer = attacktime;
 				return;
 			}
 			//現在のステートが攻撃
-			if (m_enemystate == enEnemyState_Attack)
+			if (m_enemystate == enEnemyState_Attack||
+				m_enemystate == enEnemyState_AttackNear)
 			{
 				//連続で撃たせないように
 				//追跡
@@ -225,7 +271,7 @@ void E_001_enemy::ProcessCommonStateTransition()
 	else
 	{
 		//待機ステートに遷移する。
-		m_attackTimer = 5.0f;
+		m_attackTimer = attacktime;
 		m_enemystate = enEnemyState_Idle;
 		return;
 
@@ -235,13 +281,7 @@ void E_001_enemy::ProcessCommonStateTransition()
 
 void E_001_enemy::ProcessIdleStateTransition()
 {
-	m_idleTimer += g_gameTime->GetFrameDeltaTime();
-	//待機時間がある程度経過したら。
-	if (m_idleTimer >= 0.9f)
-	{
-		//他のステートへ遷移する。
-		ProcessCommonStateTransition();
-	}
+	ProcessCommonStateTransition();
 }
 
 void E_001_enemy::ProcessChaseStateTransition()
@@ -254,13 +294,7 @@ void E_001_enemy::ProcessChaseStateTransition()
 		ProcessCommonStateTransition();
 		return;
 	}
-	m_chaseTimer += g_gameTime->GetFrameDeltaTime();
-	//追跡時間がある程度経過したら。
-	if (m_chaseTimer >= 0.8f)
-	{
-		//他のステートに遷移する。
-		ProcessCommonStateTransition();
-	}
+	ProcessCommonStateTransition();
 }
 
 void E_001_enemy::ProcessAttackStateTransition()

@@ -9,12 +9,14 @@ public:
 	enum EnEnemyState {
 		enEnemyState_Idle,//待機
 		enEnemyState_Chase,//追跡
-		enEnemyState_Attack//攻撃
+		enEnemyState_Attack,//攻撃
+		enEnemyState_AttackNear//近接攻撃
 	};
 	//アニメーション類/////////////////////////////////////////
 	//アニメーションステート
 	enum EnAnimationClip{
 		enAnimationClip_Attack,//攻撃
+		enAnimationClip_AttackNear,//近接攻撃
 		enAnimationClip_Idle,//棒立ち
 		enAnimationClip_Chase,//追跡
 		enAnimationClip_Num//アニメーション数
@@ -34,11 +36,12 @@ public:
 	bool Start();				
 	void Update();                                         //アップデート
 	void Render(RenderContext& rc);                        //モデルレンダー
-	void Chase();                                          //追跡
 	void Rotation();                                       //回転
 	void Attack();										   //攻撃
+	void MakeAttackCollision();								//当たり判定作成
 	const bool SearchPlayer() const;                       //プレイヤー探知
 	const bool SearchAttackDistance() const;               //攻撃距離探知
+	const bool SearchAttackDistanceNear() const;               //攻撃距離探知(近距離)
 	///////////////////////////////////////////////////////////
 	//初期設定系統
 	void Setposition(const Vector3& position)//座標
@@ -73,6 +76,7 @@ public:
 	CharacterController	m_charaCon;							//キャラクターコントローラー。
 	P_main_Player* m_player = nullptr;                      //プレイヤー
 	bool m_isUnderAttack = false;							//攻撃中かどうか(初期状態はfalse攻撃中ではない)
+	int m_attacknearboneID = -1;								//近接攻撃bone
 	int m_hp = 0;                                           //HP
 	float m_chaseTimer = 0.0f;						        //追跡タイマー。
 	float m_idleTimer = 0.0f;							    //待機タイマー。
