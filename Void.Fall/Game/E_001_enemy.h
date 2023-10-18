@@ -14,14 +14,14 @@ public:
 	//アニメーション類/////////////////////////////////////////
 	//アニメーションステート
 	enum EnAnimationClip{
-		//enAnimationClip_Walk,//歩き
-		//enAnimationClip_Attack,//攻撃
+		enAnimationClip_Attack,//攻撃
 		enAnimationClip_Idle,//棒立ち
+		enAnimationClip_Chase,//追跡
 		enAnimationClip_Num//アニメーション数
 	};
 	//アニメーション関数///////////////////////////////////////
 	void PlayAnimation();
-	//void OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName);
+	void OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName);
 	//ステート遷移関数/////////////////////////////////////////
 	void ManageState();//遷移処理
 	void ProcessCommonStateTransition();//共通遷移処理

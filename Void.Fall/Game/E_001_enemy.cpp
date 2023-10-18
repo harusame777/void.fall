@@ -15,12 +15,21 @@ bool E_001_enemy::Start()
 	//アニメーション読み込み
 	m_animationclips[enAnimationClip_Idle].Load("Assets/animData/Enemy/enemy_001/idle.tka");
 	m_animationclips[enAnimationClip_Idle].SetLoopFlag(true);
+	m_animationclips[enAnimationClip_Chase].Load("Assets/animData/Enemy/enemy_001/chase.tka");
+	m_animationclips[enAnimationClip_Chase].SetLoopFlag(true);
+	//enAnimationClip_Attack:アニメーションキーname(attack_point)
+	//bone情報(sub1)
+	m_animationclips[enAnimationClip_Attack].Load("Assets/animData/Enemy/enemy_001/attack.tka");
+	m_animationclips[enAnimationClip_Attack].SetLoopFlag(false);
 
 	//モデル読み込み
 	m_modelrender = new ModelRender;
 	m_modelrender->Init("Assets/modelData/Enemy/enemy_001/RE_enemy_001.tkm",m_animationclips, enAnimationClip_Num);
 
 	//アニメーションイベント用関数設定
+	m_modelrender->AddAnimationEvent([&](const wchar_t* clipName, const wchar_t* eventName) {
+		OnAnimationEvent(clipName, eventName);
+		});
 
 	//回転
 	m_modelrender->SetRotation(m_rotation);
@@ -171,14 +180,13 @@ void E_001_enemy::PlayAnimation()
 	case enEnemyState_Idle:
 		m_modelrender->PlayAnimation(enAnimationClip_Idle, 0.1f);
 		break;
-	//移動
-	case enEnemyState_Chase:
-		break;
-	//攻撃
-	case enEnemyState_Attack:
-		break;
 	}
+}
 
+void E_001_enemy::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
+{
+	if (wcscmp(eventName, L"attack_point") == 0) {
+	}
 }
 
 void E_001_enemy::ProcessCommonStateTransition()
