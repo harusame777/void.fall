@@ -6,6 +6,8 @@
 namespace
 {
 	const Vector3 scale = { 1.5f,1.5f,1.5f }; //大きさ
+	const Vector3 corre = { 0.0f,60.0f,0.0f };//位置修正
+	const float bullet_homingtime = 5.0f;     //最大追跡時間
 	const float bullet_spped = 10.0f;         //速度
 	const float curvature = 60.0f;            //曲がる強さ
 	const float damping = 0.1f;               //減衰
@@ -26,6 +28,13 @@ bool B_homingbullet::Start()
 
 	m_modelrender->SetPosition(m_position);
 	m_modelrender->SetScale(scale);
+
+	//コリジョンオブジェクトを作成する。
+	m_collisionObject = NewGO<CollisionObject>(0);
+	//球状のコリジョンを作成する。
+	m_collisionObject->CreateSphere(m_position, Quaternion::Identity, 35.0f * m_scale.z);
+	//コリジョンオブジェクトが自動で削除されないようにする。
+	m_collisionObject->SetIsEnableAutoDelete(false);
 
 	m_player = FindGO<P_main_Player>("player");
 
@@ -51,10 +60,14 @@ void B_homingbullet::PlayAnimation()
 
 void B_homingbullet::Movebullet()
 {
-	CalcVelocity(bullet_spped, curvature, damping);
+	if (bullettime > bullet_homingtime)
+	{
+		CalcVelocity(bullet_spped, curvature, damping);
+	}
 	m_position += m_velocity;
 	bullettime -= g_gameTime->GetFrameDeltaTime();
 	SetTarget(m_player->m_position);
+	m_collisionObject->SetPosition(m_position);
 	m_modelrender->SetPosition(m_position);
 }
 
@@ -64,7 +77,7 @@ void B_homingbullet::CalcVelocity(const float speed, const float curvatureRadius
 	float maxCentripetalAccel = speed * speed / curvatureRadius;
 	float propulsion = speed * damping;
 
-	Vector3 targetPosition = m_targetPosition;
+	Vector3 targetPosition = m_targetPosition += corre;
 	Vector3 toTarget = targetPosition - m_position;
 	Vector3 vn = m_velocity;
 	vn.Normalize();
@@ -87,6 +100,8 @@ void B_homingbullet::Inpact()
 	{
 		return;
 	}
+	DeleteGO(m_collisionObject);
+	delete m_modelrender;
 	DeleteGO(this);
 }
 

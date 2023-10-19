@@ -39,6 +39,7 @@ public:
 //メンバ関数宣言
 	float bullettime = 10.0f;
 	CollisionObject* m_collisionObject;						//コリジョンオブジェクト。
+	Vector3	m_scale = Vector3::One;							//大きさ。
 	P_main_Player* m_player = nullptr;                      //プレイヤー
 	AnimationClip m_animationclips[enAnimationClip_Num];    //アニメーションクリップ
 	ModelRender* m_modelrender = nullptr;					//モデルレンダー

@@ -222,6 +222,8 @@ void E_001_enemy::OnAnimationEvent(const wchar_t* clipName, const wchar_t* event
 		auto bullet = NewGO<B_homingbullet>(0);
 		bullet->SetPosition(m_position);
 		bullet->SetVelocity(m_forward * 10);
+		bullet->m_position.y += 80.0f;
+		bullet->m_position.z += 10.0f;
 	}
 }
 
