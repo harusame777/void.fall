@@ -7,6 +7,9 @@
     <Filter Include="Enemy">
       <UniqueIdentifier>{49767212-a51c-4546-9034-0587d3ec364b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="attackP">
+      <UniqueIdentifier>{680d2144-3b3c-4efe-81c3-0b2a30125776}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
