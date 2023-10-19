@@ -75,6 +75,7 @@ public:
 	EnEnemyState m_enemystate = enEnemyState_Idle;          //エネミーステート
 	CharacterController	m_charaCon;							//キャラクターコントローラー。
 	P_main_Player* m_player = nullptr;                      //プレイヤー
+	Vector3 m_targetPosition = Vector3::Zero;				//射撃ターゲット
 	bool m_isUnderAttack = false;							//攻撃中かどうか(初期状態はfalse攻撃中ではない)
 	int m_attacknearboneID = -1;								//近接攻撃bone
 	int m_hp = 0;                                           //HP

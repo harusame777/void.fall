@@ -2,6 +2,7 @@
 #include "E_001_enemy.h"
 #include "P_main_Player.h"
 #include "collision/CollisionObject.h"
+#include "B_homingbullet.h"
 ///////////////////////////////////////////////////////////
 #include <time.h>
 #include <stdlib.h>
@@ -218,7 +219,9 @@ void E_001_enemy::OnAnimationEvent(const wchar_t* clipName, const wchar_t* event
 		m_isUnderAttack = false;
 	}
 	else if (wcscmp(eventName, L"attack_point") == 0) {
-
+		auto bullet = NewGO<B_homingbullet>(0);
+		bullet->SetPosition(m_position);
+		bullet->SetVelocity(m_forward * 10);
 	}
 }
 
@@ -229,6 +232,7 @@ void E_001_enemy::ProcessCommonStateTransition()
 	m_chaseTimer = 0.0f;
 	//エネミーからプレイヤーに向かうベクトルを計算する。
 	Vector3 diff = m_player->Getposition() - m_position;
+	Vector3 playerPosition = m_player->Getposition();
 	//プレイヤーを見つけたら。
 	if (SearchPlayer() == true)
 	{
@@ -245,6 +249,8 @@ void E_001_enemy::ProcessCommonStateTransition()
 					m_enemystate = enEnemyState_AttackNear;
 				}
 				else {
+					//プレイヤー位置取得
+					m_targetPosition = playerPosition;
 					m_enemystate = enEnemyState_Attack;
 				}
 				m_attackTimer = attacktime;
