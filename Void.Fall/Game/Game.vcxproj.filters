@@ -27,6 +27,9 @@
     <ClCompile Include="E_002_enemy.cpp">
       <Filter>Enemy</Filter>
     </ClCompile>
+    <ClCompile Include="B_homingbullet.cpp">
+      <Filter>attackP</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -43,6 +46,9 @@
     </ClInclude>
     <ClInclude Include="E_002_enemy.h">
       <Filter>Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="B_homingbullet.h">
+      <Filter>attackP</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

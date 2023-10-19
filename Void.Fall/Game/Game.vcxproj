@@ -223,6 +223,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="B_homingbullet.cpp" />
     <ClCompile Include="Ca_maincamera.cpp" />
     <ClCompile Include="E_001_enemy.cpp" />
     <ClCompile Include="E_002_enemy.cpp" />
@@ -238,6 +239,7 @@
     <ClCompile Include="system\system.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="B_homingbullet.h" />
     <ClInclude Include="Ca_maincamera.h" />
     <ClInclude Include="E_001_enemy.h" />
     <ClInclude Include="E_002_enemy.h" />
