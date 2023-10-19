@@ -8,6 +8,7 @@ public:
 	~B_homingbullet() {};
 	bool Start();
 	void Update();
+	void Rotation();
 	void Render(RenderContext& rc);
 	void Movebullet();
 	void Inpact();
@@ -37,8 +38,10 @@ public:
 		m_targetPosition = targetPosition;
 	}
 //メンバ関数宣言
-	float bullettime = 10.0f;
+	float bullettime = 6.0f;
+	Quaternion m_rotation;									//回転
 	CollisionObject* m_collisionObject;						//コリジョンオブジェクト。
+	Vector3	m_forward = Vector3::AxisZ;						//エネミーの正面ベクトル。
 	Vector3	m_scale = Vector3::One;							//大きさ。
 	P_main_Player* m_player = nullptr;                      //プレイヤー
 	AnimationClip m_animationclips[enAnimationClip_Num];    //アニメーションクリップ
@@ -46,7 +49,5 @@ public:
 	Vector3 m_position;										//座標
 	Vector3 m_velocity;										//速度
 	Vector3 m_targetPosition;								//追尾対象座標
-
-
 };
 

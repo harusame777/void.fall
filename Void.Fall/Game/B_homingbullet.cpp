@@ -7,7 +7,7 @@ namespace
 {
 	const Vector3 scale = { 1.5f,1.5f,1.5f }; //大きさ
 	const Vector3 corre = { 0.0f,60.0f,0.0f };//位置修正
-	const float bullet_homingtime = 5.0f;     //最大追跡時間
+	const float bullet_homingtime = 3.0f;     //最大追跡時間
 	const float bullet_spped = 10.0f;         //速度
 	const float curvature = 60.0f;            //曲がる強さ
 	const float damping = 0.1f;               //減衰
@@ -45,6 +45,8 @@ void B_homingbullet::Update()
 {
 	//弾丸移動
 	Movebullet();
+	//回転処理
+	Rotation();
 	//弾丸衝突処理
 	Inpact();
 	//アニメーション
@@ -60,8 +62,7 @@ void B_homingbullet::PlayAnimation()
 
 void B_homingbullet::Movebullet()
 {
-	if (bullettime > bullet_homingtime)
-	{
+	if (bullettime > bullet_homingtime){
 		CalcVelocity(bullet_spped, curvature, damping);
 	}
 	m_position += m_velocity;
@@ -69,6 +70,17 @@ void B_homingbullet::Movebullet()
 	SetTarget(m_player->m_position);
 	m_collisionObject->SetPosition(m_position);
 	m_modelrender->SetPosition(m_position);
+}
+
+void B_homingbullet::Rotation()
+{
+	//正確には弾丸を移動方向に向かせるプログラム
+			//移動速度を↓に入れるとできる。
+	float angle = atan2(-m_velocity.x, m_velocity.z);
+	m_rotation.SetRotationY(-angle);
+	m_modelrender->SetRotation(m_rotation);
+	m_forward = Vector3::AxisZ;
+	m_rotation.Apply(m_forward);
 }
 
 void B_homingbullet::CalcVelocity(const float speed, const float curvatureRadius,
