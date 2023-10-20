@@ -7,10 +7,12 @@ class E_001_enemy : public IGameObject
 public:
 	//行動ステート
 	enum EnEnemyState {
-		enEnemyState_Idle,//待機
-		enEnemyState_Chase,//追跡
-		enEnemyState_Attack,//攻撃
-		enEnemyState_AttackNear//近接攻撃
+		enEnemyState_Idle,					//待機
+		enEnemyState_Chase,					//追跡
+		enEnemyState_Attack,				//攻撃
+		enEnemyState_AttackNear,			//近接攻撃
+		enEnemyState_ReceiveDamage,			//被ダメージ。
+		enEnemyState_Down,					//ダウン。
 	};
 	//アニメーション類/////////////////////////////////////////
 	//アニメーションステート
@@ -38,6 +40,7 @@ public:
 	void Render(RenderContext& rc);                        //モデルレンダー
 	void Rotation();                                       //回転
 	void Attack();										   //攻撃
+	void Collision();										//本体の当たり判定
 	void MakeAttackCollision();								//当たり判定作成
 	const bool SearchPlayer() const;                       //プレイヤー探知
 	const bool SearchAttackDistance() const;               //攻撃距離探知

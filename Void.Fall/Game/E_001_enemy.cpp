@@ -65,6 +65,8 @@ void E_001_enemy::Update()
 	Rotation();
 	//攻撃処理
 	Attack();
+	//当たり判定処理
+	Collision();
 	//アニメーション
 	PlayAnimation();
 	//ステート遷移処理
@@ -96,6 +98,19 @@ void E_001_enemy::Rotation()
 	//プレイヤーの前ベクトルを計算する。
 	m_forward = Vector3::AxisZ;
 	m_rotation.Apply(m_forward);
+}
+
+void E_001_enemy::Collision()
+{
+	//被ダメージ、あるいはダウンステートの時は。
+//当たり判定処理はしない。
+	if (m_enemystate == enEnemyState_ReceiveDamage ||
+		m_enemystate == enEnemyState_Down)
+	{
+		return;
+	}
+
+
 }
 
 const bool E_001_enemy::SearchPlayer() const
