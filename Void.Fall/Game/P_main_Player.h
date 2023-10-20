@@ -6,8 +6,6 @@ public:
 	enum EnPlayerState {
 		enPlayerState_Idle,//待機。
 		enPlayerState_Walk,//歩き。
-		enPlayerState_Idlefry,//ホバー待機。
-		enPlayerState_Walkfry,//ホバー歩き。
 	};
 	//関数宣言
 	P_main_Player() {}
@@ -16,7 +14,6 @@ public:
 	void Update();
 	void Render(RenderContext& rc);
 	void Move();//移動
-	void Movefry();//ホバー
 	void Rotation();//回転
 	void ManageState();//ステート遷移処理
 	//アニメーション類/////////////////////////////////////////
@@ -34,15 +31,9 @@ public:
 	void ProcessCommonStateTransition();//共通処理
 	void ProcessIdleStateTransition();//待機遷移
 	void ProcessWalkStateTransition();//歩き遷移
-	bool IsEnableMove() const//通常移動状態かの確認
+	bool IsEnableMove() const//移動できるかどうか
 	{
-		return m_playerstate != enPlayerState_Idlefry &&
-			m_playerstate != enPlayerState_Walkfry;
-	}
-	bool IsEnableMovefry() const//ホバー状態かの確認
-	{
-		return m_playerstate != enPlayerState_Idle &&
-			m_playerstate != enPlayerState_Walk;
+		return true;
 	}
 	///////////////////////////////////////////////////////////
 	//初期設定系統
@@ -74,34 +65,5 @@ public:
 	ModelRender* m_modelrender = nullptr;					//モデルレンダー
 	//変数宣言
 	int m_hp = 3;											//HP
-	bool m_fryflag = false;									//ホバーフラグ1.true飛べる||0.false飛べない
-	int m_fry = 100;										//ホバーゲージ
-	int m_frymax = 100;										//ホバーゲージ最大
-	float timerfry = 0.0f;
-	void Addfry()
-	{
-		if (IsEnableMovefry() == false)
-		{
-			if (timerfry > 0.0f)
-			{
-				return;
-			}
-			if (m_fry > 100)
-			{
-				return;
-			}
-			m_fry++;
-			timerfry = 0.1f;
-		}
-		else if (IsEnableMove() == false)
-		{
-			if (timerfry > 0.0f)
-			{
-				return;
-			}
-			m_fry--;
-			timerfry = 0.1f;
-		}
-	}
 };
 

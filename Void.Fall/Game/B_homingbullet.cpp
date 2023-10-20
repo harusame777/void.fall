@@ -9,7 +9,7 @@ namespace
 	const Vector3 corre = { 0.0f,60.0f,0.0f };//ˆÊ’uC³
 	const float bullet_homingtime = 3.0f;     //Å‘å’ÇÕŠÔ
 	const float bullet_spped = 10.0f;         //‘¬“x
-	const float curvature = 30.0f;            //‹È‚ª‚é‹­‚³
+	const float curvature = 25.0f;            //‹È‚ª‚é‹­‚³
 	const float damping = 0.1f;               //Œ¸Š
 }
 
