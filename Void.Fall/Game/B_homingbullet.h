@@ -11,7 +11,8 @@ public:
 	void Rotation();
 	void Render(RenderContext& rc);
 	void Movebullet();
-	void Inpact();
+	void Inpacttime();
+	void Inpacthit();
 	void CalcVelocity(const float speed, const float curvatureRadius,
 		const float damping);
 ///////////////////////////////////////////////////////////

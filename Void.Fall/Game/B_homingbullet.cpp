@@ -9,7 +9,7 @@ namespace
 	const Vector3 corre = { 0.0f,60.0f,0.0f };//位置修正
 	const float bullet_homingtime = 3.0f;     //最大追跡時間
 	const float bullet_spped = 10.0f;         //速度
-	const float curvature = 60.0f;            //曲がる強さ
+	const float curvature = 30.0f;            //曲がる強さ
 	const float damping = 0.1f;               //減衰
 }
 
@@ -32,7 +32,8 @@ bool B_homingbullet::Start()
 	//コリジョンオブジェクトを作成する。
 	m_collisionObject = NewGO<CollisionObject>(0);
 	//球状のコリジョンを作成する。
-	m_collisionObject->CreateSphere(m_position, Quaternion::Identity, 35.0f * m_scale.z);
+	m_collisionObject->CreateSphere(m_position, Quaternion::Identity, 20.0f * m_scale.z);
+	m_collisionObject->SetName("enemy_attack");
 	//コリジョンオブジェクトが自動で削除されないようにする。
 	m_collisionObject->SetIsEnableAutoDelete(false);
 
@@ -47,8 +48,10 @@ void B_homingbullet::Update()
 	Movebullet();
 	//回転処理
 	Rotation();
-	//弾丸衝突処理
-	Inpact();
+	//弾丸時間消滅処理
+	Inpacttime();
+	//弾丸対象衝突処理
+	Inpacthit();
 	//アニメーション
 	PlayAnimation();
 	//描画処理
@@ -106,7 +109,7 @@ void B_homingbullet::CalcVelocity(const float speed, const float curvatureRadius
 	m_velocity += force * g_gameTime->GetFrameDeltaTime();
 }
 
-void B_homingbullet::Inpact()
+void B_homingbullet::Inpacttime()
 {
 	if (bullettime > 0)
 	{
@@ -115,6 +118,16 @@ void B_homingbullet::Inpact()
 	DeleteGO(m_collisionObject);
 	delete m_modelrender;
 	DeleteGO(this);
+}
+
+void B_homingbullet::Inpacthit()
+{
+	if (m_collisionObject->IsHit(m_player->m_charaCon))
+	{
+		DeleteGO(m_collisionObject);
+		delete m_modelrender;
+		DeleteGO(this);
+	}
 }
 
 void B_homingbullet::Render(RenderContext& rc)

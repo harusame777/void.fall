@@ -162,7 +162,7 @@ void E_001_enemy::MakeAttackCollision()
 	//ボックス状のコリジョンを作成する。
 	collisionObject->CreateBox(m_position, Quaternion::Identity, Vector3(100.0f, 10.0f, 10.0f));
 	collisionObject->SetWorldMatrix(matrix);
-	collisionObject->SetName("enemy_attacknear");
+	collisionObject->SetName("enemy_attack");
 }
 
 void E_001_enemy::ManageState()
