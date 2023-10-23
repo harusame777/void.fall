@@ -12,6 +12,7 @@ public:
 	void Movebullet();
 	void Render(RenderContext& rc);
 	void Inpacttime();
+	void Inpacthit();
 ///////////////////////////////////////////////////////////
 //アニメーション類/////////////////////////////////////////
 //アニメーションステート
@@ -33,6 +34,7 @@ public:
 		m_position = position;
 	}
 //メンバ関数宣言
+	float bullettime = 5.0f;
 	AnimationClip m_animationclips[enAnimationClip_Num];    //アニメーションクリップ
 	Vector3	m_forward = Vector3::AxisZ;						//エネミーの正面ベクトル。
 	ModelRender* m_modelrender = nullptr;					//モデルレンダー

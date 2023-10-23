@@ -50,6 +50,7 @@ bool Game::Start()
 			enemy_001->Setrotation(objData.rotation);
 			enemy_001->Setscale(objData.scale);
 			enemy_001->SetHP(5);
+			enemy_001->Setmobtype(true);
 			m_numenemy++;
 			return true;
 		}

@@ -64,6 +64,7 @@ void B_normalbullet::Movebullet()
 	m_position += m_velocity *g_gameTime->GetFrameDeltaTime();
 	m_modelrender->SetPosition(m_position);
 	m_collisionObject->SetPosition(m_position);
+	bullettime -= g_gameTime->GetFrameDeltaTime();
 }
 
 void B_normalbullet::Rotation()
@@ -86,6 +87,10 @@ void B_normalbullet::Inpacttime()
 	DeleteGO(m_collisionObject);
 	delete m_modelrender;
 	DeleteGO(this);
+}
+
+void B_normalbullet::Inpacthit()
+{
 }
 
 

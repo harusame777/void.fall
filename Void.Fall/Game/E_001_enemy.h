@@ -1,8 +1,9 @@
 #pragma once
+#include "IEnemy.h"
 ///////////////////////////////////////////////////////////
 class P_main_Player;
 ///////////////////////////////////////////////////////////
-class E_001_enemy : public IGameObject
+class E_001_enemy : public IEnemy
 {
 public:
 	//行動ステート
@@ -34,7 +35,6 @@ public:
 	void ProcessAttackStateTransition();//攻撃遷移
 	///////////////////////////////////////////////////////////
 	E_001_enemy(){}
-	~E_001_enemy(){}
 	bool Start();				
 	void Update();                                         //アップデート
 	void Render(RenderContext& rc);                        //モデルレンダー
@@ -67,6 +67,13 @@ public:
 	{
 		m_hp = hp;
 	}
+	void Setmobtype(const bool mobs)//モブタイプ
+	{
+		if (mobs)
+			mobty = enenemy_M;
+		else
+			mobty = enplayer_M;
+	}
 	//メンバ関数宣言
 	AnimationClip m_animationclips[enAnimationClip_Num];     //アニメーションクリップ
 	ModelRender*  m_modelrender = nullptr;					//モデルレンダー
@@ -85,5 +92,10 @@ public:
 	float m_chaseTimer = 0.0f;						        //追跡タイマー。
 	float m_idleTimer = 0.0f;							    //待機タイマー。
 	float m_attackTimer = 5.0f;								//攻撃待機タイマー。
+	enum mobtype{
+		enplayer_M,
+		enenemy_M
+	};
+	mobtype mobty = enenemy_M;
 };
 

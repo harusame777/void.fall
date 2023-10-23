@@ -33,6 +33,9 @@
     <ClCompile Include="B_normalbullet.cpp">
       <Filter>attackP</Filter>
     </ClCompile>
+    <ClCompile Include="IEnemy.cpp">
+      <Filter>Enemy</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -55,6 +58,9 @@
     </ClInclude>
     <ClInclude Include="B_normalbullet.h">
       <Filter>attackP</Filter>
+    </ClInclude>
+    <ClInclude Include="IEnemy.h">
+      <Filter>Enemy</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

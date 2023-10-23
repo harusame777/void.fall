@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "E_002_enemy.h"
-
+#include "IEnemy.h"
 bool E_002_enemy::Start()
 {
 
