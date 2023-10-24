@@ -23,6 +23,7 @@ public:
 		enAnimationClip_Idle,//棒立ち
 		enAnimationClip_Chase,//追跡
 		enAnimationClip_ReceiveDamage,//被ダメージ。
+		enAnimationClip_Down,//ダウン
 		enAnimationClip_Num,//アニメーション数
 	};
 	//アニメーション関数///////////////////////////////////////
@@ -35,6 +36,7 @@ public:
 	void ProcessChaseStateTransition();//追跡遷移
 	void ProcessAttackStateTransition();//攻撃遷移
 	void ProcessReceiveDamageStateTransition();//被ダメ遷移
+	void ProcessDownStateTransition();//ダウン遷移
 	///////////////////////////////////////////////////////////
 	E_001_enemy(){}
 	bool Start();				

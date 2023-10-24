@@ -34,6 +34,8 @@ bool E_001_enemy::Start()
 	m_animationclips[enAnimationClip_AttackNear].SetLoopFlag(false);
 	m_animationclips[enAnimationClip_ReceiveDamage].Load("Assets/animData/Enemy/enemy_001/receivedamage.tka");
 	m_animationclips[enAnimationClip_ReceiveDamage].SetLoopFlag(false);
+	m_animationclips[enAnimationClip_Down].Load("Assets/animData/Enemy/enemy_001/down.tka");
+	m_animationclips[enAnimationClip_ReceiveDamage].SetLoopFlag(false);
 
 	//モデル読み込み
 	m_modelrender = new ModelRender;
@@ -237,6 +239,9 @@ void E_001_enemy::ManageState()
 	case enEnemyState_ReceiveDamage:
 		ProcessReceiveDamageStateTransition();
 		break;
+	case enEnemyState_Down:
+		ProcessDownStateTransition();
+		break;
 	}
 }
 
@@ -260,6 +265,9 @@ void E_001_enemy::PlayAnimation()
 		break;
 	case enEnemyState_ReceiveDamage:
 		m_modelrender->PlayAnimation(enAnimationClip_ReceiveDamage, 0.1f);
+		break;
+	case enEnemyState_Down :
+		m_modelrender->PlayAnimation(enAnimationClip_Down, 0.1f);
 		break;
 	}
 }
@@ -382,6 +390,14 @@ void E_001_enemy::ProcessReceiveDamageStateTransition()
 		else{
 			m_enemystate = enEnemyState_Attack;
 		}
+	}
+}
+
+void E_001_enemy::ProcessDownStateTransition()
+{
+	//被ダメージアニメーションの再生が終わったら。
+	if (m_modelrender->IsPlayingAnimation() == false)
+	{
 	}
 }
 

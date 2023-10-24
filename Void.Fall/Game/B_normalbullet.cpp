@@ -24,7 +24,7 @@ bool B_normalbullet::Start()
 
 	m_modelrender->SetPosition(m_position);
 	m_modelrender->SetScale(scale);
-
+	m_modelrender->SetRotation(m_rotation);
 	
 
 	//移動速度を計算。
@@ -42,7 +42,6 @@ bool B_normalbullet::Start()
 	//コリジョンオブジェクトが自動で削除されないようにする。
 	m_collisionObject->SetIsEnableAutoDelete(false);
 
-	m_ienemy = FindGO<IEnemy>("ienemy");
 
 	return true;
 }
@@ -57,6 +56,8 @@ void B_normalbullet::Update()
 	Inpacttime();
 	//弾丸対象衝突処理
 	Inpacthit();
+	//弾丸消去処理
+	deletebullet();
 	//アニメーション
 	PlayAnimation();
 	//描画処理
@@ -69,7 +70,7 @@ void B_normalbullet::Movebullet()
 	m_position += m_velocity *g_gameTime->GetFrameDeltaTime();
 	m_modelrender->SetPosition(m_position);
 	m_collisionObject->SetPosition(m_position);
-	bullettime -= g_gameTime->GetFrameDeltaTime();
+	bullettime -= g_gameTime->GetFrameDeltaTime();	//自然消去タイマーを減らすヤツ
 }
 
 void B_normalbullet::Rotation()
@@ -96,7 +97,7 @@ void B_normalbullet::Inpacttime()
 
 void B_normalbullet::Inpacthit()
 {
-	//プレイヤーの攻撃用のコリジョンを取得する。
+	//プレイヤーの攻撃用のコリジョンを取得する。							//↓enemyの共通コリジョン
 	const auto& collisions = g_collisionObjectManager->FindCollisionObjects("enemy_col");
 	//コリジョンの配列をfor文で回す。
 	for (auto collision : collisions)
@@ -104,21 +105,26 @@ void B_normalbullet::Inpacthit()
 		//コリジョンとキャラコンが衝突したら。
 		if (collision->IsHit(m_collisionObject))
 		{
-			Delay();
-			if (bullettdelaytime > 0)
-			{
-				DeleteGO(m_collisionObject);
-				delete m_modelrender;
-				DeleteGO(this);
+			if (m_isDelete == false) {
+				m_isDelete = true;	//deletebulletのif文が通るようにする。
+				m_deleteTimer = deletetimer; //deletetimerは現在0.2f。
 			}
 		}
 	}
 }
 
-void B_normalbullet::Delay()
-{
-	bullettdelaytime -= g_gameTime->GetFrameDeltaTime();
-	return;
+void B_normalbullet::deletebullet()
+{      //↓Inpacthitでtrueにする。
+	if (m_isDelete) {
+		m_deleteTimer -= g_gameTime->GetFrameDeltaTime(); //deletetimerを1フレームずつ
+		//減らす。
+			//↓タイマーがゼロになったら。(deletetimerより0の方が大きくなったら)
+		if (m_deleteTimer <= 0.0f) {
+			DeleteGO(m_collisionObject);//消去処理
+			delete m_modelrender;
+			DeleteGO(this);
+		}
+	}
 }
 
 void B_normalbullet::PlayAnimation()

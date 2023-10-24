@@ -74,7 +74,7 @@ void P_main_Player::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eve
 		auto bullet = NewGO<B_normalbullet>(0);
 		bullet->SetPosition(m_position);
 		bullet->Setrotation(m_rotation);
-		bullet->SetVelocity(m_forward * 10);
+		bullet->SetVelocity(m_forward);
 		bullet->m_position.y += 80.0f;
 		bullet->m_position.z += 10.0f;
 	}
