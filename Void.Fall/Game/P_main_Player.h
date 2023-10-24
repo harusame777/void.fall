@@ -1,4 +1,5 @@
 #pragma once
+class B_normalbullet;
 class P_main_Player : public IGameObject
 {
 public:
@@ -6,6 +7,7 @@ public:
 	enum EnPlayerState {
 		enPlayerState_Idle,//‘Ò‹@B
 		enPlayerState_Walk,//•à‚«B
+		enPlayerState_Attack//UŒ‚
 	};
 	//ŠÖ”éŒ¾
 	P_main_Player() {}
@@ -31,6 +33,7 @@ public:
 	void ProcessCommonStateTransition();//‹¤’Êˆ—
 	void ProcessIdleStateTransition();//‘Ò‹@‘JˆÚ
 	void ProcessWalkStateTransition();//•à‚«‘JˆÚ
+	void ProcessAttackStateTransition();//UŒ‚‘JˆÚ
 	bool IsEnableMove() const//ˆÚ“®‚Å‚«‚é‚©‚Ç‚¤‚©
 	{
 		return true;

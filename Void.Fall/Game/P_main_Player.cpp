@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "P_main_Player.h"
+#include "B_normalbullet.h"
 ///////////////////////////////////////////////////////////
 #define playerspeed 250.0f			//プレイヤースピード
 #define playerjamp 400.0f			//プレイヤージャンプ
@@ -56,8 +57,10 @@ void P_main_Player::PlayAnimation()
 	case enPlayerState_Walk:
 		m_modelrender->PlayAnimation(enAnimationClip_Walk, 0.1f);
 		break;
+	case enPlayerState_Attack:
+		m_modelrender->PlayAnimation(enAnimationClip_Attack, 0.3f);
+		break;
 	}
-
 }
 
 void P_main_Player::Render(RenderContext& rc)
@@ -68,6 +71,12 @@ void P_main_Player::Render(RenderContext& rc)
 void P_main_Player::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 {
 	if (wcscmp(eventName, L"magic_attack") == 0) {
+		auto bullet = NewGO<B_normalbullet>(0);
+		bullet->SetPosition(m_position);
+		bullet->Setrotation(m_rotation);
+		bullet->SetVelocity(m_forward * 10);
+		bullet->m_position.y += 80.0f;
+		bullet->m_position.z += 10.0f;
 	}
 }
 
@@ -110,7 +119,7 @@ void P_main_Player::Move()
 		m_movespeed.y = 0.0f;
 	}
 	Vector3 modelPosition = m_position;
-	//ちょっとだけモデルの座標を挙げる。
+	////ちょっとだけモデルの座標を挙げる。
 	modelPosition.y += 2.5f;
 	m_modelrender->SetPosition(modelPosition);
 }
@@ -152,6 +161,9 @@ void P_main_Player::ManageState()
 		//歩きステート遷移
 		ProcessWalkStateTransition();
 		break;
+	case enPlayerState_Attack:
+		ProcessAttackStateTransition();
+		break;
 	}
 }
 
@@ -165,25 +177,31 @@ void P_main_Player::ProcessWalkStateTransition()
 	ProcessCommonStateTransition();
 }
 
+void P_main_Player::ProcessAttackStateTransition()
+{
+	if (m_modelrender->IsPlayingAnimation() == false)
+	{
+		ProcessCommonStateTransition();
+	}
+}
+
 void P_main_Player::ProcessCommonStateTransition()
 {
+	if (g_pad[0]->IsTrigger(enButtonB))
+	{
+		m_playerstate = enPlayerState_Attack;
+		return;
+	}
 	//xかzの移動速度があったら(スティックの入力があったら)。
 	if (fabsf(m_movespeed.x) >= 0.001f || fabsf(m_movespeed.z) >= 0.001f)
 	{
-		if (m_charaCon.IsOnGround() == true)
-		{
-			//歩きにする。
-			m_playerstate = enPlayerState_Walk;
-		}
+		m_playerstate = enPlayerState_Walk;
+		return;
 	}
 	//xとzの移動速度が無かったら(スティックの入力が無かったら)。
 	else
 	{
-		//ステートを待機にする。
-		if (m_charaCon.IsOnGround() == true)
-		{
-			m_playerstate = enPlayerState_Idle;
-		}
+		m_playerstate = enPlayerState_Idle;
 		return;
 	}
 }

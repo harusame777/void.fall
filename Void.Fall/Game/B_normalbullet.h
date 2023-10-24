@@ -1,4 +1,5 @@
 #pragma once
+class IEnemy;
 class P_main_Player;
 class B_normalbullet : public IGameObject
 {
@@ -13,6 +14,7 @@ public:
 	void Render(RenderContext& rc);
 	void Inpacttime();
 	void Inpacthit();
+	void Delay(); //弾丸消去ディレイ
 ///////////////////////////////////////////////////////////
 //アニメーション類/////////////////////////////////////////
 //アニメーションステート
@@ -33,13 +35,19 @@ public:
 	{
 		m_position = position;
 	}
+	void Setrotation(const Quaternion& rotation)//回転値
+	{
+		m_rotation = rotation;
+	}
 //メンバ関数宣言
-	float bullettime = 5.0f;
+	float bullettime = 1.5f;
+	float bullettdelaytime = 2.0f;
 	AnimationClip m_animationclips[enAnimationClip_Num];    //アニメーションクリップ
 	Vector3	m_forward = Vector3::AxisZ;						//エネミーの正面ベクトル。
 	ModelRender* m_modelrender = nullptr;					//モデルレンダー
 	CollisionObject* m_collisionObject;						//コリジョンオブジェクト。
 	P_main_Player* m_player = nullptr;                      //プレイヤー
+	IEnemy* m_ienemy = nullptr;
 	Quaternion	m_rotation;									//回転。
 	Vector3 m_position;										//座標
 	Vector3 m_velocity;										//速度

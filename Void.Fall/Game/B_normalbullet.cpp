@@ -2,10 +2,11 @@
 #include "B_normalbullet.h"
 #include "collision/CollisionObject.h"
 #include "P_main_Player.h"
+#include "IEnemy.h"
 namespace
 {
 	const Vector3 scale = { 1.5f,1.5f,1.5f }; //大きさ
-	const Vector3 corre = { 0.0f,60.0f,0.0f };//位置修正
+	const Vector3 corre = { 0.0f,40.0f,0.0f };//位置修正
 }
 
 bool B_normalbullet::Start()
@@ -41,6 +42,8 @@ bool B_normalbullet::Start()
 	//コリジョンオブジェクトが自動で削除されないようにする。
 	m_collisionObject->SetIsEnableAutoDelete(false);
 
+	m_ienemy = FindGO<IEnemy>("ienemy");
+
 	return true;
 }
 
@@ -52,6 +55,8 @@ void B_normalbullet::Update()
 	Rotation();
 	//弾丸時間消滅処理
 	Inpacttime();
+	//弾丸対象衝突処理
+	Inpacthit();
 	//アニメーション
 	PlayAnimation();
 	//描画処理
@@ -91,8 +96,30 @@ void B_normalbullet::Inpacttime()
 
 void B_normalbullet::Inpacthit()
 {
+	//プレイヤーの攻撃用のコリジョンを取得する。
+	const auto& collisions = g_collisionObjectManager->FindCollisionObjects("enemy_col");
+	//コリジョンの配列をfor文で回す。
+	for (auto collision : collisions)
+	{
+		//コリジョンとキャラコンが衝突したら。
+		if (collision->IsHit(m_collisionObject))
+		{
+			Delay();
+			if (bullettdelaytime > 0)
+			{
+				DeleteGO(m_collisionObject);
+				delete m_modelrender;
+				DeleteGO(this);
+			}
+		}
+	}
 }
 
+void B_normalbullet::Delay()
+{
+	bullettdelaytime -= g_gameTime->GetFrameDeltaTime();
+	return;
+}
 
 void B_normalbullet::PlayAnimation()
 {

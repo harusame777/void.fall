@@ -11,7 +11,10 @@
 #define enemyserch 700.0f * 700.0f						//追跡可能範囲
 #define enemyserchnear 200.0f * 200.0f					//追跡可能範囲
 #define attacktime 5.0f									//アタックタイマー
-
+namespace
+{
+	const Vector3 corre = { 0.0f,60.0f,0.0f };//位置修正
+}
 
 bool E_001_enemy::Start()
 {
@@ -29,6 +32,8 @@ bool E_001_enemy::Start()
 	//bone情報(sub1)
 	m_animationclips[enAnimationClip_AttackNear].Load("Assets/animData/Enemy/enemy_001/attacknear.tka");
 	m_animationclips[enAnimationClip_AttackNear].SetLoopFlag(false);
+	m_animationclips[enAnimationClip_ReceiveDamage].Load("Assets/animData/Enemy/enemy_001/receivedamage.tka");
+	m_animationclips[enAnimationClip_ReceiveDamage].SetLoopFlag(false);
 
 	//モデル読み込み
 	m_modelrender = new ModelRender;
@@ -50,6 +55,15 @@ bool E_001_enemy::Start()
 	m_modelrender->SetScale(m_scale);
 	//キャラコン初期化
 	m_charaCon.Init(20.0f,100.0f,m_position);
+
+	//コリジョンオブジェクトを作成する。
+	m_collisionObject = NewGO<CollisionObject>(0);
+	//球状のコリジョンを作成する。
+	m_collisionObject->CreateSphere(m_position, Quaternion::Identity, 60.0f * m_scale.z);
+	m_collisionObject->SetName("enemy_col");
+	m_collisionObject->SetPosition(m_position + corre);
+	//コリジョンオブジェクトが自動で削除されないようにする。
+	m_collisionObject->SetIsEnableAutoDelete(false);
 
 	m_player = FindGO<P_main_Player>("player");
 	//乱数を初期化。
@@ -94,6 +108,7 @@ void E_001_enemy::Rotation()
 
 	//回転を設定する。
 	m_modelrender->SetRotation(m_rotation);
+	m_collisionObject->SetRotation(m_rotation);
 
 	//プレイヤーの前ベクトルを計算する。
 	m_forward = Vector3::AxisZ;
@@ -109,8 +124,28 @@ void E_001_enemy::Collision()
 	{
 		return;
 	}
-
-
+	//プレイヤーの攻撃用のコリジョンを取得する。
+	const auto& collisions = g_collisionObjectManager->FindCollisionObjects("player_attack");
+	//コリジョンの配列をfor文で回す。
+	for (auto collision : collisions)
+	{
+		//コリジョンとキャラコンが衝突したら。
+		if (collision->IsHit(m_collisionObject))
+		{
+			//HPを1減らす。
+			m_hp -= 1;
+			//HPが0になったら。
+			if (m_hp == 0)
+			{
+				//ダウンステートに遷移する。
+				m_enemystate = enEnemyState_Down;
+			}
+			else {
+				//被ダメージステートに遷移する。
+				m_enemystate = enEnemyState_ReceiveDamage;
+			}
+		}
+	}
 }
 
 const bool E_001_enemy::SearchPlayer() const
@@ -199,6 +234,9 @@ void E_001_enemy::ManageState()
 		//攻撃ステート遷移
 		ProcessAttackStateTransition();
 		break;
+	case enEnemyState_ReceiveDamage:
+		ProcessReceiveDamageStateTransition();
+		break;
 	}
 }
 
@@ -219,6 +257,9 @@ void E_001_enemy::PlayAnimation()
 		break;
 	case enEnemyState_AttackNear:
 		m_modelrender->PlayAnimation(enAnimationClip_AttackNear, 0.1f);
+		break;
+	case enEnemyState_ReceiveDamage:
+		m_modelrender->PlayAnimation(enAnimationClip_ReceiveDamage, 0.1f);
 		break;
 	}
 }
@@ -327,6 +368,20 @@ void E_001_enemy::ProcessAttackStateTransition()
 	{
 		//他のステートに遷移する。
 		ProcessCommonStateTransition();
+	}
+}
+
+void E_001_enemy::ProcessReceiveDamageStateTransition()
+{
+	//被ダメージアニメーションの再生が終わったら。
+	if (m_modelrender->IsPlayingAnimation() == false)
+	{
+		if (SearchAttackDistanceNear() == true){
+			m_enemystate = enEnemyState_AttackNear;
+		}
+		else{
+			m_enemystate = enEnemyState_Attack;
+		}
 	}
 }
 

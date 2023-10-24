@@ -3,7 +3,7 @@
 ///////////////////////////////////////////////////////////
 class P_main_Player;
 ///////////////////////////////////////////////////////////
-class E_001_enemy : public IEnemy
+class E_001_enemy : public IEnemy   //基底クラスIEnemy
 {
 public:
 	//行動ステート
@@ -22,7 +22,8 @@ public:
 		enAnimationClip_AttackNear,//近接攻撃
 		enAnimationClip_Idle,//棒立ち
 		enAnimationClip_Chase,//追跡
-		enAnimationClip_Num//アニメーション数
+		enAnimationClip_ReceiveDamage,//被ダメージ。
+		enAnimationClip_Num,//アニメーション数
 	};
 	//アニメーション関数///////////////////////////////////////
 	void PlayAnimation();
@@ -33,6 +34,7 @@ public:
 	void ProcessIdleStateTransition();//待機遷移
 	void ProcessChaseStateTransition();//追跡遷移
 	void ProcessAttackStateTransition();//攻撃遷移
+	void ProcessReceiveDamageStateTransition();//被ダメ遷移
 	///////////////////////////////////////////////////////////
 	E_001_enemy(){}
 	bool Start();				
@@ -83,8 +85,7 @@ public:
 	Vector3 m_movespeed;									//移動速度
 	Vector3	m_forward = Vector3::AxisZ;						//エネミーの正面ベクトル。
 	EnEnemyState m_enemystate = enEnemyState_Idle;          //エネミーステート
-	CharacterController	m_charaCon;							//キャラクターコントローラー。
-	P_main_Player* m_player = nullptr;                      //プレイヤー
+	CharacterController m_charaCon;							//キャラコン
 	Vector3 m_targetPosition = Vector3::Zero;				//射撃ターゲット
 	bool m_isUnderAttack = false;							//攻撃中かどうか(初期状態はfalse攻撃中ではない)
 	int m_attacknearboneID = -1;							//近接攻撃bone
