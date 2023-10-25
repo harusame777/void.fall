@@ -5,6 +5,7 @@
 #include "IEnemy.h"
 ///////////////////////////////////////////////////////////
 #define playerspeed 250.0f			//プレイヤースピード
+#define playerspeedAvoid 250.0f
 #define playerjamp 400.0f			//プレイヤージャンプ
 
 bool P_main_Player::Start()
@@ -20,6 +21,7 @@ bool P_main_Player::Start()
 
 
 	m_modelrender = new ModelRender;
+	m_ienemy = new IEnemy;
 	m_modelrender->Init("Assets/modelData/A_testPlayer/RE_Player.tkm", m_animationclips, enAnimationClip_Num);
 	m_charaCon.Init(25.0f, 70.0f, m_position);
 
@@ -93,9 +95,16 @@ void P_main_Player::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eve
 void P_main_Player::Move()
 {
 	//移動できない状態であれば、移動処理はしない。
-	if (IsEnableMove() == false)
-	{
+	if (IsEnableMove() == false){
 		return;
+	}
+	if (m_playerstate == enPlayerState_Avoidance){
+		Avoidance();		
+		m_Avoidancetimer -= g_gameTime->GetFrameDeltaTime();
+		return;
+	}
+	else{
+		m_Avoidbreaktimer -= g_gameTime->GetFrameDeltaTime();
 	}
 	m_movespeed.x = 0.0f;
 	m_movespeed.z = 0.0f;
@@ -134,8 +143,34 @@ void P_main_Player::Move()
 	m_modelrender->SetPosition(modelPosition);
 }
 
+void P_main_Player::Avoidance()
+{
+	//左スティックの入力量を受け取る。
+	float lStick_x = g_pad[0]->GetLStickXF();
+	float lStick_y = g_pad[0]->GetLStickYF();
+	//カメラの前方方向と右方向を取得。
+	Vector3 cameraForward = g_camera3D->GetForward();
+	Vector3 cameraRight = g_camera3D->GetRight();
+	//XZ平面での前方方向、右方向に変換する。
+	cameraForward.y = 0.0f;
+	cameraForward.Normalize();
+	cameraRight.y = 0.0f;
+	cameraRight.Normalize();
+	m_movespeed += cameraForward * lStick_y * playerspeed;	//奥方向への移動速度を加算。
+	m_movespeed += cameraRight * lStick_x * playerspeed;		//右方向への移動速度を加算。
+	//キャラクターコントローラーを使用して、座標を更新。
+	m_position = m_charaCon.Execute(m_movespeed, g_gameTime->GetFrameDeltaTime());
+	Vector3 modelPosition = m_position;
+	////ちょっとだけモデルの座標を挙げる。
+	modelPosition.y += 2.5f;
+	m_modelrender->SetPosition(modelPosition);
+}
+
 void P_main_Player::Rotation()
 {
+	if (m_playerstate == enPlayerState_Avoidance){
+		return;
+	}
 	if (fabsf(m_movespeed.x) < 0.001f
 		&& fabsf(m_movespeed.z) < 0.001f) {
 		//m_moveSpeed.xとm_moveSpeed.zの絶対値がともに0.001以下ということは
@@ -174,6 +209,9 @@ void P_main_Player::ManageState()
 	case enPlayerState_Attack:
 		ProcessAttackStateTransition();
 		break;
+	case enPlayerState_Avoidance:
+		ProcessAvoidanceStateTransition();
+		break;
 	}
 }
 
@@ -196,13 +234,38 @@ void P_main_Player::ProcessAttackStateTransition()
 	}
 }
 
+void P_main_Player::ProcessAvoidanceStateTransition()
+{
+	if (m_Avoidancetimer >= 0)
+	{
+		ProcessCommonStateTransition();
+	}
+	else
+	{
+		m_playerstate = enPlayerState_Idle;
+		m_Avoidbreaktimer = Avoidbreaktime;
+	}
+}
+
 void P_main_Player::ProcessCommonStateTransition()
 {
+	//現在のステートが回避だったら
+	if (m_playerstate == enPlayerState_Avoidance)
+	{
+		return;
+	}
 	//Bボタンが押されたら
 	if (g_pad[0]->IsTrigger(enButtonB)){
 		//attackステートにする。
 		m_playerstate = enPlayerState_Attack;
 		return;
+	}
+	if (m_Avoidbreaktimer <= 0){
+		if (g_pad[0]->IsTrigger(enButtonY)) {
+			m_playerstate = enPlayerState_Avoidance;
+			m_Avoidancetimer = Avoidancetime;
+			return;
+		}
 	}
 	//xかzの移動速度があったら(スティックの入力があったら)。
 	if (fabsf(m_movespeed.x) >= 0.001f || fabsf(m_movespeed.z) >= 0.001f){

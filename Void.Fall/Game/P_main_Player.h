@@ -8,7 +8,8 @@ public:
 	enum EnPlayerState {
 		enPlayerState_Idle,				//待機。
 		enPlayerState_Walk,				//歩き。
-		enPlayerState_Attack			//攻撃
+		enPlayerState_Attack,			//攻撃
+		enPlayerState_Avoidance			//回避
 	};
 	//関数宣言
 	P_main_Player() {}
@@ -21,6 +22,7 @@ public:
 	void ManageState();					//ステート遷移処理
 	void Lockon();						//ロックオン
 	void Takeaim();						//ロックオンに対する位置取得
+	void Avoidance();					//回避
 	//アニメーション類/////////////////////////////////////////
 //アニメーションステート
 	enum EnAnimationClip {
@@ -37,6 +39,7 @@ public:
 	void ProcessIdleStateTransition();		//待機遷移
 	void ProcessWalkStateTransition();		//歩き遷移
 	void ProcessAttackStateTransition();	//攻撃遷移
+	void ProcessAvoidanceStateTransition(); //回避遷移
 	bool IsEnableMove() const				//移動できるかどうか
 	{
 		return true;
@@ -72,5 +75,9 @@ public:
 	IEnemy* m_ienemy;
 	//変数宣言
 	int m_hp = 3;											//HP
+	float m_Avoidancetimer = 0.0f;							//回避タイマー
+	float Avoidancetime = 0.2f;								//回避時間
+	float m_Avoidbreaktimer = 0.0f;							//回避クールタイマー
+	float Avoidbreaktime = 2.0f;							//回避クールタイム時間
 };
 

@@ -50,6 +50,7 @@ bool Game::Start()
 			enemy_001->Setrotation(objData.rotation);
 			enemy_001->Setscale(objData.scale);
 			enemy_001->SetHP(5);
+			//‚±‚±‚É”z—ñ‚ð“ü‚ê‚é‚©‚Ç‚¤‚©‚Å–À‚Á‚Ä‚¢‚é(std::~<enemy*>‚Ý‚½‚¢‚ÈŠ´‚¶‚Ì)
 			m_numenemy++;
 			return true;
 		}
