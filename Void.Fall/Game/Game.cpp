@@ -45,12 +45,11 @@ bool Game::Start()
 		//“G‚P
 		else if (objData.ForwardMatchName(L"RE_enemy_001") == true)
 		{
-			E_001_enemy* enemy_001 = NewGO<E_001_enemy>(0, "enemy_001");
+			E_001_enemy* enemy_001 = NewGO<E_001_enemy>(0, "enemy");
 			enemy_001->Setposition(objData.position);
 			enemy_001->Setrotation(objData.rotation);
 			enemy_001->Setscale(objData.scale);
 			enemy_001->SetHP(5);
-			enemy_001->Setmobtype(true);
 			m_numenemy++;
 			return true;
 		}

@@ -11,5 +11,7 @@ public:
 	P_main_Player* m_player = nullptr;		//プレイヤー
 	CharacterController m_charaCon ;        //キャラコン
 	CollisionObject* m_collisionObject;		//コリジョンオブジェクト。
+	Vector3 m_position;						//座標
+
 };
 

@@ -71,17 +71,9 @@ public:
 	{
 		m_hp = hp;
 	}
-	void Setmobtype(const bool mobs)//モブタイプ
-	{
-		if (mobs)
-			mobty = enenemy_M;
-		else
-			mobty = enplayer_M;
-	}
 	//メンバ関数宣言
 	AnimationClip m_animationclips[enAnimationClip_Num];     //アニメーションクリップ
 	ModelRender*  m_modelrender = nullptr;					//モデルレンダー
-	Vector3 m_position;										//座標
 	Vector3 m_scale = Vector3::One;							//大きさ
 	Quaternion m_rotation;									//回転
 	Vector3 m_movespeed;									//移動速度
@@ -95,10 +87,5 @@ public:
 	float m_chaseTimer = 0.0f;						        //追跡タイマー。
 	float m_idleTimer = 0.0f;							    //待機タイマー。
 	float m_attackTimer = 5.0f;								//攻撃待機タイマー。
-	enum mobtype{
-		enplayer_M,
-		enenemy_M
-	};
-	mobtype mobty = enenemy_M;
 };
 

@@ -137,8 +137,7 @@ void E_001_enemy::Collision()
 			//HPを1減らす。
 			m_hp -= 1;
 			//HPが0になったら。
-			if (m_hp == 0)
-			{
+			if (m_hp == 0){
 				//ダウンステートに遷移する。
 				m_enemystate = enEnemyState_Down;
 			}
@@ -237,9 +236,11 @@ void E_001_enemy::ManageState()
 		ProcessAttackStateTransition();
 		break;
 	case enEnemyState_ReceiveDamage:
+		//被ダメステート遷移
 		ProcessReceiveDamageStateTransition();
 		break;
 	case enEnemyState_Down:
+		//ダウンステート遷移
 		ProcessDownStateTransition();
 		break;
 	}

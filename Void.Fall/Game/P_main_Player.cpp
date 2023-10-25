@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "P_main_Player.h"
 #include "B_normalbullet.h"
+#include "collision/CollisionObject.h"
+#include "IEnemy.h"
 ///////////////////////////////////////////////////////////
 #define playerspeed 250.0f			//プレイヤースピード
 #define playerjamp 400.0f			//プレイヤージャンプ
@@ -35,6 +37,10 @@ void P_main_Player::Update()
 	Move();
 	//回転処理
 	Rotation();
+	//Lockon位置取得
+	Takeaim();
+	//ロックオン
+	Lockon();
 	//アニメーション
 	PlayAnimation();
 	//ステートの遷移処理
@@ -49,15 +55,16 @@ void P_main_Player::PlayAnimation()
 	m_modelrender->SetAnimationSpeed(1.0f);
 	switch (m_playerstate)
 	{
-		//待機
 	case enPlayerState_Idle:
+		//待機アニメーション
 		m_modelrender->PlayAnimation(enAnimationClip_Idle, 0.1f);
 		break;
-		//歩き
 	case enPlayerState_Walk:
+		//歩きアニメーション
 		m_modelrender->PlayAnimation(enAnimationClip_Walk, 0.1f);
 		break;
 	case enPlayerState_Attack:
+		//攻撃アニメーション
 		m_modelrender->PlayAnimation(enAnimationClip_Attack, 0.3f);
 		break;
 	}
@@ -70,8 +77,11 @@ void P_main_Player::Render(RenderContext& rc)
 
 void P_main_Player::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 {
+	//アニメーションクリップがmagic_attackだったら
 	if (wcscmp(eventName, L"magic_attack") == 0) {
+		//normalbulletを作成する。
 		auto bullet = NewGO<B_normalbullet>(0);
+		//bulletの初期設定など
 		bullet->SetPosition(m_position);
 		bullet->Setrotation(m_rotation);
 		bullet->SetVelocity(m_forward);
@@ -179,29 +189,41 @@ void P_main_Player::ProcessWalkStateTransition()
 
 void P_main_Player::ProcessAttackStateTransition()
 {
-	if (m_modelrender->IsPlayingAnimation() == false)
-	{
+	//アニメーションの再生が終わったら
+	if (m_modelrender->IsPlayingAnimation() == false){
+		//ほかのステートに遷移する。
 		ProcessCommonStateTransition();
 	}
 }
 
 void P_main_Player::ProcessCommonStateTransition()
 {
-	if (g_pad[0]->IsTrigger(enButtonB))
-	{
+	//Bボタンが押されたら
+	if (g_pad[0]->IsTrigger(enButtonB)){
+		//attackステートにする。
 		m_playerstate = enPlayerState_Attack;
 		return;
 	}
 	//xかzの移動速度があったら(スティックの入力があったら)。
-	if (fabsf(m_movespeed.x) >= 0.001f || fabsf(m_movespeed.z) >= 0.001f)
-	{
+	if (fabsf(m_movespeed.x) >= 0.001f || fabsf(m_movespeed.z) >= 0.001f){
+		//歩きステートにする
 		m_playerstate = enPlayerState_Walk;
 		return;
 	}
 	//xとzの移動速度が無かったら(スティックの入力が無かったら)。
-	else
-	{
+	else{
+		//待機ステートにする。
 		m_playerstate = enPlayerState_Idle;
 		return;
 	}
+}
+
+void P_main_Player::Takeaim()
+{
+	Vector3 enemyposition = m_ienemy->m_position;
+}
+
+void P_main_Player::Lockon()
+{
+
 }

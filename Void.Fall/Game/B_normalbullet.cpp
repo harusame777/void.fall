@@ -97,7 +97,7 @@ void B_normalbullet::Inpacttime()
 
 void B_normalbullet::Inpacthit()
 {
-	//プレイヤーの攻撃用のコリジョンを取得する。							//↓enemyの共通コリジョン
+	//enemyのコリジョンを取得する。							//↓enemyの共通コリジョン
 	const auto& collisions = g_collisionObjectManager->FindCollisionObjects("enemy_col");
 	//コリジョンの配列をfor文で回す。
 	for (auto collision : collisions)
