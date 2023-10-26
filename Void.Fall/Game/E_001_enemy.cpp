@@ -9,7 +9,7 @@
 ///////////////////////////////////////////////////////////
 #define enemyspeed 100.0f                               //移動速度の数値
 #define enemyserch 700.0f * 700.0f						//追跡可能範囲
-#define enemyserchnear 200.0f * 200.0f					//追跡可能範囲
+#define enemyserchnear 200.0f * 200.0f					//追跡可能範囲(近接)
 #define attacktime 5.0f									//アタックタイマー
 namespace
 {

@@ -5,7 +5,7 @@
 #include "IEnemy.h"
 ///////////////////////////////////////////////////////////
 #define playerspeed 250.0f			//プレイヤースピード
-#define playerspeedAvoid 250.0f
+#define playerspeedAvoid 250.0f		//回避スピード
 #define playerjamp 400.0f			//プレイヤージャンプ
 
 bool P_main_Player::Start()
@@ -98,12 +98,17 @@ void P_main_Player::Move()
 	if (IsEnableMove() == false){
 		return;
 	}
+	//現在のステートが回避ステートだったら
 	if (m_playerstate == enPlayerState_Avoidance){
-		Avoidance();		
+		//回避処理をする
+		Avoidance();	
+		//回避タイマーをフレーム単位で減らす。
 		m_Avoidancetimer -= g_gameTime->GetFrameDeltaTime();
 		return;
 	}
+	//回避していなかったら
 	else{
+		//回避クールダウンタイマーをフレーム単位で減らす。
 		m_Avoidbreaktimer -= g_gameTime->GetFrameDeltaTime();
 	}
 	m_movespeed.x = 0.0f;
@@ -156,8 +161,8 @@ void P_main_Player::Avoidance()
 	cameraForward.Normalize();
 	cameraRight.y = 0.0f;
 	cameraRight.Normalize();
-	m_movespeed += cameraForward * lStick_y * playerspeed;	//奥方向への移動速度を加算。
-	m_movespeed += cameraRight * lStick_x * playerspeed;		//右方向への移動速度を加算。
+	m_movespeed += cameraForward * lStick_y * playerspeedAvoid;	//奥方向への移動速度を加算。
+	m_movespeed += cameraRight * lStick_x * playerspeedAvoid;		//右方向への移動速度を加算。
 	//キャラクターコントローラーを使用して、座標を更新。
 	m_position = m_charaCon.Execute(m_movespeed, g_gameTime->GetFrameDeltaTime());
 	Vector3 modelPosition = m_position;
@@ -168,6 +173,7 @@ void P_main_Player::Avoidance()
 
 void P_main_Player::Rotation()
 {
+	//回避していたら、回転はさせない。
 	if (m_playerstate == enPlayerState_Avoidance){
 		return;
 	}
@@ -207,9 +213,11 @@ void P_main_Player::ManageState()
 		ProcessWalkStateTransition();
 		break;
 	case enPlayerState_Attack:
+		//攻撃ステート遷移
 		ProcessAttackStateTransition();
 		break;
 	case enPlayerState_Avoidance:
+		//回避ステート遷移
 		ProcessAvoidanceStateTransition();
 		break;
 	}
@@ -236,13 +244,18 @@ void P_main_Player::ProcessAttackStateTransition()
 
 void P_main_Player::ProcessAvoidanceStateTransition()
 {
+	//回避タイマーが0以上だったら
 	if (m_Avoidancetimer >= 0)
 	{
+		//ほかのステートに遷移する。
 		ProcessCommonStateTransition();
 	}
+	//回避タイマーが0以下だったら
 	else
 	{
+		//ステートを待機ステートにして
 		m_playerstate = enPlayerState_Idle;
+		//回避クールダウンタイマーを初期化する。
 		m_Avoidbreaktimer = Avoidbreaktime;
 	}
 }
@@ -252,6 +265,7 @@ void P_main_Player::ProcessCommonStateTransition()
 	//現在のステートが回避だったら
 	if (m_playerstate == enPlayerState_Avoidance)
 	{
+		//(ほかの処理をさせないため)return;
 		return;
 	}
 	//Bボタンが押されたら
@@ -260,9 +274,13 @@ void P_main_Player::ProcessCommonStateTransition()
 		m_playerstate = enPlayerState_Attack;
 		return;
 	}
+	//回避クールダウンが0以下で
 	if (m_Avoidbreaktimer <= 0){
+		//Yボタンが押されたら
 		if (g_pad[0]->IsTrigger(enButtonY)) {
+			//回避ステートにして
 			m_playerstate = enPlayerState_Avoidance;
+			//回避タイマーを初期値にする
 			m_Avoidancetimer = Avoidancetime;
 			return;
 		}
