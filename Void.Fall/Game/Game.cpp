@@ -6,6 +6,7 @@
 #include "E_002_enemy.h"
 #include "Map_home1.h"
 #include "Ca_maincamera.h"
+#include "IEnemy.h"
 ///////////////////////////////////////////////////////////
 //マップとステージ類のヘッダーとプログラムはMap_~のプログラム。
 //プレイヤーのヘッダーとプログラムはP_~のプログラム。
@@ -50,6 +51,7 @@ bool Game::Start()
 			enemy_001->Setrotation(objData.rotation);
 			enemy_001->Setscale(objData.scale);
 			enemy_001->SetHP(5);
+			enemyList.push_back(new E_001_enemy);
 			//ここに配列を入れるかどうかで迷っている(std::~<enemy*>みたいな感じの)
 			m_numenemy++;
 			return true;

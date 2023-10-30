@@ -79,7 +79,6 @@ public:
 	Vector3 m_movespeed;									//移動速度
 	Vector3	m_forward = Vector3::AxisZ;						//エネミーの正面ベクトル。
 	EnEnemyState m_enemystate = enEnemyState_Idle;          //エネミーステート
-	CharacterController m_charaCon;							//キャラコン
 	Vector3 m_targetPosition = Vector3::Zero;				//射撃ターゲット
 	bool m_isUnderAttack = false;							//攻撃中かどうか(初期状態はfalse攻撃中ではない)
 	int m_attacknearboneID = -1;							//近接攻撃bone

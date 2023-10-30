@@ -7,6 +7,7 @@ class E_001_enemy;
 class E_002_enemy;
 class Map_home1;
 class Ca_maincamera;
+class IEnemy;
 ///////////////////////////////////////////////////////////
 class Game : public IGameObject
 {
@@ -23,6 +24,7 @@ public:
 	Ca_maincamera* m_camera = nullptr;//カメラ
 	LevelRender m_levelrender;//レベルレンダー
 	FontRender* m_fontrender = nullptr;//スプライトレンダー
+	std::vector<IEnemy*> enemyList;
 	int m_numenemy = 0; //エネミー数
 };
 

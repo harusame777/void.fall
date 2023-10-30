@@ -1,5 +1,6 @@
 #pragma once
 class IEnemy;
+class Game;
 class B_normalbullet;
 class P_main_Player : public IGameObject
 {
@@ -72,7 +73,7 @@ public:
 	EnPlayerState m_playerstate = enPlayerState_Idle;		//プレイヤーステート
 	CharacterController	m_charaCon;							//キャラクターコントローラー。
 	ModelRender* m_modelrender = nullptr;					//モデルレンダー
-	IEnemy* m_ienemy;
+	Game* m_game = nullptr;
 	//変数宣言
 	int m_hp = 3;											//HP
 	float m_Avoidancetimer = 0.0f;							//回避タイマー

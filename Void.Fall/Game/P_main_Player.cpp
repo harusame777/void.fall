@@ -3,6 +3,7 @@
 #include "B_normalbullet.h"
 #include "collision/CollisionObject.h"
 #include "IEnemy.h"
+#include "Game.h"
 ///////////////////////////////////////////////////////////
 #define playerspeed 250.0f			//プレイヤースピード
 #define playerspeedAvoid 250.0f		//回避スピード
@@ -21,7 +22,6 @@ bool P_main_Player::Start()
 
 
 	m_modelrender = new ModelRender;
-	m_ienemy = new IEnemy;
 	m_modelrender->Init("Assets/modelData/A_testPlayer/RE_Player.tkm", m_animationclips, enAnimationClip_Num);
 	m_charaCon.Init(25.0f, 70.0f, m_position);
 
@@ -301,7 +301,7 @@ void P_main_Player::ProcessCommonStateTransition()
 
 void P_main_Player::Takeaim()
 {
-	Vector3 enemyposition = m_ienemy->m_position;
+	m_game->enemyList[]
 }
 
 void P_main_Player::Lockon()

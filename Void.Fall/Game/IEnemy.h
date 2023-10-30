@@ -7,13 +7,8 @@ class P_main_Player;
 class IEnemy : public IGameObject
 {
 public:
-	IEnemy() {
-		//enemyvec[m_game->m_numenemy] = &m_position;
-	};
-	//void Vecenemynew(){
-		//enemyvec[m_game->m_numenemy] = new Vector3;
-	//}
-	virtual ~IEnemy(){};
+	IEnemy() {}
+	virtual ~IEnemy(){}
 public:
 	P_main_Player* m_player = nullptr;		//プレイヤー
 	CharacterController m_charaCon ;        //キャラコン
