@@ -16,6 +16,8 @@ public:
 	Game() {}
 	~Game() {}
 	bool Start();
+	void Update();
+	void Render(RenderContext& rc);
 	//メンバ関数宣言
 	Map_home1* m_home1 = nullptr;//home
 	P_main_Player* m_player = nullptr;//プレイヤー
@@ -23,7 +25,7 @@ public:
 	E_002_enemy* m_enemy_002 = nullptr; //エネミー002
 	Ca_maincamera* m_camera = nullptr;//カメラ
 	LevelRender m_levelrender;//レベルレンダー
-	FontRender* m_fontrender = nullptr;//スプライトレンダー
+	FontRender m_fontrender;//スプライトレンダー
 	std::vector<IEnemy*> enemyList;
 	int m_numenemy = 0; //エネミー数
 };
