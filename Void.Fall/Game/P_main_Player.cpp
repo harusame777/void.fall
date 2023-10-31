@@ -69,6 +69,10 @@ void P_main_Player::PlayAnimation()
 		//攻撃アニメーション
 		m_modelrender->PlayAnimation(enAnimationClip_Attack, 0.3f);
 		break;
+	case enPlayerState_Avoidance:
+		//回避アニメーション
+		m_modelrender->PlayAnimation(enAnimationClip_Avoidance, 0.1);
+		break;
 	}
 }
 
@@ -253,6 +257,8 @@ void P_main_Player::ProcessAvoidanceStateTransition()
 	//回避タイマーが0以下だったら
 	else
 	{
+		//スキンを通常状態に変更して
+		NormalTex();
 		//ステートを待機ステートにして
 		m_playerstate = enPlayerState_Idle;
 		//回避クールダウンタイマーを初期化する。
@@ -278,6 +284,8 @@ void P_main_Player::ProcessCommonStateTransition()
 	if (m_Avoidbreaktimer <= 0){
 		//Yボタンが押されたら
 		if (g_pad[0]->IsTrigger(enButtonY)) {
+			//スキンを回避状態に変更する
+			AvoidanceTex();
 			//回避ステートにして
 			m_playerstate = enPlayerState_Avoidance;
 			//回避タイマーを初期値にする
@@ -299,12 +307,40 @@ void P_main_Player::ProcessCommonStateTransition()
 	}
 }
 
+void P_main_Player::NormalTex()
+{
+	delete m_modelrender;
+	//アニメーション読み込み
+	m_animationclips[enAnimationClip_Idle].Load("Assets/animData/Player/idle.tka");
+	m_animationclips[enAnimationClip_Idle].SetLoopFlag(true);
+	m_animationclips[enAnimationClip_Walk].Load("Assets/animData/Player/walk.tka");
+	m_animationclips[enAnimationClip_Walk].SetLoopFlag(true);
+	//enAnimationClip_Attack:アニメーションキーname(magic_attack)
+	m_animationclips[enAnimationClip_Attack].Load("Assets/animData/Player/attack1.tka");
+	m_animationclips[enAnimationClip_Attack].SetLoopFlag(false);
+	m_modelrender = new ModelRender;
+	m_modelrender->Init("Assets/modelData/A_testPlayer/RE_Player.tkm",
+		m_animationclips, enAnimationClip_Num);
+	m_modelrender->SetRotation(m_rotation);
+	m_modelrender->SetPosition(m_position);
+}
+
+void P_main_Player::AvoidanceTex()
+{
+	delete m_modelrender;
+	m_animationclips_sub[enAnimationClip_Avoidance].Load("Assets/animData/Player/avoidance.tka");
+	m_animationclips_sub[enAnimationClip_Avoidance].SetLoopFlag(true);
+	m_modelrender = new ModelRender;
+	m_modelrender->Init("Assets/modelData/A_testPlayer/RE_Player_Avoid.tkm",
+		m_animationclips_sub, enAnimationClip_sub_Num);
+	m_modelrender->SetRotation(m_rotation);
+	m_modelrender->SetPosition(m_position);
+}
+
 void P_main_Player::Takeaim()
 {
-	m_game->enemyList[]
 }
 
 void P_main_Player::Lockon()
 {
-
 }

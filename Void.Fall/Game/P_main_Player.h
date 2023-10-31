@@ -24,6 +24,8 @@ public:
 	void Lockon();						//ロックオン
 	void Takeaim();						//ロックオンに対する位置取得
 	void Avoidance();					//回避
+	void AvoidanceTex();				//回避スキン変更
+	void NormalTex();					//通常スキン変更
 	//アニメーション類/////////////////////////////////////////
 //アニメーションステート
 	enum EnAnimationClip {
@@ -31,6 +33,10 @@ public:
 		enAnimationClip_Attack,			//攻撃
 		enAnimationClip_Idle,			//棒立ち
 		enAnimationClip_Num				//アニメーション数
+	};
+	enum EnAnimationClip_sub {
+		enAnimationClip_Avoidance,		//回避
+		enAnimationClip_sub_Num				//アニメーション数
 	};
 	//アニメーション関数///////////////////////////////////////
 	void PlayAnimation();
@@ -65,6 +71,7 @@ public:
 	}
 	//メンバ関数宣言
 	AnimationClip m_animationclips[enAnimationClip_Num];	//アニメーションクリップ
+	AnimationClip m_animationclips_sub[enAnimationClip_sub_Num];//アニメーションクリップ
 	Vector3 m_position;										//座標
 	Vector3 m_scale = Vector3::One;							//大きさ
 	Quaternion m_rotation;									//回転
