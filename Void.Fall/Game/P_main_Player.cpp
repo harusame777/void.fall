@@ -21,6 +21,8 @@ bool P_main_Player::Start()
 	m_animationclips[enAnimationClip_Attack].SetLoopFlag(false);
 	m_animationclips[enAnimationClip_ReceiveDamage].Load("Assets/animData/Player/receivedamage.tka");
 	m_animationclips[enAnimationClip_ReceiveDamage].SetLoopFlag(false);
+	m_animationclips[enAnimationClip_Down].Load("Assets/animData/Player/down.tka");
+	m_animationclips[enAnimationClip_Down].SetLoopFlag(false);
 
 
 	m_modelrender = new ModelRender;
@@ -78,7 +80,12 @@ void P_main_Player::PlayAnimation()
 		m_modelrender->PlayAnimation(enAnimationClip_Avoidance, 0.1f);
 		break;
 	case enPlayerState_ReceiveDamage:
+		//被ダメアニメーション
 		m_modelrender->PlayAnimation(enAnimationClip_ReceiveDamage, 0.1f);
+		break;
+	case enPlayerState_Down:
+		//ダウンアニメーション
+		m_modelrender->PlayAnimation(enAnimationClip_Down, 0.1f);
 		break;
 	}
 }
@@ -222,7 +229,8 @@ void P_main_Player::Collision()
 	//被ダメージ、回避中、あるいはダウンステートの時は。
 //当たり判定処理はしない。
 	if (m_playerstate == enPlayerState_ReceiveDamage ||
-		m_playerstate == enPlayerState_Avoidance)
+		m_playerstate == enPlayerState_Avoidance || 
+		m_playerstate == enPlayerState_Down)
 	{
 		return;
 	}
@@ -239,7 +247,7 @@ void P_main_Player::Collision()
 			//HPが0になったら。
 			if (m_hp == 0) {
 				//ダウンステートに遷移する。
-				//m_enemystate = enEnemyState_Down;
+				m_playerstate = enPlayerState_Down;
 			}
 			else {
 				//被ダメージステートに遷移する。
@@ -272,6 +280,10 @@ void P_main_Player::ManageState()
 	case enPlayerState_ReceiveDamage:
 		//被ダメ遷移
 		ProcessReceiveDamageStateTransition();
+		break;
+	case enPlayerState_Down:
+		//ダウン遷移
+		ProcessDownStateTransition();
 		break;
 	}
 }
@@ -324,6 +336,14 @@ void P_main_Player::ProcessReceiveDamageStateTransition()
 		m_mutekitimer = mutekitime;
 		//ステートを遷移する。
 		ProcessCommonStateTransition();
+	}
+}
+
+void P_main_Player::ProcessDownStateTransition()
+{
+	//ダウンアニメーションの再生が終わったら。
+	if (m_modelrender->IsPlayingAnimation() == false)
+	{
 	}
 }
 

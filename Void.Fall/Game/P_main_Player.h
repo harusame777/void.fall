@@ -10,8 +10,9 @@ public:
 		enPlayerState_Idle,				//待機。
 		enPlayerState_Walk,				//歩き。
 		enPlayerState_Attack,			//攻撃
-		enPlayerState_Avoidance,			//回避
-		enPlayerState_ReceiveDamage,  //被ダメージ。
+		enPlayerState_Avoidance,		//回避
+		enPlayerState_Down,				//ダウン
+		enPlayerState_ReceiveDamage,    //被ダメージ。
 	};
 	//関数宣言
 	P_main_Player() {}
@@ -35,6 +36,7 @@ public:
 		enAnimationClip_Attack,			//攻撃
 		enAnimationClip_Idle,			//棒立ち
 		enAnimationClip_ReceiveDamage,  //被ダメージ。
+		enAnimationClip_Down,            //ダウン
 		enAnimationClip_Num				//アニメーション数
 	};
 	enum EnAnimationClip_sub {
@@ -51,6 +53,7 @@ public:
 	void ProcessAttackStateTransition();	//攻撃遷移
 	void ProcessAvoidanceStateTransition(); //回避遷移
 	void ProcessReceiveDamageStateTransition();//被ダメ遷移
+	void ProcessDownStateTransition();//ダウン遷移
 	bool IsEnableMove() const				//移動できるかどうか
 	{
 		return m_playerstate != enPlayerState_Attack &&
