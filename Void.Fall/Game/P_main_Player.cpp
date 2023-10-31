@@ -19,6 +19,8 @@ bool P_main_Player::Start()
 	//enAnimationClip_Attack:アニメーションキーname(magic_attack)
 	m_animationclips[enAnimationClip_Attack].Load("Assets/animData/Player/attack1.tka");
 	m_animationclips[enAnimationClip_Attack].SetLoopFlag(false);
+	m_animationclips[enAnimationClip_ReceiveDamage].Load("Assets/animData/Player/receivedamage.tka");
+	m_animationclips[enAnimationClip_ReceiveDamage].SetLoopFlag(false);
 
 
 	m_modelrender = new ModelRender;
@@ -39,6 +41,8 @@ void P_main_Player::Update()
 	Move();
 	//回転処理
 	Rotation();
+	//当たり判定処理
+	Collision();
 	//Lockon位置取得
 	Takeaim();
 	//ロックオン
@@ -71,7 +75,10 @@ void P_main_Player::PlayAnimation()
 		break;
 	case enPlayerState_Avoidance:
 		//回避アニメーション
-		m_modelrender->PlayAnimation(enAnimationClip_Avoidance, 0.1);
+		m_modelrender->PlayAnimation(enAnimationClip_Avoidance, 0.1f);
+		break;
+	case enPlayerState_ReceiveDamage:
+		m_modelrender->PlayAnimation(enAnimationClip_ReceiveDamage, 0.1f);
 		break;
 	}
 }
@@ -99,7 +106,7 @@ void P_main_Player::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eve
 void P_main_Player::Move()
 {
 	//移動できない状態であれば、移動処理はしない。
-	if (IsEnableMove() == false){
+	if (IsEnableMove() == true){
 		return;
 	}
 	//現在のステートが回避ステートだったら
@@ -204,6 +211,44 @@ void P_main_Player::Rotation()
 	m_rotation.Apply(m_forward);
 }
 
+void P_main_Player::Collision()
+{
+	//無敵時間中は処理しない
+	if (m_mutekitimer > 0)
+	{
+		m_mutekitimer -= g_gameTime->GetFrameDeltaTime();
+		return;
+	}
+	//被ダメージ、回避中、あるいはダウンステートの時は。
+//当たり判定処理はしない。
+	if (m_playerstate == enPlayerState_ReceiveDamage ||
+		m_playerstate == enPlayerState_Avoidance)
+	{
+		return;
+	}
+	//エネミーの攻撃用のコリジョンを取得する。
+	const auto& collisions = g_collisionObjectManager->FindCollisionObjects("enemy_attack");
+	//コリジョンの配列をfor文で回す。
+	for (auto collision : collisions)
+	{
+		//コリジョンとキャラコンが衝突したら。
+		if (collision->IsHit(m_charaCon))
+		{
+			//HPを1減らす。
+			m_hp -= 1;
+			//HPが0になったら。
+			if (m_hp == 0) {
+				//ダウンステートに遷移する。
+				//m_enemystate = enEnemyState_Down;
+			}
+			else {
+				//被ダメージステートに遷移する。
+				m_playerstate = enPlayerState_ReceiveDamage;
+			}
+		}
+	}
+}
+
 void P_main_Player::ManageState()
 {
 	switch (m_playerstate)
@@ -223,6 +268,10 @@ void P_main_Player::ManageState()
 	case enPlayerState_Avoidance:
 		//回避ステート遷移
 		ProcessAvoidanceStateTransition();
+		break;
+	case enPlayerState_ReceiveDamage:
+		//被ダメ遷移
+		ProcessReceiveDamageStateTransition();
 		break;
 	}
 }
@@ -266,6 +315,18 @@ void P_main_Player::ProcessAvoidanceStateTransition()
 	}
 }
 
+void P_main_Player::ProcessReceiveDamageStateTransition()
+{
+	//被ダメージアニメーションの再生が終わったら。
+	if (m_modelrender->IsPlayingAnimation() == false)
+	{
+		//無敵タイマーを初期化
+		m_mutekitimer = mutekitime;
+		//ステートを遷移する。
+		ProcessCommonStateTransition();
+	}
+}
+
 void P_main_Player::ProcessCommonStateTransition()
 {
 	//現在のステートが回避だったら
@@ -282,15 +343,18 @@ void P_main_Player::ProcessCommonStateTransition()
 	}
 	//回避クールダウンが0以下で
 	if (m_Avoidbreaktimer <= 0){
-		//Yボタンが押されたら
-		if (g_pad[0]->IsTrigger(enButtonY)) {
-			//スキンを回避状態に変更する
-			AvoidanceTex();
-			//回避ステートにして
-			m_playerstate = enPlayerState_Avoidance;
-			//回避タイマーを初期値にする
-			m_Avoidancetimer = Avoidancetime;
-			return;
+		//スティックからの入力があり
+		if (fabsf(m_movespeed.x) >= 0.001f || fabsf(m_movespeed.z) >= 0.001f) {
+			//Yボタンが押されたら
+			if (g_pad[0]->IsTrigger(enButtonY)) {
+				//スキンを回避状態に変更し
+				AvoidanceTex();
+				//回避ステートにして
+				m_playerstate = enPlayerState_Avoidance;
+				//回避タイマーを初期値にする
+				m_Avoidancetimer = Avoidancetime;
+				return;
+			}
 		}
 	}
 	//xかzの移動速度があったら(スティックの入力があったら)。
@@ -318,11 +382,18 @@ void P_main_Player::NormalTex()
 	//enAnimationClip_Attack:アニメーションキーname(magic_attack)
 	m_animationclips[enAnimationClip_Attack].Load("Assets/animData/Player/attack1.tka");
 	m_animationclips[enAnimationClip_Attack].SetLoopFlag(false);
+	m_animationclips[enAnimationClip_ReceiveDamage].Load("Assets/animData/Player/receivedamage.tka");
+	m_animationclips[enAnimationClip_ReceiveDamage].SetLoopFlag(false);
 	m_modelrender = new ModelRender;
 	m_modelrender->Init("Assets/modelData/A_testPlayer/RE_Player.tkm",
 		m_animationclips, enAnimationClip_Num);
 	m_modelrender->SetRotation(m_rotation);
 	m_modelrender->SetPosition(m_position);
+	//アニメーションイベント用関数設定
+	m_modelrender->AddAnimationEvent([&](const wchar_t* clipName, const wchar_t* eventName) {
+		OnAnimationEvent(clipName, eventName);
+		});
+
 }
 
 void P_main_Player::AvoidanceTex()

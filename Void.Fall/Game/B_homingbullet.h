@@ -13,6 +13,7 @@ public:
 	void Movebullet();
 	void Inpacttime();
 	void Inpacthit();
+	void deletebullet();				//弾丸消去
 	void CalcVelocity(const float speed, const float curvatureRadius,
 		const float damping);
 ///////////////////////////////////////////////////////////
@@ -40,6 +41,9 @@ public:
 	}
 //メンバ関数宣言
 	float bullettime = 6.0f;
+	float m_deleteTimer = 0.0f;								//消去ディレイ
+	bool m_isDelete = false;								//消去ディレイに使うやつ
+	const float deletetimer = 0.1f;							//ディレイタイマー
 	Quaternion m_rotation;									//回転
 	CollisionObject* m_collisionObject;						//コリジョンオブジェクト。
 	Vector3	m_forward = Vector3::AxisZ;						//エネミーの正面ベクトル。

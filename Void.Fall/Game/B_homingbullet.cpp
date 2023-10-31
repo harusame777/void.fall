@@ -52,6 +52,8 @@ void B_homingbullet::Update()
 	Inpacttime();
 	//弾丸対象衝突処理
 	Inpacthit();
+	//弾丸消去処理
+	deletebullet();
 	//アニメーション
 	PlayAnimation();
 	//描画処理
@@ -124,9 +126,24 @@ void B_homingbullet::Inpacthit()
 {
 	if (m_collisionObject->IsHit(m_player->m_charaCon))
 	{
-		DeleteGO(m_collisionObject);
-		delete m_modelrender;
-		DeleteGO(this);
+		if (m_isDelete == false) {
+			m_isDelete = true;	//deletebulletのif文が通るようにする。
+			m_deleteTimer = deletetimer; //deletetimerは現在0.2f。
+		}
+	}
+}
+
+void B_homingbullet::deletebullet()
+{      //↓Inpacthitでtrueにする。
+	if (m_isDelete) {
+		m_deleteTimer -= g_gameTime->GetFrameDeltaTime(); //deletetimerを1フレームずつ
+		//減らす。
+			//↓タイマーがゼロになったら。(deletetimerより0の方が大きくなったら)
+		if (m_deleteTimer <= 0.0f) {
+			DeleteGO(m_collisionObject);//消去処理
+			delete m_modelrender;
+			DeleteGO(this);
+		}
 	}
 }
 
