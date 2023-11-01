@@ -29,6 +29,7 @@ bool P_main_Player::Start()
 	m_modelrender->Init("Assets/modelData/A_testPlayer/RE_Player.tkm", m_animationclips, enAnimationClip_Num);
 	m_charaCon.Init(25.0f, 70.0f, m_position);
 
+	m_spriterender.Init("Assets/sprite/testlock/lock.dds", 200, 200);
 	//アニメーションイベント用関数設定
 	m_modelrender->AddAnimationEvent([&](const wchar_t* clipName, const wchar_t* eventName) {
 		OnAnimationEvent(clipName, eventName);
@@ -55,6 +56,7 @@ void P_main_Player::Update()
 	ManageState();
 	//描画処理
 	m_modelrender->Update();
+	m_spriterender.Update();
 
 }
 
@@ -93,6 +95,11 @@ void P_main_Player::PlayAnimation()
 void P_main_Player::Render(RenderContext& rc)
 {
 	m_modelrender->Draw(rc);
+	if (m_isTakeAim == false)
+	{
+		return;
+	}
+	m_spriterender.Draw(rc);
 }
 
 void P_main_Player::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
@@ -240,8 +247,7 @@ void P_main_Player::Collision()
 	for (auto collision : collisions)
 	{
 		//コリジョンとキャラコンが衝突したら。
-		if (collision->IsHit(m_charaCon))
-		{
+		if (collision->IsHit(m_charaCon)){
 			//HPを1減らす。
 			m_hp -= 1;
 			//HPが0になったら。
@@ -430,8 +436,72 @@ void P_main_Player::AvoidanceTex()
 
 void P_main_Player::Takeaim()
 {
+	if (m_numenemy == 0){
+		return;
+	}
+	Vector3 enemypossub = { 500.0f,500.0f,500.0f };
+	for (int i = 0; i < m_numenemy; i++)
+	{
+		Vector3 enemypos = *m_enemyPositionList[i];
+		Vector3 diff = enemypos - m_position;
+		if (enemypossub.Length() >= diff.Length())
+		{
+			enemypossub = diff;
+		}
+	}
+
+	if (enemypossub.Length() >= 500.0f )
+	{
+		m_isTakeAim = false;
+		return;
+	}
+
+	enemypossub.y = 0.0f;
+	enemypossub.Normalize();
+
+	float angle = acosf(m_forward.Dot(enemypossub));
+
+	//プレイヤーの正面ベクトルと。
+	//プレイヤーからエネミーに向かうベクトルの。
+	//角度が90度以上かつ。
+	//ロックオン状態でなかったら。
+	//ターゲッティングしない。
+	if (angle > Math::PI / 2 && m_isLockOn == false)
+	{
+		m_isTakeAim = false;
+		return;
+	}
+	m_isTakeAim = true;
+
+	Vector2 screenPosition;
+	g_camera3D->CalcScreenPositionFromWorldPosition(screenPosition, enemypossub);
+	m_spriterender.SetPosition(Vector3(screenPosition.x, screenPosition.y, 0.0f));
+	m_targetPosition = enemypossub;
 }
 
 void P_main_Player::Lockon()
 {
+	//ターゲッティングがされていなかったら。
+//ロックオンしない。
+	if (m_isTakeAim == false)
+	{
+		m_isLockOn = false;
+		return;
+	}
+
+	if (g_pad[0]->IsTrigger(enButtonX))
+	{
+		//ロックオンしていなければ。
+		if (m_isLockOn == false)
+		{
+			//ロックオンする。
+			m_isLockOn = true;
+		}
+		//ロックオンしていれば。
+		else
+		{
+			//ロックオンしない。
+			m_isLockOn = false;
+		}
+	}
 }

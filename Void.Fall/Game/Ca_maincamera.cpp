@@ -20,8 +20,15 @@ bool Ca_maincamera::Start()
 
 void Ca_maincamera::Update()
 {
-	//位置更新
-	CamposUpdate();
+	if (m_player->IsLockOn() == false)
+	{
+		//位置更新
+		CamposUpdate();
+	}
+	else
+	{
+		ProcessLockOn();
+	}
 	//カメラ更新
 	m_springCamera.Update();
 }
@@ -71,5 +78,19 @@ void Ca_maincamera::CamposUpdate()
 
 	//バネカメラに注視点と視点を設定する。
 	m_springCamera.SetPosition(pos);
+	m_springCamera.SetTarget(target);
+}
+
+void Ca_maincamera::ProcessLockOn()
+{
+	Vector3 target = m_player->GetTargetPosition();
+	Vector3 toPos = target - m_player->Getposition();
+	float r = toPos.Length() + 200.0f;
+	toPos.y = 0.0f;
+	toPos.Normalize();
+	Vector3 position = target - toPos * r;
+	position.y = m_player->Getposition().y + 200.0f;
+
+	m_springCamera.SetPosition(position);
 	m_springCamera.SetTarget(target);
 }

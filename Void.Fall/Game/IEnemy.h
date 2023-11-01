@@ -8,13 +8,13 @@ class IEnemy : public IGameObject
 {
 public:
 	IEnemy() {}
-	virtual ~IEnemy(){}
 public:
 	P_main_Player* m_player = nullptr;		//プレイヤー
 	CharacterController m_charaCon ;        //キャラコン
 	CollisionObject* m_collisionObject;		//コリジョンオブジェクト。
 	Vector3 m_position;						//座標
-	Game* m_game;
+	Game* m_game = nullptr;
+	int m_numenemy = 0;
 
 };
 

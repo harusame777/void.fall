@@ -3,6 +3,7 @@
 #include "P_main_Player.h"
 #include "collision/CollisionObject.h"
 #include "B_homingbullet.h"
+#include "Game.h"
 ///////////////////////////////////////////////////////////
 #include <time.h>
 #include <stdlib.h>
@@ -68,6 +69,7 @@ bool E_001_enemy::Start()
 	m_collisionObject->SetIsEnableAutoDelete(false);
 
 	m_player = FindGO<P_main_Player>("player");
+	SetenemyList();
 	//—”‚ð‰Šú‰»B
 	srand((unsigned)time(NULL));
 	m_forward = Vector3::AxisZ;
@@ -406,3 +408,5 @@ void E_001_enemy::Render(RenderContext& rc)
 {
 	m_modelrender->Draw(rc);
 }
+
+

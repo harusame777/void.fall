@@ -24,9 +24,9 @@ public:
 	E_001_enemy* m_enemy_001 = nullptr; //エネミー001
 	E_002_enemy* m_enemy_002 = nullptr; //エネミー002
 	Ca_maincamera* m_camera = nullptr;//カメラ
+	IEnemy* m_ienemy = nullptr;
 	LevelRender m_levelrender;//レベルレンダー
 	FontRender m_fontrender;//スプライトレンダー
-	std::vector<IEnemy*> enemyList;
 	int m_numenemy = 0; //エネミー数
 };
 

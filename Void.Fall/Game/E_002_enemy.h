@@ -1,5 +1,6 @@
 #pragma once
-class E_002_enemy : public IGameObject
+#include "IEnemy.h"
+class E_002_enemy : public IEnemy
 {
 public:
 	//アニメーション類/////////////////////////////////////////
@@ -35,7 +36,12 @@ public:
 	{
 		m_hp = hp;
 	}
+	//void SetALLposition()
+	//{
+	//	m_enemyList[m_game->m_numenemy] = m_enemy002;
+	//}
 	//メンバ関数宣言
+	E_002_enemy* m_enemy002 = nullptr;
 	AnimationClip m_animationclips[enAnimationClip_Num];     //アニメーションクリップ
 	ModelRender* m_modelrender = nullptr;					//モデルレンダー
 	Vector3 m_position;										//座標

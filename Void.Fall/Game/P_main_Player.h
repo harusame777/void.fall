@@ -79,7 +79,17 @@ public:
 	{
 		m_scale = scale;
 	}
+	const bool IsLockOn() const
+	{
+		return m_isLockOn;
+	}
+	const Vector3& GetTargetPosition() const
+	{
+		return m_targetPosition;
+	}
 	//メンバ関数宣言
+	std::vector<Vector3*> m_enemyPositionList;
+	IEnemy* m_ienemy = nullptr;
 	AnimationClip m_animationclips[enAnimationClip_Num];	//アニメーションクリップ
 	AnimationClip m_animationclips_sub[enAnimationClip_sub_Num];//アニメーションクリップ
 	Vector3 m_position;										//座標
@@ -90,8 +100,13 @@ public:
 	EnPlayerState m_playerstate = enPlayerState_Idle;		//プレイヤーステート
 	CharacterController	m_charaCon;							//キャラクターコントローラー。
 	ModelRender* m_modelrender = nullptr;					//モデルレンダー
+	SpriteRender m_spriterender;
+	Vector3 m_targetPosition = Vector3::Zero;
 	Game* m_game = nullptr;
 	//変数宣言
+	bool m_isTakeAim = false;
+	bool m_isLockOn = false;
+	int m_numenemy = 0;
 	int m_hp = 3;											//HP
 	float m_Avoidancetimer = 0.0f;							//回避タイマー
 	float Avoidancetime = 0.2f;								//回避時間

@@ -2,6 +2,7 @@
 #include "IEnemy.h"
 ///////////////////////////////////////////////////////////
 class P_main_Player;
+class Game;
 ///////////////////////////////////////////////////////////
 class E_001_enemy : public IEnemy   //基底クラスIEnemy
 {
@@ -39,6 +40,7 @@ public:
 	void ProcessDownStateTransition();//ダウン遷移
 	///////////////////////////////////////////////////////////
 	E_001_enemy(){}
+	~E_001_enemy() {};
 	bool Start();				
 	void Update();                                         //アップデート
 	void Render(RenderContext& rc);                        //モデルレンダー
@@ -71,7 +73,21 @@ public:
 	{
 		m_hp = hp;
 	}
+	void SetenemyList()
+	{
+		m_position.Length();
+		m_player->m_enemyPositionList.push_back(&m_position);
+		m_player->m_numenemy++;
+	}
+	//bool IsEnableMove() const				//移動できるかどうか
+	//{
+	//	return m_enemystate != enAnimationClip_Chase &&
+	//		m_enemystate != enAnimationClip_Down &&
+	//		m_enemystate != enAnimationClip_Idle &&
+	//		m_enemystate != enAnimationClip_ReceiveDamage;
+	//}
 	//メンバ関数宣言
+	Game* m_game = nullptr;
 	AnimationClip m_animationclips[enAnimationClip_Num];     //アニメーションクリップ
 	ModelRender*  m_modelrender = nullptr;					//モデルレンダー
 	Vector3 m_scale = Vector3::One;							//大きさ
