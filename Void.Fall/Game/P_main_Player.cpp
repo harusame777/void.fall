@@ -446,7 +446,7 @@ void P_main_Player::Takeaim()
 		Vector3 diff = enemypos - m_position;
 		if (enemypossub.Length() >= diff.Length())
 		{
-			enemypossub = diff;
+			enemypossub = enemypos;
 		}
 	}
 
@@ -456,8 +456,8 @@ void P_main_Player::Takeaim()
 		return;
 	}
 
-	enemypossub.y = 0.0f;
-	enemypossub.Normalize();
+	enemypossub.y = 60.0f;
+	//enemypossub.Normalize();
 
 	float angle = acosf(m_forward.Dot(enemypossub));
 
