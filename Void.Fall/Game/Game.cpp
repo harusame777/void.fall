@@ -71,10 +71,9 @@ bool Game::Start()
 
 void Game::Update()
 {
-	float diff3 = m_player->enemypossub.Length() - m_player->m_position.Length();
 	wchar_t wcsbuf[256];
 
-	swprintf_s(wcsbuf, 256, L"HP:%01d||vec:%01f", int(m_player->m_hp),float(diff3));
+	swprintf_s(wcsbuf, 256, L"HP:%01d", int(m_player->m_hp));
 
 	//表示するテキストを設定。
 	m_fontrender.SetText(wcsbuf);

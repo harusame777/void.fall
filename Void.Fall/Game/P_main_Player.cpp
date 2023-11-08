@@ -446,42 +446,37 @@ void P_main_Player::AvoidanceTex()
 
 void P_main_Player::Takeaim()
 {
+	//エネミーの数が0だったら処理しない。
 	if (m_numenemy == 0){
 		return;
 	}
-	//for (int i = 0; i < m_numenemy; i++)
-	//{
-	//	Vector3 enemypos = *m_enemyPositionList[i];
-	//	Vector3 diff = enemypos - m_position;
-	//	if (enemypossub.Length() >= diff.Length())
-	//	{
-	//		enemypossub = enemypos;
-	//	}
-	//}
-	for (int i = 0; i < m_numenemy - 1; i++){
-		Vector3 enemypos1 = *m_enemyPositionList[i];
-		Vector3 enemypos2 = *m_enemyPositionList[i + 1];
-		Vector3 diff1 = enemypos1 - m_position;
-		Vector3 diff2 = enemypos2 - m_position;
-		Vector3 diff3 = enemypossub - m_position;
-		if (diff1.Length() < diff2.Length()){
-			if (diff1.Length() < diff3.Length()) {
-				enemypossub = enemypos1;
+	//エネミー距離計算
+	if (m_isLockOn == false){
+		for (int i = 0; i < m_numenemy - 1; i++) {
+			Vector3 enemypos1 = *m_enemyPositionList[i];
+			Vector3 enemypos2 = *m_enemyPositionList[i + 1];
+			Vector3 diff1 = enemypos1 - m_position;
+			Vector3 diff2 = enemypos2 - m_position;
+			Vector3 diff3 = enemypossub - m_position;
+			if (diff1.Length() < diff2.Length()) {
+				if (diff1.Length() < diff3.Length()) {
+					enemypossub = enemypos1;
+				}
 			}
-		}
-		else{
-			if (diff2.Length() < diff3.Length()){
-				enemypossub = enemypos2;
+			else {
+				if (diff2.Length() < diff3.Length()) {
+					enemypossub = enemypos2;
+				}
 			}
 		}
 	}
 
-	if (enemypossub.Length() >= 500.0f)
+	Vector3 diff4 = enemypossub - m_position;
+	if (diff4.Length() >= 700.0f)
 	{
 		m_isTakeAim = false;
 		return;
 	}
-
 
 	enemypossub.y = 60.0f;
 	//enemypossub.Normalize();
