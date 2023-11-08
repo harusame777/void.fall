@@ -22,6 +22,7 @@ public:
 	void Render(RenderContext& rc);		//モデルレンダー
 	void Move();						//移動
 	void Rotation();					//回転
+	void AttackRotation();				//攻撃時回転
 	void ManageState();					//ステート遷移処理
 	void Collision();					//本体の当たり判定
 	void Lockon();						//ロックオン
@@ -103,6 +104,7 @@ public:
 	SpriteRender m_spriterender;
 	Vector3 m_targetPosition = Vector3::Zero;
 	Game* m_game = nullptr;
+	Vector3 enemypossub = { 500.0f,500.0f,500.0f };
 	//変数宣言
 	bool m_isTakeAim = false;
 	bool m_isLockOn = false;

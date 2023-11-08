@@ -198,6 +198,12 @@ void P_main_Player::Avoidance()
 
 void P_main_Player::Rotation()
 {
+	if (m_isLockOn == true){
+		if (m_playerstate == enPlayerState_Attack){
+			AttackRotation();
+			return;
+		}
+	}
 	//回避していたら、回転はさせない。
 	if (m_playerstate == enPlayerState_Avoidance){
 		return;
@@ -223,6 +229,10 @@ void P_main_Player::Rotation()
 	//プレイヤーの正面ベクトルを計算する。
 	m_forward = Vector3::AxisZ;
 	m_rotation.Apply(m_forward);
+}
+
+void P_main_Player::AttackRotation()
+{
 }
 
 void P_main_Player::Collision()
@@ -439,7 +449,10 @@ void P_main_Player::Takeaim()
 	if (m_numenemy == 0){
 		return;
 	}
-	Vector3 enemypossub = { 500.0f,500.0f,500.0f };
+	if (m_isTakeAim == true &&
+		m_isLockOn == false){
+		enemypossub = { 500.0f,500.0f,500.0f };
+	}	
 	for (int i = 0; i < m_numenemy; i++)
 	{
 		Vector3 enemypos = *m_enemyPositionList[i];
