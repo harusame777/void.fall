@@ -8,6 +8,12 @@ class IEnemy : public IGameObject
 {
 public:
 	IEnemy() {}
+	void SetenemyList()
+	{
+		m_position.Length();
+		m_player->m_enemyPositionList.push_back(&m_position);
+		m_player->m_numenemy++;
+	}
 public:
 	P_main_Player* m_player = nullptr;		//プレイヤー
 	CharacterController m_charaCon ;        //キャラコン

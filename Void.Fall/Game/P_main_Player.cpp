@@ -449,10 +449,7 @@ void P_main_Player::Takeaim()
 	if (m_numenemy == 0){
 		return;
 	}
-	if (m_isTakeAim == true &&
-		m_isLockOn == false){
-		enemypossub = { 500.0f,500.0f,500.0f };
-	}	
+	enemypossub = { 500.0f,500.0f,500.0f };
 	for (int i = 0; i < m_numenemy; i++)
 	{
 		Vector3 enemypos = *m_enemyPositionList[i];

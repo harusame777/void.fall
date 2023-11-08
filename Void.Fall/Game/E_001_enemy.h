@@ -73,12 +73,6 @@ public:
 	{
 		m_hp = hp;
 	}
-	void SetenemyList()
-	{
-		m_position.Length();
-		m_player->m_enemyPositionList.push_back(&m_position);
-		m_player->m_numenemy++;
-	}
 	//bool IsEnableMove() const				//ˆÚ“®‚Å‚«‚é‚©‚Ç‚¤‚©
 	//{
 	//	return m_enemystate != enAnimationClip_Chase &&
