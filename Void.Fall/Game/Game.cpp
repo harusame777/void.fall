@@ -54,16 +54,16 @@ bool Game::Start()
 			m_numenemy++;
 			return true;
 		}
-		//else if (objData.ForwardMatchName(L"enemy_002") == true)
-		//{
-		//	E_002_enemy* enemy_002 = NewGO<E_002_enemy>(0, "enemy_002");
-		//	enemy_002->Setposition(objData.position);
-		//	enemy_002->Setrotation(objData.rotation);
-		//	enemy_002->Setscale(objData.scale);
-		//	enemy_002->SetHP(5);
-		//	m_numenemy++;
-		//	return true;
-		//}
+		else if (objData.ForwardMatchName(L"RE_enemy_002") == true)
+		{
+			E_002_enemy* enemy_002 = NewGO<E_002_enemy>(0, "enemy_002");
+			enemy_002->Setposition(objData.position);
+			enemy_002->Setrotation(objData.rotation);
+			enemy_002->Setscale(objData.scale);
+			enemy_002->SetHP(5);
+			m_numenemy++;
+			return true;
+		}
 		return true;
 	});	
 	return true;

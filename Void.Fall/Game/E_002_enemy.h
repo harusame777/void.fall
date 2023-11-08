@@ -1,14 +1,21 @@
 #pragma once
 #include "IEnemy.h"
+class P_main_Player;
 class E_002_enemy : public IEnemy
 {
 public:
+	//行動ステート
+	enum EnEnemyState {
+		enEnemyState_Idle,					//待機
+	};
 	//アニメーション類/////////////////////////////////////////
 //アニメーションステート
 	enum EnAnimationClip {
 		enAnimationClip_Idle,//棒立ち
 		enAnimationClip_Num//アニメーション数
 	};
+	void PlayAnimation();
+	///////////////////////////////////////////////////////////
 	E_002_enemy() {};
 	~E_002_enemy() {};
 	bool Start();
@@ -36,18 +43,15 @@ public:
 	{
 		m_hp = hp;
 	}
-	//void SetALLposition()
-	//{
-	//	m_enemyList[m_game->m_numenemy] = m_enemy002;
-	//}
 	//メンバ関数宣言
+	CollisionObject* m_collisionObject;		//コリジョンオブジェクト。
 	E_002_enemy* m_enemy002 = nullptr;
 	AnimationClip m_animationclips[enAnimationClip_Num];     //アニメーションクリップ
+	EnEnemyState m_enemystate = enEnemyState_Idle;          //エネミーステート
 	ModelRender* m_modelrender = nullptr;					//モデルレンダー
-	Vector3 m_position;										//座標
+	Vector3	m_forward = Vector3::AxisZ;						//エネミーの正面ベクトル。
 	Vector3 m_scale = Vector3::One;							//大きさ
 	Quaternion m_rotation;									//回転
-	CharacterController	m_charaCon;							//キャラクターコントローラー。
 	int m_hp = 0;                                           //HP
 };
 

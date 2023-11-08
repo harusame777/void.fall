@@ -70,8 +70,7 @@ bool E_001_enemy::Start()
 
 	m_player = FindGO<P_main_Player>("player");
 	SetenemyList();
-	//—”‚ğ‰Šú‰»B
-	srand((unsigned)time(NULL));
+
 	m_forward = Vector3::AxisZ;
 	m_rotation.Apply(m_forward);
 	return true;
