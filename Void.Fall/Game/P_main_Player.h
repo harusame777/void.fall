@@ -2,6 +2,7 @@
 class IEnemy;
 class Game;
 class B_normalbullet;
+class B_homingbullet;
 class P_main_Player : public IGameObject
 {
 public:
@@ -30,6 +31,7 @@ public:
 	void Avoidance();					//回避
 	void AvoidanceTex();				//回避スキン変更
 	void NormalTex();					//通常スキン変更
+	void MP();                          //MP処理
 	//アニメーション類/////////////////////////////////////////
 //アニメーションステート
 	enum EnAnimationClip {
@@ -110,11 +112,14 @@ public:
 	bool m_isLockOn = false;
 	int m_numenemy = 0;
 	int m_hp = 3;											//HP
+	int m_mp = 3;											//MP
 	float m_Avoidancetimer = 0.0f;							//回避タイマー
 	float Avoidancetime = 0.2f;								//回避時間
 	float m_Avoidbreaktimer = 0.0f;							//回避クールタイマー
 	float Avoidbreaktime = 2.0f;							//回避クールタイム時間
 	float m_mutekitimer = 0.0f;								//無敵タイマー
 	float mutekitime = 2.0f;								//無敵時間
+	float m_mpRec = 0.0f;									//mp回復タイマー
+	bool mpRecgo = false;
 };
 

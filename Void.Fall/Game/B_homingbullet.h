@@ -4,6 +4,11 @@ class B_homingbullet : public IGameObject
 {
 public:
 ///////////////////////////////////////////////////////////
+	enum EnShooter {
+		enShooter_None,
+		enShooter_Player,			//プレイヤー。
+		enShooter_Enemy			//エネミー。
+	};
 	B_homingbullet() {};
 	~B_homingbullet() {};
 	bool Start();
@@ -39,6 +44,10 @@ public:
 	{
 		m_targetPosition = targetPosition;
 	}
+	void SetEnShooter(const EnShooter enShooter)
+	{
+		m_shooter = enShooter;
+	}
 //メンバ関数宣言
 	float bullettime = 6.0f;
 	float m_deleteTimer = 0.0f;								//消去ディレイ
@@ -48,11 +57,13 @@ public:
 	CollisionObject* m_collisionObject;						//コリジョンオブジェクト。
 	Vector3	m_forward = Vector3::AxisZ;						//エネミーの正面ベクトル。
 	Vector3	m_scale = Vector3::One;							//大きさ。
+	Vector3 targetPosition;
 	P_main_Player* m_player = nullptr;                      //プレイヤー
 	AnimationClip m_animationclips[enAnimationClip_Num];    //アニメーションクリップ
 	ModelRender* m_modelrender = nullptr;					//モデルレンダー
 	Vector3 m_position;										//座標
 	Vector3 m_velocity;										//速度
 	Vector3 m_targetPosition;								//追尾対象座標
+	EnShooter m_shooter = enShooter_None;                                    //射撃者設定
 };
 

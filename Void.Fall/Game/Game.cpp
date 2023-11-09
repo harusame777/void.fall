@@ -73,7 +73,8 @@ void Game::Update()
 {
 	wchar_t wcsbuf[256];
 
-	swprintf_s(wcsbuf, 256, L"HP:%01d", int(m_player->m_hp));
+	swprintf_s(wcsbuf, 256, L"HP:%01d||MP:%01d", int(m_player->m_hp)
+	,int(m_player->m_mp));
 
 	//表示するテキストを設定。
 	m_fontrender.SetText(wcsbuf);

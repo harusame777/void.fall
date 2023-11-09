@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "P_main_Player.h"
 #include "B_normalbullet.h"
+#include "B_homingbullet.h"
 #include "collision/CollisionObject.h"
 #include "IEnemy.h"
 #include "Game.h"
@@ -50,6 +51,8 @@ void P_main_Player::Update()
 	Takeaim();
 	//ロックオン
 	Lockon();
+	//MP
+	MP();
 	//アニメーション
 	PlayAnimation();
 	//ステートの遷移処理
@@ -106,14 +109,29 @@ void P_main_Player::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eve
 {
 	//アニメーションクリップがmagic_attackだったら
 	if (wcscmp(eventName, L"magic_attack") == 0) {
-		//normalbulletを作成する。
-		auto bullet = NewGO<B_normalbullet>(0);
-		//bulletの初期設定など
-		bullet->SetPosition(m_position);
-		bullet->Setrotation(m_rotation);
-		bullet->SetVelocity(m_forward);
-		bullet->m_position.y += 80.0f;
-		bullet->m_position.z += 10.0f;
+		if (0 < m_mp){
+			if (m_isLockOn == true) {
+				auto bullet = NewGO<B_homingbullet>(0);
+				bullet->SetPosition(m_position);
+				bullet->SetVelocity(m_forward * 10);
+				bullet->m_position.y += 80.0f;
+				bullet->m_position.z += 10.0f;
+				bullet->SetEnShooter(B_homingbullet::enShooter_Player);
+				m_mp--;
+				m_mpRec = 0.0f;
+				mpRecgo = true;
+				return;
+			}
+			//normalbulletを作成する。
+			auto bullet = NewGO<B_normalbullet>(0);
+			//bulletの初期設定など
+			bullet->SetPosition(m_position);
+			bullet->Setrotation(m_rotation);
+			bullet->SetVelocity(m_forward);
+			bullet->m_position.y += 80.0f;
+			bullet->m_position.z += 10.0f;
+			m_mp--;
+		}
 	}
 }
 
@@ -198,12 +216,12 @@ void P_main_Player::Avoidance()
 
 void P_main_Player::Rotation()
 {
-	if (m_isLockOn == true){
-		if (m_playerstate == enPlayerState_Attack){
-			AttackRotation();
-			return;
-		}
-	}
+	//if (m_isLockOn == true){
+	//	if (m_playerstate == enPlayerState_Attack){
+	//		AttackRotation();
+	//		return;
+	//	}
+	//}
 	//回避していたら、回転はさせない。
 	if (m_playerstate == enPlayerState_Avoidance){
 		return;
@@ -524,6 +542,23 @@ void P_main_Player::Lockon()
 		{
 			//ロックオンしない。
 			m_isLockOn = false;
+		}
+	}
+}
+
+void P_main_Player::MP()
+{
+	if (mpRecgo)
+	{
+		if (m_mp == 3) {
+			m_mpRec = 0.0f;
+			mpRecgo = false;
+			return;
+		}
+		m_mpRec += g_gameTime->GetFrameDeltaTime();
+		if (m_mpRec > 3.0f) {
+			m_mp++;
+			m_mpRec = 0.0f;
 		}
 	}
 }
