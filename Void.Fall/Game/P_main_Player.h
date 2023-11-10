@@ -27,6 +27,7 @@ public:
 	void ManageState();					//ステート遷移処理
 	void Collision();					//本体の当たり判定
 	void Lockon();						//ロックオン
+	void LockonLR();
 	void Takeaim();						//ロックオンに対する位置取得
 	void Avoidance();					//回避
 	void AvoidanceTex();				//回避スキン変更
@@ -106,11 +107,12 @@ public:
 	SpriteRender m_spriterender;
 	Vector3 m_targetPosition = Vector3::Zero;
 	Game* m_game = nullptr;
-	Vector3 enemypossub = { 500.0f,500.0f,500.0f };
+	Vector3 enemypossub = { 1000.0f,1000.0f,1000.0f };
 	//変数宣言
 	bool m_isTakeAim = false;
 	bool m_isLockOn = false;
 	int m_numenemy = 0;
+	int Listnum = 0;										//リストナンバー
 	int m_hp = 3;											//HP
 	int m_mp = 3;											//MP
 	float m_Avoidancetimer = 0.0f;							//回避タイマー
@@ -120,6 +122,7 @@ public:
 	float m_mutekitimer = 0.0f;								//無敵タイマー
 	float mutekitime = 2.0f;								//無敵時間
 	float m_mpRec = 0.0f;									//mp回復タイマー
-	bool mpRecgo = false;
+	float mpRecReset = 0.0f;								//mpタイマーリセット
+	bool mpRecgo = false;									//mp回復するかしないか
 };
 

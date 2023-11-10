@@ -51,6 +51,8 @@ void P_main_Player::Update()
 	Takeaim();
 	//ロックオン
 	Lockon();
+	//ロックオン選択
+	LockonLR();
 	//MP
 	MP();
 	//アニメーション
@@ -118,7 +120,7 @@ void P_main_Player::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eve
 				bullet->m_position.z += 10.0f;
 				bullet->SetEnShooter(B_homingbullet::enShooter_Player);
 				m_mp--;
-				m_mpRec = 0.0f;
+				m_mpRec = mpRecReset;
 				mpRecgo = true;
 				return;
 			}
@@ -131,6 +133,8 @@ void P_main_Player::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eve
 			bullet->m_position.y += 80.0f;
 			bullet->m_position.z += 10.0f;
 			m_mp--;
+			m_mpRec = mpRecReset;
+			mpRecgo = true;
 		}
 	}
 }
@@ -474,13 +478,13 @@ void P_main_Player::Takeaim()
 	{
 		if (m_isLockOn == false) {
 			//繰り返しの回数は現在のエネミーの数-1する。
-			for (int i = 0; i < m_numenemy - 1; i++) {
+			for (Listnum = 0; Listnum < m_numenemy - 1; Listnum++) {
 				//繰り返しのint iの数字の配列のエネミーポジションの
 				//位置を入れたローカル変数えねぽす１を定義する。
-				Vector3 enemypos1 = *m_enemyPositionList[i];
+				Vector3 enemypos1 = *m_enemyPositionList[Listnum];
 				//繰り返しのint i+1の数字の配列のエネミーポジションの
 				//位置を入れたローカル変数えねぽす２を定義する(どちらが近いか比べるため)。
-				Vector3 enemypos2 = *m_enemyPositionList[i + 1];
+				Vector3 enemypos2 = *m_enemyPositionList[Listnum + 1];
 				//えねぽす１の位置とプレイヤーの位置の距離を計算した
 				//ローカル変数diff1を定義する。
 				Vector3 diff1 = enemypos1 - m_position;
@@ -522,7 +526,7 @@ void P_main_Player::Takeaim()
 	//定義する。
 	Vector3 diff4 = enemypossub - m_position;
 	//そのdiff4の距離が700.0fよりも大きいなら、
-	if (diff4.Length() >= 700.0f){
+	if (diff4.Length() >= 1000.0f){
 		//ロックオンしない。
 		m_isTakeAim = false;
 		return;
@@ -549,6 +553,23 @@ void P_main_Player::Takeaim()
 	g_camera3D->CalcScreenPositionFromWorldPosition(screenPosition, enemypossub);
 	m_spriterender.SetPosition(Vector3(screenPosition.x, screenPosition.y, 0.0f));
 	m_targetPosition = enemypossub;
+}
+
+void P_main_Player::LockonLR()
+{
+	if (m_isLockOn){
+		if (g_pad[0]->IsTrigger(enButtonRB1)){
+			if (Listnum == 0){
+				//近いほうにターゲットにするか？
+				Listnum = m_numenemy - 1;
+				enemypossub = *m_enemyPositionList[Listnum];
+			}
+			else{
+				Listnum = Listnum--;
+				enemypossub = *m_enemyPositionList[Listnum];
+			}
+		}
+	}
 }
 
 void P_main_Player::Lockon()
@@ -583,14 +604,14 @@ void P_main_Player::MP()
 	if (mpRecgo)
 	{
 		if (m_mp == 3) {
-			m_mpRec = 0.0f;
+			m_mpRec = mpRecReset;
 			mpRecgo = false;
 			return;
 		}
 		m_mpRec += g_gameTime->GetFrameDeltaTime();
 		if (m_mpRec > 3.0f) {
 			m_mp++;
-			m_mpRec = 0.0f;
+			m_mpRec = mpRecReset;
 		}
 	}
 }
