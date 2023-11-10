@@ -469,29 +469,61 @@ void P_main_Player::Takeaim()
 		return;
 	}
 	//エネミー距離計算
-	if (m_isLockOn == false){
-		for (int i = 0; i < m_numenemy - 1; i++) {
-			Vector3 enemypos1 = *m_enemyPositionList[i];
-			Vector3 enemypos2 = *m_enemyPositionList[i + 1];
-			Vector3 diff1 = enemypos1 - m_position;
-			Vector3 diff2 = enemypos2 - m_position;
-			Vector3 diff3 = enemypossub - m_position;
-			if (diff1.Length() < diff2.Length()) {
-				if (diff1.Length() < diff3.Length()) {
-					enemypossub = enemypos1;
+	//エネミーの数が１以下であれば比べる必要はない。
+	if (m_numenemy > 1)
+	{
+		if (m_isLockOn == false) {
+			//繰り返しの回数は現在のエネミーの数-1する。
+			for (int i = 0; i < m_numenemy - 1; i++) {
+				//繰り返しのint iの数字の配列のエネミーポジションの
+				//位置を入れたローカル変数えねぽす１を定義する。
+				Vector3 enemypos1 = *m_enemyPositionList[i];
+				//繰り返しのint i+1の数字の配列のエネミーポジションの
+				//位置を入れたローカル変数えねぽす２を定義する(どちらが近いか比べるため)。
+				Vector3 enemypos2 = *m_enemyPositionList[i + 1];
+				//えねぽす１の位置とプレイヤーの位置の距離を計算した
+				//ローカル変数diff1を定義する。
+				Vector3 diff1 = enemypos1 - m_position;
+				//えねぽす２の位置とプレイヤーの位置の距離を計算した
+				//ローカル変数diff2を定義する。
+				Vector3 diff2 = enemypos2 - m_position;
+				//diff1とdiff2の距離を比べた後に小さかったほうの位置を格納してある
+				//えねぽすさぶ(初期値すべて500.0f)の距離を計算した
+				//ローカル変数diff3を定義する。
+				Vector3 diff3 = enemypossub - m_position;
+				//diff1とdiff2の距離を比べる。
+				//diff1の方が小さかったら、
+				if (diff1.Length() < diff2.Length()) {
+					//diff3より小さかったら、
+					if (diff1.Length() < diff3.Length()) {
+						//えねぽす１をえねぽすさぶに代入する。
+						enemypossub = enemypos1;
+					}
 				}
-			}
-			else {
-				if (diff2.Length() < diff3.Length()) {
-					enemypossub = enemypos2;
+				//そうでなかったら、
+				else {
+					//diff3より小さかったら、
+					if (diff2.Length() < diff3.Length()) {
+						//えねぽす２をえねぽすさぶに代入する。
+						enemypossub = enemypos2;
+					}
 				}
 			}
 		}
 	}
-
+	//エネミーの数が1以下であれば、
+	else{
+		//配列0番の位置をえねぽすさぶに代入する。
+		Vector3 enemypos3 = *m_enemyPositionList[m_numenemy - 1];
+		enemypossub = enemypos3;
+	}
+	//計算が終了した後の一番近い位置のエネミーの位置と
+	//プレイヤーの位置の距離を計算したローカル変数diff4を
+	//定義する。
 	Vector3 diff4 = enemypossub - m_position;
-	if (diff4.Length() >= 700.0f)
-	{
+	//そのdiff4の距離が700.0fよりも大きいなら、
+	if (diff4.Length() >= 700.0f){
+		//ロックオンしない。
 		m_isTakeAim = false;
 		return;
 	}
