@@ -559,16 +559,50 @@ void P_main_Player::LockonLR()
 {
 	if (m_isLockOn){
 		if (g_pad[0]->IsTrigger(enButtonRB1)){
-			if (Listnum == 0){
-				//近いほうにターゲットにするか？
-				Listnum = m_numenemy - 1;
-				enemypossub = *m_enemyPositionList[Listnum];
+			LockonLRDis(en_R);
+		}
+		if (g_pad[0]->IsTrigger(enButtonLB1)) {
+			LockonLRDis(en_L);
+		}
+	}
+}
+
+void P_main_Player::LockonLRDis(LockonLRen LR)
+{
+	switch (LR)
+	{
+	case P_main_Player::en_R:
+		for (int i = 0; i < m_numenemy; i++){
+			if (Listnum == m_numenemy - 1) {
+				Listnum = 0;
 			}
 			else{
-				Listnum = Listnum--;
-				enemypossub = *m_enemyPositionList[Listnum];
+				Listnum++;
+			}
+			Vector3 enemypos1 = *m_enemyPositionList[Listnum];
+			Vector3 diff1 = enemypos1 - m_position;
+			if (diff1.Length() <= 1000.f) {
+				enemypossub = enemypos1;
+				break;
 			}
 		}
+		break;
+	case P_main_Player::en_L:
+		for (int i = 0; i < m_numenemy; i--) {
+			if (Listnum == 0) {
+				Listnum = m_numenemy - 1;
+			}
+			else {
+				Listnum--;
+			}
+			Vector3 enemypos1 = *m_enemyPositionList[Listnum];
+			Vector3 diff1 = enemypos1 - m_position;
+			if (diff1.Length() <= 1000.f) {
+				enemypossub = enemypos1;
+				break;
+			}
+		}
+		break;
 	}
 }
 

@@ -15,6 +15,11 @@ public:
 		enPlayerState_Down,				//ダウン
 		enPlayerState_ReceiveDamage,    //被ダメージ。
 	};
+	enum LockonLRen {
+		en_R,
+		en_L,
+		en_Early
+	};
 	//関数宣言
 	P_main_Player() {}
 	~P_main_Player() {}
@@ -27,7 +32,8 @@ public:
 	void ManageState();					//ステート遷移処理
 	void Collision();					//本体の当たり判定
 	void Lockon();						//ロックオン
-	void LockonLR();
+	void LockonLR();					//ロックオン変更
+	void LockonLRDis(LockonLRen LR);	//ロックオン変更距離計算
 	void Takeaim();						//ロックオンに対する位置取得
 	void Avoidance();					//回避
 	void AvoidanceTex();				//回避スキン変更
@@ -124,5 +130,7 @@ public:
 	float m_mpRec = 0.0f;									//mp回復タイマー
 	float mpRecReset = 0.0f;								//mpタイマーリセット
 	bool mpRecgo = false;									//mp回復するかしないか
+	bool DistanceBool = false;
+	LockonLRen LR = en_Early;
 };
 
