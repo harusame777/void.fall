@@ -408,5 +408,3 @@ void E_001_enemy::Render(RenderContext& rc)
 {
 	m_modelrender->Draw(rc);
 }
-
-

@@ -52,47 +52,14 @@ public:
 	const bool SearchAttackDistance() const;               //攻撃距離探知
 	const bool SearchAttackDistanceNear() const;               //攻撃距離探知(近距離)
 	///////////////////////////////////////////////////////////
-	//初期設定系統
-	void Setposition(const Vector3& position)//座標
-	{
-		m_position = position;
-	}
-	const Vector3& Getposition() const//座標取得プログラム
-	{
-		return m_position;
-	}
-	void Setrotation(const Quaternion& rotation)//回転値
-	{
-		m_rotation = rotation;
-	}
-	void Setscale(const Vector3& scale)//座標
-	{
-		m_scale = scale;
-	}
-	void SetHP(const int hp)//初期HP
-	{
-		m_hp = hp;
-	}
-	//bool IsEnableMove() const				//移動できるかどうか
-	//{
-	//	return m_enemystate != enAnimationClip_Chase &&
-	//		m_enemystate != enAnimationClip_Down &&
-	//		m_enemystate != enAnimationClip_Idle &&
-	//		m_enemystate != enAnimationClip_ReceiveDamage;
-	//}
 	//メンバ関数宣言
 	Game* m_game = nullptr;
 	AnimationClip m_animationclips[enAnimationClip_Num];     //アニメーションクリップ
-	ModelRender*  m_modelrender = nullptr;					//モデルレンダー
-	Vector3 m_scale = Vector3::One;							//大きさ
-	Quaternion m_rotation;									//回転
-	Vector3 m_movespeed;									//移動速度
 	Vector3	m_forward = Vector3::AxisZ;						//エネミーの正面ベクトル。
 	EnEnemyState m_enemystate = enEnemyState_Idle;          //エネミーステート
 	Vector3 m_targetPosition = Vector3::Zero;				//射撃ターゲット
 	bool m_isUnderAttack = false;							//攻撃中かどうか(初期状態はfalse攻撃中ではない)
 	int m_attacknearboneID = -1;							//近接攻撃bone
-	int m_hp = 0;                                           //HP
 	float m_chaseTimer = 0.0f;						        //追跡タイマー。
 	float m_idleTimer = 0.0f;							    //待機タイマー。
 	float m_attackTimer = 5.0f;								//攻撃待機タイマー。
