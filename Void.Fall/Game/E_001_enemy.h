@@ -54,6 +54,7 @@ public:
 	///////////////////////////////////////////////////////////
 	//メンバ関数宣言
 	Game* m_game = nullptr;
+	EffectEmitter* m_effect = nullptr;						//エフェクト
 	AnimationClip m_animationclips[enAnimationClip_Num];     //アニメーションクリップ
 	Vector3	m_forward = Vector3::AxisZ;						//エネミーの正面ベクトル。
 	EnEnemyState m_enemystate = enEnemyState_Idle;          //エネミーステート

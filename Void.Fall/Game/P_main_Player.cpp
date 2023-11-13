@@ -514,6 +514,11 @@ void P_main_Player::Takeaim()
 				}
 			}
 		}
+		else
+		{
+			Vector3 enemypos3 = *m_enemyPositionList[Listnum];
+			enemypossub = enemypos3;
+		}
 	}
 	//エネミーの数が1以下であれば、
 	else{
@@ -588,7 +593,7 @@ void P_main_Player::LockonLRDis(LockonLRen LR)
 		}
 		break;
 	case P_main_Player::en_L:
-		for (int i = 0; i < m_numenemy; i--) {
+		for (int i = 0; i < m_numenemy; i++) {
 			if (Listnum == 0) {
 				Listnum = m_numenemy - 1;
 			}

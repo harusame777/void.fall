@@ -19,16 +19,17 @@ public:
 	void PlayAnimation();
 	//ステート遷移関数/////////////////////////////////////////
 	void ManageState();//遷移処理
-	void ProcessCommonStateTransition() {};//共通遷移処理
-	void ProcessIdleStateTransition() {};//待機遷移
-	void ProcessChaseStateTransition() {};//追跡遷移
+	void ProcessCommonStateTransition() ;//共通遷移処理
+	void ProcessIdleStateTransition() ;//待機遷移
+	void ProcessChaseStateTransition() ;//追跡遷移
 	///////////////////////////////////////////////////////////
 	E_002_enemy() {};
 	~E_002_enemy() {};
 	bool Start();
 	void Update();                                         //アップデート
 	void Rotation();                                       //回転
-	void Chase() {};										   //追跡
+	void Chase();										   //追跡
+	const bool SearchPlayer() const;                       //プレイヤー探知
 	void Render(RenderContext& rc);                        //モデルレンダー
 	///////////////////////////////////////////////////////////
 	//初期設定系統

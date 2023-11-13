@@ -4,6 +4,8 @@
 #include "Game.h"
 #include "collision/CollisionObject.h"
 #include "P_main_Player.h"
+#define enemyspeed 100.0f                               //移動速度の数値
+#define enemyserch 700.0f * 700.0f						//追跡可能範囲
 
 namespace
 {
@@ -91,9 +93,54 @@ void E_002_enemy::ManageState()
 	}
 }
 
+void E_002_enemy::ProcessCommonStateTransition()
+{
+	Vector3 diff = m_player->Getposition() - m_position;
+
+	if (SearchPlayer() == true)
+	{
+		//ベクトルを正規化する。
+		diff.Normalize();
+		//移動速度を設定する。
+		m_movespeed = diff * enemyspeed;
+		m_enemystate = enEnemyState_Chase;
+	}
+	else
+	{
+		m_enemystate = enEnemyState_Idle;
+	}
+}
+
 void E_002_enemy::ProcessIdleStateTransition()
 {
 	ProcessCommonStateTransition();
+}
+
+void E_002_enemy::ProcessChaseStateTransition()
+{
+	ProcessCommonStateTransition();
+}
+
+void E_002_enemy::Chase()
+{
+	//追跡ステートでないなら、追跡処理はしない。
+	if (m_enemystate != enEnemyState_Chase)
+	{
+		return;
+	}
+
+	//エネミーを移動させる。
+	m_position = m_charaCon.Execute(m_movespeed, g_gameTime->GetFrameDeltaTime());
+	if (m_charaCon.IsOnGround()) {
+		//地面についた。
+		//重力を0にする。
+		m_movespeed.y = 0.0f;
+	}
+	Vector3 modelPosition = m_position;
+	//ちょっとだけモデルの座標を挙げる。
+	modelPosition.y += 2.5f;
+	//座標を設定する。
+	m_modelrender->SetPosition(modelPosition);
 }
 
 void E_002_enemy::Rotation()
@@ -116,10 +163,24 @@ void E_002_enemy::Rotation()
 	//回転を設定する。
 	m_modelrender->SetRotation(m_rotation);
 	m_collisionObject->SetRotation(m_rotation);
+	m_collisionObject->SetPosition(m_position + corre);
 
 	//プレイヤーの前ベクトルを計算する。
 	m_forward = Vector3::AxisZ;
 	m_rotation.Apply(m_forward);
+}
+
+const bool E_002_enemy::SearchPlayer() const
+{
+	Vector3 diff = m_player->Getposition() - m_position;
+
+	//プレイヤーにある程度近かったら.。
+	if (diff.LengthSq() <= enemyserch)
+	{
+		return true;
+	}
+	//プレイヤーを見つけられなかった。
+	return false;
 }
 
 void E_002_enemy::Render(RenderContext& rc)

@@ -38,6 +38,9 @@ bool E_001_enemy::Start()
 	m_animationclips[enAnimationClip_Down].Load("Assets/animData/Enemy/enemy_001/down.tka");
 	m_animationclips[enAnimationClip_ReceiveDamage].SetLoopFlag(false);
 
+	//エフェクト読み込み
+	EffectEngine::GetInstance()->ResistEffect(0, u"Assets/animData/Enemy/enemy_001/test1.efk");
+
 	//モデル読み込み
 	m_modelrender = new ModelRender;
 	m_modelrender->Init("Assets/modelData/Enemy/enemy_001/RE_enemy_001.tkm",m_animationclips, enAnimationClip_Num);
@@ -112,6 +115,7 @@ void E_001_enemy::Rotation()
 	//回転を設定する。
 	m_modelrender->SetRotation(m_rotation);
 	m_collisionObject->SetRotation(m_rotation);
+	m_collisionObject->SetPosition(m_position + corre);
 
 	//プレイヤーの前ベクトルを計算する。
 	m_forward = Vector3::AxisZ;
@@ -291,6 +295,12 @@ void E_001_enemy::OnAnimationEvent(const wchar_t* clipName, const wchar_t* event
 		bullet->m_position.y += 80.0f;
 		bullet->m_position.z += 10.0f;
 		bullet->SetEnShooter(B_homingbullet::enShooter_Enemy);
+		m_effect = NewGO<EffectEmitter>(0);
+		m_effect->Init(0);
+		m_effect->SetScale({ 10.0f,10.0f,10.0f });
+		m_effect->SetPosition(m_position);
+		m_effect->SetRotation(m_rotation);
+		m_effect->Play();
 	}
 }
 

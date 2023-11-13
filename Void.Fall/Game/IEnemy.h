@@ -2,6 +2,7 @@
 #include "Game.h"
 #include "P_main_Player.h"
 #include "collision/CollisionObject.h"
+#include "graphics/effect/EffectEmitter.h"
 class Game;
 class P_main_Player;
 class IEnemy : public IGameObject
@@ -14,6 +15,8 @@ public:
 		m_position.Length();
 		m_player->m_enemyPositionList.push_back(&m_position);
 		m_player->m_numenemy++;
+		m_enemyPositionListIenemy.push_back(&m_position);
+		m_numenemy++;
 	}
 	void Setposition(const Vector3& position)//À•W
 	{
@@ -36,6 +39,7 @@ public:
 		m_hp = hp;
 	}
 public:
+	std::vector<Vector3*> m_enemyPositionListIenemy;
 	Vector3 m_movespeed;					//ˆÚ“®‘¬“x
 	Quaternion m_rotation;					//‰ñ“]
 	Vector3 m_scale = Vector3::One;			//‘å‚«‚³
