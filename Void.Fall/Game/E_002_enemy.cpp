@@ -16,7 +16,7 @@ bool E_002_enemy::Start()
 {
 
 	//アニメーション読み込み
-	m_animationclips[enAnimationClip_Idle].Load("Assets/animData/Enemy/enemy_002/idle.tka");
+	m_animationclips[enAnimationClip_Idle].Load("Assets/animData/Enemy/enemy_002/walk.tka");
 	m_animationclips[enAnimationClip_Idle].SetLoopFlag(true);
 	m_animationclips[enAnimationClip_Chase].Load("Assets/animData/Enemy/enemy_002/walk.tka");
 	m_animationclips[enAnimationClip_Chase].SetLoopFlag(true);

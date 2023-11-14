@@ -118,7 +118,8 @@ public:
 	bool m_isTakeAim = false;
 	bool m_isLockOn = false;
 	int m_numenemy = 0;
-	int Listnum = 0;										//リストナンバー
+	int ListnumB = 0;										//リストナンバーB
+	int ListnumA = 0;										//リストナンバーA
 	int m_hp = 3;											//HP
 	int m_mp = 3;											//MP
 	float m_Avoidancetimer = 0.0f;							//回避タイマー

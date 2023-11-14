@@ -255,6 +255,14 @@ void P_main_Player::Rotation()
 
 void P_main_Player::AttackRotation()
 {
+	//Vector3 diff = m_position - m_targetPosition;
+	//diff.Normalize();
+	//Quaternion attackrotation;
+	//attackrotation.Apply(diff);
+	//m_rotation.SetRotationY(attackrotation.y);
+	//m_modelrender->SetRotation(attackrotation);
+	//m_forward = Vector3::AxisZ;
+	//m_rotation.Apply(m_forward);
 }
 
 void P_main_Player::Collision()
@@ -478,13 +486,13 @@ void P_main_Player::Takeaim()
 	{
 		if (m_isLockOn == false) {
 			//繰り返しの回数は現在のエネミーの数-1する。
-			for (Listnum = 0; Listnum < m_numenemy - 1; Listnum++) {
+			for (ListnumA = 0; ListnumA < m_numenemy - 1; ListnumA++) {
 				//繰り返しのint iの数字の配列のエネミーポジションの
 				//位置を入れたローカル変数えねぽす１を定義する。
-				Vector3 enemypos1 = *m_enemyPositionList[Listnum];
+				Vector3 enemypos1 = *m_enemyPositionList[ListnumA];
 				//繰り返しのint i+1の数字の配列のエネミーポジションの
 				//位置を入れたローカル変数えねぽす２を定義する(どちらが近いか比べるため)。
-				Vector3 enemypos2 = *m_enemyPositionList[Listnum + 1];
+				Vector3 enemypos2 = *m_enemyPositionList[ListnumA + 1];
 				//えねぽす１の位置とプレイヤーの位置の距離を計算した
 				//ローカル変数diff1を定義する。
 				Vector3 diff1 = enemypos1 - m_position;
@@ -502,6 +510,7 @@ void P_main_Player::Takeaim()
 					if (diff1.Length() < diff3.Length()) {
 						//えねぽす１をえねぽすさぶに代入する。
 						enemypossub = enemypos1;
+						ListnumB = ListnumA;
 					}
 				}
 				//そうでなかったら、
@@ -510,13 +519,14 @@ void P_main_Player::Takeaim()
 					if (diff2.Length() < diff3.Length()) {
 						//えねぽす２をえねぽすさぶに代入する。
 						enemypossub = enemypos2;
+						ListnumB = ListnumA + 1;
 					}
 				}
 			}
 		}
 		else
 		{
-			Vector3 enemypos3 = *m_enemyPositionList[Listnum];
+			Vector3 enemypos3 = *m_enemyPositionList[ListnumB];
 			enemypossub = enemypos3;
 		}
 	}
@@ -578,13 +588,13 @@ void P_main_Player::LockonLRDis(LockonLRen LR)
 	{
 	case P_main_Player::en_R:
 		for (int i = 0; i < m_numenemy; i++){
-			if (Listnum == m_numenemy - 1) {
-				Listnum = 0;
+			if (ListnumB == m_numenemy - 1) {
+				ListnumB = 0;
 			}
 			else{
-				Listnum++;
+				ListnumB++;
 			}
-			Vector3 enemypos1 = *m_enemyPositionList[Listnum];
+			Vector3 enemypos1 = *m_enemyPositionList[ListnumB];
 			Vector3 diff1 = enemypos1 - m_position;
 			if (diff1.Length() <= 1000.f) {
 				enemypossub = enemypos1;
@@ -594,13 +604,13 @@ void P_main_Player::LockonLRDis(LockonLRen LR)
 		break;
 	case P_main_Player::en_L:
 		for (int i = 0; i < m_numenemy; i++) {
-			if (Listnum == 0) {
-				Listnum = m_numenemy - 1;
+			if (ListnumB == 0) {
+				ListnumB = m_numenemy - 1;
 			}
 			else {
-				Listnum--;
+				ListnumB--;
 			}
-			Vector3 enemypos1 = *m_enemyPositionList[Listnum];
+			Vector3 enemypos1 = *m_enemyPositionList[ListnumB];
 			Vector3 diff1 = enemypos1 - m_position;
 			if (diff1.Length() <= 1000.f) {
 				enemypossub = enemypos1;

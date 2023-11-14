@@ -28,14 +28,14 @@ bool B_homingbullet::Start()
 		m_collisionObject->SetIsEnableAutoDelete(false);
 
 		//アニメーション読み込み
-		m_animationclips[enAnimationClip_Move].Load
-		("Assets/modelData/A_attack/bullet/homingbullet/homingbullet.tka");
-		m_animationclips[enAnimationClip_Move].SetLoopFlag(true);
+		//m_animationclips[enAnimationClip_Move].Load
+		//("Assets/modelData/A_attack/bullet/homingbullet/homingbullet.tka");
+		//m_animationclips[enAnimationClip_Move].SetLoopFlag(true);
 
 		//モデル読み込み
 		m_modelrender = new ModelRender;
-		m_modelrender->Init("Assets/modelData/A_attack/bullet/homingbullet/homingbullet1.tkm",
-			m_animationclips, enAnimationClip_Num);
+		m_modelrender->Init("Assets/modelData/A_attack/bullet/homingbullet/homingbullet1.tkm"
+			/*,m_animationclips, enAnimationClip_Num*/);
 	}
 	if (m_shooter == enShooter_Player){
 		//コリジョンオブジェクトを作成する。
@@ -46,15 +46,15 @@ bool B_homingbullet::Start()
 		//コリジョンオブジェクトが自動で削除されないようにする。
 		m_collisionObject->SetIsEnableAutoDelete(false);
 
-		//アニメーション読み込み
-		m_animationclips[enAnimationClip_Move].Load
-		("Assets/modelData/A_attack/bullet/normalbullet/normalbullet.tka");
-		m_animationclips[enAnimationClip_Move].SetLoopFlag(true);
+		////アニメーション読み込み
+		//m_animationclips[enAnimationClip_Move].Load
+		//("Assets/modelData/A_attack/bullet/normalbullet/normalbullet.tka");
+		//m_animationclips[enAnimationClip_Move].SetLoopFlag(true);
 
 		//モデル読み込み
 		m_modelrender = new ModelRender;
-		m_modelrender->Init("Assets/modelData/A_attack/bullet/normalbullet/normalbullet1.tkm",
-			m_animationclips, enAnimationClip_Num);
+		m_modelrender->Init("Assets/modelData/A_attack/bullet/normalbullet/normalbullet1.tkm"
+			/*,m_animationclips, enAnimationClip_Num*/);
 	}
 
 	m_modelrender->SetPosition(m_position);
@@ -79,14 +79,17 @@ void B_homingbullet::Update()
 	//弾丸消去処理
 	deletebullet();
 	//アニメーション
-	PlayAnimation();
+	//PlayAnimation();
 	//描画処理
 	m_modelrender->Update();
 }
 
 void B_homingbullet::PlayAnimation()
 {
-	m_modelrender->PlayAnimation(enAnimationClip_Move, 0.1f);
+	if (m_isDelete == false)
+	{
+		m_modelrender->PlayAnimation(enAnimationClip_Move, 0.1f);
+	}
 }
 
 void B_homingbullet::Movebullet()
@@ -165,8 +168,8 @@ void B_homingbullet::Inpacttime()
 	{
 		return;
 	}
-	DeleteGO(m_collisionObject);
 	delete m_modelrender;
+	DeleteGO(m_collisionObject);
 	DeleteGO(this);
 }
 

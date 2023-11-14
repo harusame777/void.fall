@@ -13,14 +13,14 @@ bool B_normalbullet::Start()
 {
 
 	//アニメーション読み込み
-	m_animationclips[enAnimationClip_Move].Load
-	("Assets/modelData/A_attack/bullet/normalbullet/normalbullet.tka");
-	m_animationclips[enAnimationClip_Move].SetLoopFlag(true);
+	//m_animationclips[enAnimationClip_Move].Load
+	//("Assets/modelData/A_attack/bullet/normalbullet/normalbullet.tka");
+	//m_animationclips[enAnimationClip_Move].SetLoopFlag(true);
 
 	//モデル読み込み
 	m_modelrender = new ModelRender;
-	m_modelrender->Init("Assets/modelData/A_attack/bullet/normalbullet/normalbullet1.tkm",
-		m_animationclips, enAnimationClip_Num);
+	m_modelrender->Init("Assets/modelData/A_attack/bullet/normalbullet/normalbullet1.tkm"
+		/*,m_animationclips, enAnimationClip_Num*/);
 
 	m_modelrender->SetPosition(m_position);
 	m_modelrender->SetScale(scale);
@@ -59,7 +59,7 @@ void B_normalbullet::Update()
 	//弾丸消去処理
 	deletebullet();
 	//アニメーション
-	PlayAnimation();
+	//PlayAnimation();
 	//描画処理
 	m_modelrender->Update();
 }

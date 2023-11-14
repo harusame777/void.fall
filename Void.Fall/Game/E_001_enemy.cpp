@@ -14,7 +14,8 @@
 #define attacktime 5.0f									//アタックタイマー
 namespace
 {
-	const Vector3 corre = { 0.0f,60.0f,0.0f };//位置修正
+	const Vector3 corre1 = { 0.0f,60.0f,0.0f };//位置修正本体当たり判定
+	const Vector3 corre2 = { 0.0f,80.0f,10.0f };//位置修正弾丸発生位置
 }
 
 bool E_001_enemy::Start()
@@ -67,7 +68,7 @@ bool E_001_enemy::Start()
 	//球状のコリジョンを作成する。
 	m_collisionObject->CreateSphere(m_position, Quaternion::Identity, 60.0f * m_scale.z);
 	m_collisionObject->SetName("enemy_col");
-	m_collisionObject->SetPosition(m_position + corre);
+	m_collisionObject->SetPosition(m_position + corre1);
 	//コリジョンオブジェクトが自動で削除されないようにする。
 	m_collisionObject->SetIsEnableAutoDelete(false);
 
@@ -115,7 +116,7 @@ void E_001_enemy::Rotation()
 	//回転を設定する。
 	m_modelrender->SetRotation(m_rotation);
 	m_collisionObject->SetRotation(m_rotation);
-	m_collisionObject->SetPosition(m_position + corre);
+	m_collisionObject->SetPosition(m_position + corre1);
 
 	//プレイヤーの前ベクトルを計算する。
 	m_forward = Vector3::AxisZ;
@@ -290,15 +291,13 @@ void E_001_enemy::OnAnimationEvent(const wchar_t* clipName, const wchar_t* event
 	}
 	else if (wcscmp(eventName, L"attack_point") == 0) {
 		auto bullet = NewGO<B_homingbullet>(0);
-		bullet->SetPosition(m_position);
+		bullet->SetPosition(m_position + corre2);
 		bullet->SetVelocity(m_forward * 10);
-		bullet->m_position.y += 80.0f;
-		bullet->m_position.z += 10.0f;
 		bullet->SetEnShooter(B_homingbullet::enShooter_Enemy);
 		m_effect = NewGO<EffectEmitter>(0);
 		m_effect->Init(0);
 		m_effect->SetScale({ 10.0f,10.0f,10.0f });
-		m_effect->SetPosition(m_position);
+		m_effect->SetPosition(m_position + corre2);
 		m_effect->SetRotation(m_rotation);
 		m_effect->Play();
 	}
