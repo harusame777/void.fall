@@ -11,6 +11,7 @@ public:
 		enPlayerState_Idle,				//待機。
 		enPlayerState_Walk,				//歩き。
 		enPlayerState_Attack,			//攻撃
+		enPlayerState_Attacknear,		//近接攻撃
 		enPlayerState_Avoidance,		//回避
 		enPlayerState_Down,				//ダウン
 		enPlayerState_ReceiveDamage,    //被ダメージ。
@@ -44,6 +45,7 @@ public:
 	enum EnAnimationClip {
 		enAnimationClip_Walk,			//歩き
 		enAnimationClip_Attack,			//攻撃
+		enAnimationClip_Attacknear,		//近接攻撃
 		enAnimationClip_Idle,			//棒立ち
 		enAnimationClip_ReceiveDamage,  //被ダメージ。
 		enAnimationClip_Down,            //ダウン
@@ -98,8 +100,8 @@ public:
 		return m_targetPosition;
 	}
 	//メンバ関数宣言
-	std::vector<Vector3*> m_enemyPositionList;
-	IEnemy* m_ienemy = nullptr;
+	std::vector<Vector3*> m_enemyPositionList;              //エネミー座標動的配列
+	IEnemy* m_ienemy = nullptr;								//エネミー基底クラス
 	AnimationClip m_animationclips[enAnimationClip_Num];	//アニメーションクリップ
 	AnimationClip m_animationclips_sub[enAnimationClip_sub_Num];//アニメーションクリップ
 	Vector3 m_position;										//座標
@@ -110,16 +112,17 @@ public:
 	EnPlayerState m_playerstate = enPlayerState_Idle;		//プレイヤーステート
 	CharacterController	m_charaCon;							//キャラクターコントローラー。
 	ModelRender* m_modelrender = nullptr;					//モデルレンダー
-	SpriteRender m_spriterender;
-	Vector3 m_targetPosition = Vector3::Zero;
-	Game* m_game = nullptr;
-	Vector3 enemypossub = { 1000.0f,1000.0f,1000.0f };
+	SpriteRender m_spriterender;							//スプライトレンダー
+	Vector3 m_targetPosition = Vector3::Zero;				//ロックオン対象座標
+	Game* m_game = nullptr;									//ゲーム
+	Vector3 enemypossub = { 1000.0f,1000.0f,1000.0f };		//ロックオン計算に使うヤツ
 	//変数宣言
-	bool m_isTakeAim = false;
-	bool m_isLockOn = false;
-	int m_numenemy = 0;
-	int ListnumB = 0;										//リストナンバーB
-	int ListnumA = 0;										//リストナンバーA
+	bool m_isTakeAim = false;								//ロックオンの位置取れてるか
+	bool m_isLockOn = false;								//ロックオンtrue:false
+	LockonLRen LR = en_Early;								//ロックオン変更用
+	int m_numenemy = 0;										//現在エネミーの数
+	int ListnumB = 0;										//リストナンバーB(ロックオン時固定)
+	int ListnumA = 0;										//リストナンバーA(ロックオン計算時)
 	int m_hp = 3;											//HP
 	int m_mp = 3;											//MP
 	float m_Avoidancetimer = 0.0f;							//回避タイマー
@@ -131,7 +134,5 @@ public:
 	float m_mpRec = 0.0f;									//mp回復タイマー
 	float mpRecReset = 0.0f;								//mpタイマーリセット
 	bool mpRecgo = false;									//mp回復するかしないか
-	bool DistanceBool = false;
-	LockonLRen LR = en_Early;
 };
 

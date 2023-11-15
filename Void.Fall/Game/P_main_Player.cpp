@@ -24,6 +24,10 @@ bool P_main_Player::Start()
 	m_animationclips[enAnimationClip_ReceiveDamage].SetLoopFlag(false);
 	m_animationclips[enAnimationClip_Down].Load("Assets/animData/Player/down.tka");
 	m_animationclips[enAnimationClip_Down].SetLoopFlag(false);
+	//enAnimationClip_Attack:アニメーションキーname(attack_start)
+	//enAnimationClip_Attack:アニメーションキーname(attack_end)
+	m_animationclips[enAnimationClip_Attacknear].Load("Assets/animData/Player/attack2.tka");
+	m_animationclips[enAnimationClip_Attacknear].SetLoopFlag(false);
 
 
 	m_modelrender = new ModelRender;
@@ -81,6 +85,9 @@ void P_main_Player::PlayAnimation()
 	case enPlayerState_Attack:
 		//攻撃アニメーション
 		m_modelrender->PlayAnimation(enAnimationClip_Attack, 0.3f);
+		break;
+	case enPlayerState_Attacknear:
+		m_modelrender->PlayAnimation(enAnimationClip_Attacknear, 0.1f);
 		break;
 	case enPlayerState_Avoidance:
 		//回避アニメーション
@@ -176,7 +183,7 @@ void P_main_Player::Move()
 	//XZ成分の移動速度をクリア。
 	m_movespeed += cameraForward * lStick_y * playerspeed;	//奥方向への移動速度を加算。
 	m_movespeed += cameraRight * lStick_x * playerspeed;		//右方向への移動速度を加算。
-	if (g_pad[0]->IsTrigger(enButtonA) //Aボタンが押されたら
+	if (g_pad[0]->IsTrigger(enButtonX) //Aボタンが押されたら
 		&& m_charaCon.IsOnGround()   //かつ、地面に居たら
 		) {
 		//ジャンプする。
@@ -380,6 +387,8 @@ void P_main_Player::ProcessReceiveDamageStateTransition()
 	{
 		//無敵タイマーを初期化
 		m_mutekitimer = mutekitime;
+		//ステートを待機ステートにして
+		m_playerstate = enPlayerState_Idle;
 		//ステートを遷移する。
 		ProcessCommonStateTransition();
 	}
@@ -402,7 +411,7 @@ void P_main_Player::ProcessCommonStateTransition()
 		return;
 	}
 	//Bボタンが押されたら
-	if (g_pad[0]->IsTrigger(enButtonB)){
+	if (g_pad[0]->IsTrigger(enButtonRB1)){
 		//attackステートにする。
 		m_playerstate = enPlayerState_Attack;
 		return;
@@ -412,7 +421,7 @@ void P_main_Player::ProcessCommonStateTransition()
 		//スティックからの入力があり
 		if (fabsf(m_movespeed.x) >= 0.001f || fabsf(m_movespeed.z) >= 0.001f) {
 			//Yボタンが押されたら
-			if (g_pad[0]->IsTrigger(enButtonY)) {
+			if (g_pad[0]->IsTrigger(enButtonA)) {
 				//スキンを回避状態に変更し
 				AvoidanceTex();
 				//回避ステートにして
@@ -450,6 +459,12 @@ void P_main_Player::NormalTex()
 	m_animationclips[enAnimationClip_Attack].SetLoopFlag(false);
 	m_animationclips[enAnimationClip_ReceiveDamage].Load("Assets/animData/Player/receivedamage.tka");
 	m_animationclips[enAnimationClip_ReceiveDamage].SetLoopFlag(false);
+	m_animationclips[enAnimationClip_Down].Load("Assets/animData/Player/down.tka");
+	m_animationclips[enAnimationClip_Down].SetLoopFlag(false);
+	//enAnimationClip_Attack:アニメーションキーname(attack_start)
+	//enAnimationClip_Attack:アニメーションキーname(attack_end)
+	m_animationclips[enAnimationClip_Attacknear].Load("Assets/animData/Player/attack2.tka");
+	m_animationclips[enAnimationClip_Attacknear].SetLoopFlag(false);
 	m_modelrender = new ModelRender;
 	m_modelrender->Init("Assets/modelData/A_testPlayer/RE_Player.tkm",
 		m_animationclips, enAnimationClip_Num);
@@ -478,12 +493,14 @@ void P_main_Player::Takeaim()
 {
 	//エネミーの数が0だったら処理しない。
 	if (m_numenemy == 0){
+		enemypossub = { 1000.0f,1000.0f,1000.0f };
 		return;
 	}
 	//エネミー距離計算
 	//エネミーの数が１以下であれば比べる必要はない。
 	if (m_numenemy > 1)
 	{
+		//ロックオンしていなかったら
 		if (m_isLockOn == false) {
 			//繰り返しの回数は現在のエネミーの数-1する。
 			for (ListnumA = 0; ListnumA < m_numenemy - 1; ListnumA++) {
@@ -500,7 +517,8 @@ void P_main_Player::Takeaim()
 				//ローカル変数diff2を定義する。
 				Vector3 diff2 = enemypos2 - m_position;
 				//diff1とdiff2の距離を比べた後に小さかったほうの位置を格納してある
-				//えねぽすさぶ(初期値すべて500.0f)の距離を計算した
+				//えねぽすさぶ(初期値すべて1000.0f、この処理後は
+				//一番小さい距離のポジションが入る)の距離を計算した
 				//ローカル変数diff3を定義する。
 				Vector3 diff3 = enemypossub - m_position;
 				//diff1とdiff2の距離を比べる。
@@ -524,6 +542,7 @@ void P_main_Player::Takeaim()
 				}
 			}
 		}
+		//ロックオンしていたら
 		else
 		{
 			Vector3 enemypos3 = *m_enemyPositionList[ListnumB];
@@ -547,10 +566,15 @@ void P_main_Player::Takeaim()
 		return;
 	}
 
+	//位置をちょっと上げる
 	enemypossub.y = 60.0f;
-	//enemypossub.Normalize();
+	//エネミーの位置をそのまま正規化したらマズいので
+	//エネミーとプレイヤー(以下略)を計算した
+	//ローカル変数enemyangleを定義してそっちを正規化する。
+	Vector3 enemyangle = enemypossub - m_position;
+	enemyangle.Normalize();
 
-	float angle = acosf(m_forward.Dot(enemypossub));
+	float angle = acosf(m_forward.Dot(enemyangle));
 
 	//プレイヤーの正面ベクトルと。
 	//プレイヤーからエネミーに向かうベクトルの。
@@ -573,10 +597,10 @@ void P_main_Player::Takeaim()
 void P_main_Player::LockonLR()
 {
 	if (m_isLockOn){
-		if (g_pad[0]->IsTrigger(enButtonRB1)){
+		if (g_pad[0]->IsTrigger(enButtonRight)){
 			LockonLRDis(en_R);
 		}
-		if (g_pad[0]->IsTrigger(enButtonLB1)) {
+		if (g_pad[0]->IsTrigger(enButtonLeft)) {
 			LockonLRDis(en_L);
 		}
 	}
@@ -631,7 +655,7 @@ void P_main_Player::Lockon()
 		return;
 	}
 
-	if (g_pad[0]->IsTrigger(enButtonX))
+	if (g_pad[0]->IsTrigger(enButtonLB1))
 	{
 		//ロックオンしていなければ。
 		if (m_isLockOn == false)
