@@ -91,7 +91,7 @@ public:
 	{
 		m_scale = scale;
 	}
-	const bool IsLockOn() const
+	const bool IsLockOn() const				
 	{
 		return m_isLockOn;
 	}
@@ -99,6 +99,80 @@ public:
 	{
 		return m_targetPosition;
 	}
+	///////////////////////////////////////////////////////////
+	//計算、または省略した関数
+	//MP消費(引数はコスト)
+	void MP_Re(int mpcost)
+	{
+		m_mp -= mpcost;
+		m_mpRec = mpRecReset;
+		mpRecgo = true;
+	}
+	//正面に引数１があるかどうかboolで返すあったらtrue(引数１はenemyのポジション、
+	//引数２はplayerのポジション)
+	bool AngleCheck(const Vector3& positionE
+		,const Vector3& positionP)
+	{
+		Vector3 diff = positionE - positionP;
+		diff.Normalize();
+		float angle = acosf(m_forward.Dot(diff));
+		if (angle > Math::PI / 2){
+			return false;
+		}
+		else{
+			return true;
+		}
+	}
+	//ロックオンの時のエネミーの位置チェック
+	void RockOnPositionCheck()
+	{
+		//繰り返しの回数は現在のエネミーの数-1する。
+		for (ListnumA = 0; ListnumA < m_numenemy - 1; ListnumA++) {
+			//繰り返しのint iの数字の配列のエネミーポジションの
+			//位置を入れたローカル変数えねぽす１を定義する。
+			Vector3 enemypos1 = *m_enemyPositionList[ListnumA];
+			//繰り返しのint i+1の数字の配列のエネミーポジションの
+			//位置を入れたローカル変数えねぽす２を定義する(どちらが近いか比べるため)。
+			Vector3 enemypos2 = *m_enemyPositionList[ListnumA + 1];
+			//えねぽす１の位置とプレイヤーの位置の距離を計算した
+			//ローカル変数diff1を定義する。
+			Vector3 diff1 = enemypos1 - m_position;
+			//えねぽす２の位置とプレイヤーの位置の距離を計算した
+			//ローカル変数diff2を定義する。
+			Vector3 diff2 = enemypos2 - m_position;
+			//diff1とdiff2の距離を比べた後に小さかったほうの位置を格納してある
+			//えねぽすさぶ(初期値すべて1000.0f、この処理後は
+			//一番小さい距離のポジションが入る)の距離を計算した
+			//ローカル変数diff3を定義する。
+			Vector3 diff3 = enemypossub - m_position;
+			//diff1とdiff2の距離を比べる。
+			//diff1の方が小さかったら、
+			if (diff1.Length() < diff2.Length()) {
+				//えねぽす１の位置がプレイヤーの正面にあったら、
+				if (AngleCheck(enemypos1, m_position)) {
+					//diff3より小さかったら、
+					if (diff1.Length() < diff3.Length()) {
+						//えねぽす１をえねぽすさぶに代入する。
+						enemypossub = enemypos1;
+						ListnumB = ListnumA;
+					}
+				}
+			}
+			//そうでなかったら、
+			else {
+				//えねぽす２の位置がプレイヤーの正面にあったら、
+				if (AngleCheck(enemypos2, m_position)) {
+					//diff3より小さかったら、
+					if (diff2.Length() < diff3.Length()) {
+						//えねぽす２をえねぽすさぶに代入する。
+						enemypossub = enemypos2;
+						ListnumB = ListnumA + 1;
+					}
+				}
+			}
+		}
+	}
+	///////////////////////////////////////////////////////////
 	//メンバ関数宣言
 	std::vector<Vector3*> m_enemyPositionList;              //エネミー座標動的配列
 	IEnemy* m_ienemy = nullptr;								//エネミー基底クラス

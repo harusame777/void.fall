@@ -9,7 +9,8 @@
 #define playerspeed 250.0f			//プレイヤースピード
 #define playerspeedAvoid 250.0f		//回避スピード
 #define playerjamp 400.0f			//プレイヤージャンプ
-
+#define LockOnOutnum 1				//ロックオン範囲外数
+ 
 bool P_main_Player::Start()
 {
 	//アニメーション読み込み
@@ -126,9 +127,7 @@ void P_main_Player::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eve
 				bullet->m_position.y += 80.0f;
 				bullet->m_position.z += 10.0f;
 				bullet->SetEnShooter(B_homingbullet::enShooter_Player);
-				m_mp--;
-				m_mpRec = mpRecReset;
-				mpRecgo = true;
+				MP_Re(1);
 				return;
 			}
 			//normalbulletを作成する。
@@ -139,9 +138,8 @@ void P_main_Player::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eve
 			bullet->SetVelocity(m_forward);
 			bullet->m_position.y += 80.0f;
 			bullet->m_position.z += 10.0f;
-			m_mp--;
-			m_mpRec = mpRecReset;
-			mpRecgo = true;
+			MP_Re(1);
+			return;
 		}
 	}
 }
@@ -498,53 +496,14 @@ void P_main_Player::Takeaim()
 	}
 	//エネミー距離計算
 	//エネミーの数が１以下であれば比べる必要はない。
-	if (m_numenemy > 1)
+	if (m_numenemy > LockOnOutnum)
 	{
 		//ロックオンしていなかったら
 		if (m_isLockOn == false) {
-			//繰り返しの回数は現在のエネミーの数-1する。
-			for (ListnumA = 0; ListnumA < m_numenemy - 1; ListnumA++) {
-				//繰り返しのint iの数字の配列のエネミーポジションの
-				//位置を入れたローカル変数えねぽす１を定義する。
-				Vector3 enemypos1 = *m_enemyPositionList[ListnumA];
-				//繰り返しのint i+1の数字の配列のエネミーポジションの
-				//位置を入れたローカル変数えねぽす２を定義する(どちらが近いか比べるため)。
-				Vector3 enemypos2 = *m_enemyPositionList[ListnumA + 1];
-				//えねぽす１の位置とプレイヤーの位置の距離を計算した
-				//ローカル変数diff1を定義する。
-				Vector3 diff1 = enemypos1 - m_position;
-				//えねぽす２の位置とプレイヤーの位置の距離を計算した
-				//ローカル変数diff2を定義する。
-				Vector3 diff2 = enemypos2 - m_position;
-				//diff1とdiff2の距離を比べた後に小さかったほうの位置を格納してある
-				//えねぽすさぶ(初期値すべて1000.0f、この処理後は
-				//一番小さい距離のポジションが入る)の距離を計算した
-				//ローカル変数diff3を定義する。
-				Vector3 diff3 = enemypossub - m_position;
-				//diff1とdiff2の距離を比べる。
-				//diff1の方が小さかったら、
-				if (diff1.Length() < diff2.Length()) {
-					//diff3より小さかったら、
-					if (diff1.Length() < diff3.Length()) {
-						//えねぽす１をえねぽすさぶに代入する。
-						enemypossub = enemypos1;
-						ListnumB = ListnumA;
-					}
-				}
-				//そうでなかったら、
-				else {
-					//diff3より小さかったら、
-					if (diff2.Length() < diff3.Length()) {
-						//えねぽす２をえねぽすさぶに代入する。
-						enemypossub = enemypos2;
-						ListnumB = ListnumA + 1;
-					}
-				}
-			}
+			RockOnPositionCheck();
 		}
 		//ロックオンしていたら
-		else
-		{
+		else{
 			Vector3 enemypos3 = *m_enemyPositionList[ListnumB];
 			enemypossub = enemypos3;
 		}
@@ -562,6 +521,7 @@ void P_main_Player::Takeaim()
 	//そのdiff4の距離が700.0fよりも大きいなら、
 	if (diff4.Length() >= 1000.0f){
 		//ロックオンしない。
+		enemypossub = { 1000.0f,1000.0f,1000.0f };
 		m_isTakeAim = false;
 		return;
 	}
@@ -583,6 +543,7 @@ void P_main_Player::Takeaim()
 	//ターゲッティングしない。
 	if (angle > Math::PI / 2 && m_isLockOn == false)
 	{
+		enemypossub = { 1000.0f,1000.0f,1000.0f };
 		m_isTakeAim = false;
 		return;
 	}
