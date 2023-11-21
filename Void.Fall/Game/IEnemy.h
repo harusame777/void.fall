@@ -4,20 +4,12 @@
 #include "collision/CollisionObject.h"
 #include "graphics/effect/EffectEmitter.h"
 class Game;
-class P_main_Player;
+//class P_main_Player;
 class IEnemy : public IGameObject
 {
 public:
 	//‹¤’Ê‰Šúİ’è
-	IEnemy() {}
-	void SetenemyList()
-	{
-		m_position.Length();
-		m_player->m_enemyPositionList.push_back(&m_position);
-		m_player->m_numenemy++;
-		m_enemyPositionListIenemy.push_back(&m_position);
-		m_numenemy++;
-	}
+	//IEnemy() {}
 	void Setposition(const Vector3& position)//À•W
 	{
 		m_position = position;
@@ -39,6 +31,7 @@ public:
 		m_hp = hp;
 	}
 public:
+	IEnemy* m_ienemy = nullptr;
 	std::vector<Vector3*> m_enemyPositionListIenemy;
 	Vector3 m_movespeed;					//ˆÚ“®‘¬“x
 	Quaternion m_rotation;					//‰ñ“]

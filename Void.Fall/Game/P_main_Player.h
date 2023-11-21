@@ -1,8 +1,11 @@
 #pragma once
+//#include "IEnemy.h"
+//#include "Game.h"
 class IEnemy;
 class Game;
 class B_normalbullet;
 class B_homingbullet;
+
 class P_main_Player : public IGameObject
 {
 public:
@@ -29,6 +32,8 @@ public:
 	void Render(RenderContext& rc);		//モデルレンダー
 	void Move();						//移動
 	void Rotation();					//回転
+	void Attack();                      //攻撃
+	void MakeAttackCollision();			//攻撃当たり判定
 	void AttackRotation();				//攻撃時回転
 	void ManageState();					//ステート遷移処理
 	void Collision();					//本体の当たり判定
@@ -66,9 +71,12 @@ public:
 	void ProcessAvoidanceStateTransition(); //回避遷移
 	void ProcessReceiveDamageStateTransition();//被ダメ遷移
 	void ProcessDownStateTransition();//ダウン遷移
+	void RockOnPositionCheck();
+
 	bool IsEnableMove() const				//移動できるかどうか
 	{
 		return m_playerstate != enPlayerState_Attack &&
+			m_playerstate != enPlayerState_Attacknear && 
 			m_playerstate != enPlayerState_Avoidance &&
 			m_playerstate != enPlayerState_Idle &&
 			m_playerstate != enPlayerState_Walk;
@@ -123,57 +131,19 @@ public:
 			return true;
 		}
 	}
-	//ロックオンの時のエネミーの位置チェック
-	void RockOnPositionCheck()
+	//現在のステートがAttacknearかどうか調べる関数(Attacknearだったらfalseが帰ってくる)
+	bool AttackF()
 	{
-		//繰り返しの回数は現在のエネミーの数-1する。
-		for (ListnumA = 0; ListnumA < m_numenemy - 1; ListnumA++) {
-			//繰り返しのint iの数字の配列のエネミーポジションの
-			//位置を入れたローカル変数えねぽす１を定義する。
-			Vector3 enemypos1 = *m_enemyPositionList[ListnumA];
-			//繰り返しのint i+1の数字の配列のエネミーポジションの
-			//位置を入れたローカル変数えねぽす２を定義する(どちらが近いか比べるため)。
-			Vector3 enemypos2 = *m_enemyPositionList[ListnumA + 1];
-			//えねぽす１の位置とプレイヤーの位置の距離を計算した
-			//ローカル変数diff1を定義する。
-			Vector3 diff1 = enemypos1 - m_position;
-			//えねぽす２の位置とプレイヤーの位置の距離を計算した
-			//ローカル変数diff2を定義する。
-			Vector3 diff2 = enemypos2 - m_position;
-			//diff1とdiff2の距離を比べた後に小さかったほうの位置を格納してある
-			//えねぽすさぶ(初期値すべて1000.0f、この処理後は
-			//一番小さい距離のポジションが入る)の距離を計算した
-			//ローカル変数diff3を定義する。
-			Vector3 diff3 = enemypossub - m_position;
-			//diff1とdiff2の距離を比べる。
-			//diff1の方が小さかったら、
-			if (diff1.Length() < diff2.Length()) {
-				//えねぽす１の位置がプレイヤーの正面にあったら、
-				if (AngleCheck(enemypos1, m_position)) {
-					//diff3より小さかったら、
-					if (diff1.Length() < diff3.Length()) {
-						//えねぽす１をえねぽすさぶに代入する。
-						enemypossub = enemypos1;
-						ListnumB = ListnumA;
-					}
-				}
-			}
-			//そうでなかったら、
-			else {
-				//えねぽす２の位置がプレイヤーの正面にあったら、
-				if (AngleCheck(enemypos2, m_position)) {
-					//diff3より小さかったら、
-					if (diff2.Length() < diff3.Length()) {
-						//えねぽす２をえねぽすさぶに代入する。
-						enemypossub = enemypos2;
-						ListnumB = ListnumA + 1;
-					}
-				}
-			}
+		if (m_playerstate == enPlayerState_Attacknear){
+			return false;
+		}
+		else{
+			return true;
 		}
 	}
 	///////////////////////////////////////////////////////////
 	//メンバ関数宣言
+	CollisionObject* m_collisionObject;						//コリジョンオブジェクト。
 	std::vector<Vector3*> m_enemyPositionList;              //エネミー座標動的配列
 	IEnemy* m_ienemy = nullptr;								//エネミー基底クラス
 	AnimationClip m_animationclips[enAnimationClip_Num];	//アニメーションクリップ
@@ -207,6 +177,11 @@ public:
 	float mutekitime = 2.0f;								//無敵時間
 	float m_mpRec = 0.0f;									//mp回復タイマー
 	float mpRecReset = 0.0f;								//mpタイマーリセット
-	bool mpRecgo = false;									//mp回復するかしないか
+	float m_attacktime = 0.0f;								//攻撃クールダウンタイマー
+	float attacktimer = 0.3f;								//攻撃クールダウン時間
+ 	bool mpRecgo = false;									//mp回復するかしないか
+	bool m_isUnderAttack = false;							//現在攻撃判定中か
+	bool m_attack1time = false;
+	Vector3 enemy;
 };
 

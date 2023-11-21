@@ -19,6 +19,7 @@ public:
 	void Update();
 	void Render(RenderContext& rc);
 	//メンバ関数宣言
+	std::vector<IEnemy*> m_EnemyList;
 	Map_home1* m_home1 = nullptr;//home
 	P_main_Player* m_player = nullptr;//プレイヤー
 	E_001_enemy* m_enemy_001 = nullptr; //エネミー001

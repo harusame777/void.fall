@@ -16,7 +16,7 @@ bool E_002_enemy::Start()
 {
 
 	//アニメーション読み込み
-	m_animationclips[enAnimationClip_Idle].Load("Assets/animData/Enemy/enemy_002/walk.tka");
+	m_animationclips[enAnimationClip_Idle].Load("Assets/animData/Enemy/enemy_002/idle.tka");
 	m_animationclips[enAnimationClip_Idle].SetLoopFlag(true);
 	m_animationclips[enAnimationClip_Chase].Load("Assets/animData/Enemy/enemy_002/walk.tka");
 	m_animationclips[enAnimationClip_Chase].SetLoopFlag(true);
@@ -44,7 +44,6 @@ bool E_002_enemy::Start()
 	m_collisionObject->SetIsEnableAutoDelete(false);
 
 	m_player = FindGO<P_main_Player>("player");
-	SetenemyList();
 
 	m_forward = Vector3::AxisZ;
 	m_rotation.Apply(m_forward);
@@ -84,11 +83,14 @@ void E_002_enemy::ManageState()
 {
 	switch (m_enemystate)
 	{
-	case E_002_enemy::enEnemyState_Idle:
+	case enEnemyState_Idle:
 		ProcessIdleStateTransition();
 		break;
-	case E_002_enemy::enEnemyState_Chase:
+	case enEnemyState_Chase:
 		ProcessChaseStateTransition();
+		break;
+	case enEnemyState_Attack:
+		ProcessAttackStateTransition();
 		break;
 	}
 }
@@ -97,17 +99,33 @@ void E_002_enemy::ProcessCommonStateTransition()
 {
 	Vector3 diff = m_player->Getposition() - m_position;
 
-	if (SearchPlayer() == true)
+	//ベクトルを正規化する。
+	diff.Normalize();
+	//移動速度を設定する。
+	m_movespeed = diff * enemyspeed;
+	if (SearchPlayer())
 	{
-		//ベクトルを正規化する。
-		diff.Normalize();
-		//移動速度を設定する。
-		m_movespeed = diff * enemyspeed;
-		m_enemystate = enEnemyState_Chase;
+		if (SearchAttackDistance()){
+			if (m_attackTimer < 0.0f) {
+				m_enemystate = enEnemyState_Attack;
+				m_attackTimer = attacktime;
+				return;
+			}
+			if (m_enemystate == enEnemyState_Attack) {
+				m_enemystate = enEnemyState_Chase;
+				return;
+			}
+			else {
+				m_enemystate = enEnemyState_Chase;
+				return;
+			}
+		}
 	}
 	else
 	{
+		m_attackTimer = attacktime;
 		m_enemystate = enEnemyState_Idle;
+		return;
 	}
 }
 
@@ -118,7 +136,25 @@ void E_002_enemy::ProcessIdleStateTransition()
 
 void E_002_enemy::ProcessChaseStateTransition()
 {
+	//射程圏内に入ったら
+	if (SearchAttackDistance() == true)
+	{
+		//他のステートに遷移する。
+		m_attackTimer -= g_gameTime->GetFrameDeltaTime();
+		ProcessCommonStateTransition();
+		return;
+	}
 	ProcessCommonStateTransition();
+}
+
+void E_002_enemy::ProcessAttackStateTransition()
+{
+	//攻撃アニメーションの再生が終わったら。
+	if (m_modelrender->IsPlayingAnimation() == false)
+	{
+		//他のステートに遷移する。
+		ProcessCommonStateTransition();
+	}
 }
 
 void E_002_enemy::Chase()
@@ -180,6 +216,20 @@ const bool E_002_enemy::SearchPlayer() const
 		return true;
 	}
 	//プレイヤーを見つけられなかった。
+	return false;
+}
+
+const bool E_002_enemy::SearchAttackDistance() const
+{
+	Vector3 diff = m_player->Getposition() - m_position;
+	//プレイヤーにある程度近かったら.。
+
+	if (diff.LengthSq() <= enemyserch)
+	{
+		//プレイヤーが射程圏内に入った！
+		return true;
+	}
+	//プレイヤーが射程圏外だった。
 	return false;
 }
 

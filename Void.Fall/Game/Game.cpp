@@ -52,6 +52,8 @@ bool Game::Start()
 			enemy_001->Setscale(objData.scale);
 			enemy_001->SetHP(5);
 			m_numenemy++;
+
+			m_EnemyList.push_back(enemy_001);
 			return true;
 		}
 		else if (objData.ForwardMatchName(L"RE_enemy_002") == true)
@@ -62,6 +64,8 @@ bool Game::Start()
 			enemy_002->Setscale(objData.scale);
 			enemy_002->SetHP(5);
 			m_numenemy++;
+
+			m_EnemyList.push_back(enemy_002);
 			return true;
 		}
 		return true;

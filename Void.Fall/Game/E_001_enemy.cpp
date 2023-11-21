@@ -73,8 +73,6 @@ bool E_001_enemy::Start()
 	m_collisionObject->SetIsEnableAutoDelete(false);
 
 	m_player = FindGO<P_main_Player>("player");
-	SetenemyList();
-
 	m_forward = Vector3::AxisZ;
 	m_rotation.Apply(m_forward);
 	return true;
@@ -319,10 +317,8 @@ void E_001_enemy::ProcessCommonStateTransition()
 		//移動速度を設定する。
 		m_movespeed = diff * enemyspeed;
 		//攻撃できる距離かどうか
-		if (SearchAttackDistance() == true)
-		{
-			if (m_attackTimer < 0.0f)
-			{
+		if (SearchAttackDistance() == true){
+			if (m_attackTimer < 0.0f){
 				if (SearchAttackDistanceNear() == true){
 					m_enemystate = enEnemyState_AttackNear;
 				}
@@ -336,16 +332,14 @@ void E_001_enemy::ProcessCommonStateTransition()
 			}
 			//現在のステートが攻撃
 			if (m_enemystate == enEnemyState_Attack||
-				m_enemystate == enEnemyState_AttackNear)
-			{
+				m_enemystate == enEnemyState_AttackNear){
 				//連続で撃たせないように
 				//追跡
 				m_enemystate = enEnemyState_Chase;
 				return;
 			}
 			//現在のステートが攻撃でない
-			else
-			{
+			else{
 				m_enemystate = enEnemyState_Chase;
 				return;
 			}

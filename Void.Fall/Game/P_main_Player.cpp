@@ -10,7 +10,12 @@
 #define playerspeedAvoid 250.0f		//回避スピード
 #define playerjamp 400.0f			//プレイヤージャンプ
 #define LockOnOutnum 1				//ロックオン範囲外数
+
  
+namespace {
+	Vector3 corre = { 0.0f,60.0f,0.0f };
+}
+
 bool P_main_Player::Start()
 {
 	//アニメーション読み込み
@@ -35,11 +40,13 @@ bool P_main_Player::Start()
 	m_modelrender->Init("Assets/modelData/A_testPlayer/RE_Player.tkm", m_animationclips, enAnimationClip_Num);
 	m_charaCon.Init(25.0f, 70.0f, m_position);
 
+
 	m_spriterender.Init("Assets/sprite/testlock/lock.dds", 200, 200);
 	//アニメーションイベント用関数設定
 	m_modelrender->AddAnimationEvent([&](const wchar_t* clipName, const wchar_t* eventName) {
 		OnAnimationEvent(clipName, eventName);
 		});
+	m_game = FindGO<Game>("game");
 
 	return true;
 }
@@ -52,6 +59,8 @@ void P_main_Player::Update()
 	Rotation();
 	//当たり判定処理
 	Collision();
+	//攻撃処理(近接)
+	Attack();
 	//Lockon位置取得
 	Takeaim();
 	//ロックオン
@@ -67,7 +76,6 @@ void P_main_Player::Update()
 	//描画処理
 	m_modelrender->Update();
 	m_spriterender.Update();
-
 }
 
 void P_main_Player::PlayAnimation()
@@ -142,6 +150,45 @@ void P_main_Player::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eve
 			return;
 		}
 	}
+	else if(wcscmp(eventName, L"attack_start") == 0){
+		m_isUnderAttack = true;
+	}
+	else if (wcscmp(eventName, L"attack_end") == 0) {
+		m_attacktime = attacktimer;
+		m_isUnderAttack = false;
+		m_attack1time = false;
+	}
+}
+
+void P_main_Player::Attack()
+{
+	if (m_attacktime > 0) {
+		m_attacktime -= g_gameTime->GetFrameDeltaTime();
+		return;
+	}
+	if(AttackF()){
+		return;
+	}
+
+	if (m_isUnderAttack == true){
+		//攻撃用のコリジョンを作成する。
+		MakeAttackCollision();
+	}
+}
+
+void P_main_Player::MakeAttackCollision()
+{
+	if (m_attack1time){
+		return;
+	}
+	//攻撃当たり判定用のコリジョンオブジェクトを作成する。
+	auto collisionObject = NewGO<CollisionObject>(0);
+	//球状のコリジョンを作成する。
+	collisionObject->CreateSphere(m_position, Quaternion::Identity,50.0f * m_scale.z);
+	collisionObject->SetName("player_attack");
+	Vector3 position = m_position + m_forward * 40.0f;
+	collisionObject->SetPosition(position + corre);
+	m_attack1time = true;
 }
 
 void P_main_Player::Move()
@@ -321,6 +368,7 @@ void P_main_Player::ManageState()
 		ProcessWalkStateTransition();
 		break;
 	case enPlayerState_Attack:
+	case enPlayerState_Attacknear:
 		//攻撃ステート遷移
 		ProcessAttackStateTransition();
 		break;
@@ -414,6 +462,12 @@ void P_main_Player::ProcessCommonStateTransition()
 		m_playerstate = enPlayerState_Attack;
 		return;
 	}
+	if (g_pad[0]->IsTrigger(enButtonB) && m_attacktime <= 0)
+	{
+		//attacknearステートにする。
+		m_playerstate = enPlayerState_Attacknear;
+		return;
+	}
 	//回避クールダウンが0以下で
 	if (m_Avoidbreaktimer <= 0){
 		//スティックからの入力があり
@@ -490,13 +544,13 @@ void P_main_Player::AvoidanceTex()
 void P_main_Player::Takeaim()
 {
 	//エネミーの数が0だったら処理しない。
-	if (m_numenemy == 0){
+	if (m_game->m_numenemy == 0){
 		enemypossub = { 1000.0f,1000.0f,1000.0f };
 		return;
 	}
 	//エネミー距離計算
 	//エネミーの数が１以下であれば比べる必要はない。
-	if (m_numenemy > LockOnOutnum)
+	if (m_game->m_numenemy > LockOnOutnum)
 	{
 		//ロックオンしていなかったら
 		if (m_isLockOn == false) {
@@ -504,14 +558,14 @@ void P_main_Player::Takeaim()
 		}
 		//ロックオンしていたら
 		else{
-			Vector3 enemypos3 = *m_enemyPositionList[ListnumB];
+			Vector3 enemypos3 = m_game->m_EnemyList[ListnumB]->m_position;
 			enemypossub = enemypos3;
 		}
 	}
 	//エネミーの数が1以下であれば、
 	else{
 		//配列0番の位置をえねぽすさぶに代入する。
-		Vector3 enemypos3 = *m_enemyPositionList[m_numenemy - 1];
+		Vector3 enemypos3 = m_game->m_EnemyList[0]->m_position;
 		enemypossub = enemypos3;
 	}
 	//計算が終了した後の一番近い位置のエネミーの位置と
@@ -555,6 +609,56 @@ void P_main_Player::Takeaim()
 	m_targetPosition = enemypossub;
 }
 
+//ロックオンの時のエネミーの位置チェック
+void P_main_Player::RockOnPositionCheck()
+{
+	//繰り返しの回数は現在のエネミーの数-1する。
+	for (ListnumA = 0; ListnumA < m_game->m_EnemyList.size() - 1; ListnumA++) {
+		//繰り返しのint iの数字の配列のエネミーポジションの
+		//位置を入れたローカル変数えねぽす１を定義する。
+		Vector3 enemypos1 = m_game->m_EnemyList[ListnumA]->m_position;
+		//繰り返しのint i+1の数字の配列のエネミーポジションの
+		//位置を入れたローカル変数えねぽす２を定義する(どちらが近いか比べるため)。
+		Vector3 enemypos2 = m_game->m_EnemyList[ListnumA + 1]->m_position;
+		//えねぽす１の位置とプレイヤーの位置の距離を計算した
+		//ローカル変数diff1を定義する。
+		Vector3 diff1 = enemypos1 - m_position;
+		//えねぽす２の位置とプレイヤーの位置の距離を計算した
+		//ローカル変数diff2を定義する。
+		Vector3 diff2 = enemypos2 - m_position;
+		//diff1とdiff2の距離を比べた後に小さかったほうの位置を格納してある
+		//えねぽすさぶ(初期値すべて1000.0f、この処理後は
+		//一番小さい距離のポジションが入る)の距離を計算した
+		//ローカル変数diff3を定義する。
+		Vector3 diff3 = enemypossub - m_position;
+		//diff1とdiff2の距離を比べる。
+		//diff1の方が小さかったら、
+		if (diff1.Length() < diff2.Length()) {
+			//えねぽす１の位置がプレイヤーの正面にあったら、
+			if (AngleCheck(enemypos1, m_position)) {
+				//diff3より小さかったら、
+				if (diff1.Length() < diff3.Length()) {
+					//えねぽす１をえねぽすさぶに代入する。
+					enemypossub = enemypos1;
+					ListnumB = ListnumA;
+				}
+			}
+		}
+		//そうでなかったら、
+		else {
+			//えねぽす２の位置がプレイヤーの正面にあったら、
+			if (AngleCheck(enemypos2, m_position)) {
+				//diff3より小さかったら、
+				if (diff2.Length() < diff3.Length()) {
+					//えねぽす２をえねぽすさぶに代入する。
+					enemypossub = enemypos2;
+					ListnumB = ListnumA + 1;
+				}
+			}
+		}
+	}
+}
+
 void P_main_Player::LockonLR()
 {
 	if (m_isLockOn){
@@ -572,14 +676,14 @@ void P_main_Player::LockonLRDis(LockonLRen LR)
 	switch (LR)
 	{
 	case P_main_Player::en_R:
-		for (int i = 0; i < m_numenemy; i++){
-			if (ListnumB == m_numenemy - 1) {
+		for (int i = 0; i < m_game->m_EnemyList.size(); i++){
+			if (ListnumB == m_game->m_EnemyList.size() - 1) {
 				ListnumB = 0;
 			}
 			else{
 				ListnumB++;
 			}
-			Vector3 enemypos1 = *m_enemyPositionList[ListnumB];
+			Vector3 enemypos1 = m_game->m_EnemyList[ListnumB]->m_position;
 			Vector3 diff1 = enemypos1 - m_position;
 			if (diff1.Length() <= 1000.f) {
 				enemypossub = enemypos1;
@@ -588,14 +692,14 @@ void P_main_Player::LockonLRDis(LockonLRen LR)
 		}
 		break;
 	case P_main_Player::en_L:
-		for (int i = 0; i < m_numenemy; i++) {
+		for (int i = 0; i < m_game->m_EnemyList.size(); i++) {
 			if (ListnumB == 0) {
-				ListnumB = m_numenemy - 1;
+				ListnumB = m_game->m_EnemyList.size() - 1;
 			}
 			else {
 				ListnumB--;
 			}
-			Vector3 enemypos1 = *m_enemyPositionList[ListnumB];
+			Vector3 enemypos1 = m_game->m_EnemyList[ListnumB]->m_position;
 			Vector3 diff1 = enemypos1 - m_position;
 			if (diff1.Length() <= 1000.f) {
 				enemypossub = enemypos1;
@@ -649,3 +753,4 @@ void P_main_Player::MP()
 		}
 	}
 }
+
