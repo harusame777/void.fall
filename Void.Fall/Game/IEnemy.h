@@ -31,8 +31,6 @@ public:
 		m_hp = hp;
 	}
 public:
-	IEnemy* m_ienemy = nullptr;
-	std::vector<Vector3*> m_enemyPositionListIenemy;
 	Vector3 m_movespeed;					//ˆÚ“®‘¬“x
 	Quaternion m_rotation;					//‰ñ“]
 	Vector3 m_scale = Vector3::One;			//‘å‚«‚³

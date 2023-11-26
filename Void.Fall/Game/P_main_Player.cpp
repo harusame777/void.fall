@@ -612,6 +612,8 @@ void P_main_Player::Takeaim()
 //ロックオンの時のエネミーの位置チェック
 void P_main_Player::RockOnPositionCheck()
 {
+	//to do
+	//廣田に聴く
 	//繰り返しの回数は現在のエネミーの数-1する。
 	for (ListnumA = 0; ListnumA < m_game->m_EnemyList.size() - 1; ListnumA++) {
 		//繰り返しのint iの数字の配列のエネミーポジションの

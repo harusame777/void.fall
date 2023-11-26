@@ -4,7 +4,8 @@
 #include "Game.h"
 #include "collision/CollisionObject.h"
 #include "P_main_Player.h"
-#define enemyspeed 100.0f                               //移動速度の数値
+#define enemyspeed 150.0f                               //移動速度の数値
+#define enemyattackspeed 300.0f                         //攻撃時移動速度の数値
 #define enemyserch 700.0f * 700.0f						//追跡可能範囲
 
 namespace
@@ -20,6 +21,13 @@ bool E_002_enemy::Start()
 	m_animationclips[enAnimationClip_Idle].SetLoopFlag(true);
 	m_animationclips[enAnimationClip_Chase].Load("Assets/animData/Enemy/enemy_002/walk.tka");
 	m_animationclips[enAnimationClip_Chase].SetLoopFlag(true);
+	m_animationclips[enAnimationClip_Attack].Load("Assets/animData/Enemy/enemy_002/attack.tka");
+	m_animationclips[enAnimationClip_Attack].SetLoopFlag(true);
+	m_animationclips[enAnimationClip_ReceiveDamage].Load("Assets/animData/Enemy/enemy_002/receivedamage.tka");
+	m_animationclips[enAnimationClip_ReceiveDamage].SetLoopFlag(false);
+	m_animationclips[enAnimationClip_Down].Load("Assets/animData/Enemy/enemy_002/down.tka");
+	m_animationclips[enAnimationClip_Down].SetLoopFlag(false);
+
 
 	//モデル読み込み
 	m_modelrender = new ModelRender;
@@ -56,6 +64,10 @@ void E_002_enemy::Update()
 	Chase();
 	//回転処理
 	Rotation();
+	//攻撃処理
+	Attack();
+	//当たり判定処理
+	Collision();
 	//アニメーション
 	PlayAnimation();
 	//ステート遷移処理
@@ -76,6 +88,16 @@ void E_002_enemy::PlayAnimation()
 	case enEnemyState_Chase:
 		m_modelrender->PlayAnimation(enAnimationClip_Chase, 0.1f);
 		break;
+	case enEnemyState_Attack:
+		m_modelrender->PlayAnimation(enAnimationClip_Attack, 0.1f);
+		break;
+	case enEnemyState_ReceiveDamage:
+		m_modelrender->PlayAnimation(enAnimationClip_ReceiveDamage, 0.1f);
+		break;
+	case enEnemyState_Down:
+		m_modelrender->PlayAnimation(enAnimationClip_ReceiveDamage, 0.1f);
+		break;
+
 	}
 }
 
@@ -92,11 +114,20 @@ void E_002_enemy::ManageState()
 	case enEnemyState_Attack:
 		ProcessAttackStateTransition();
 		break;
+	case enEnemyState_ReceiveDamage:
+		ProcessReceiveDamageStateTransition();
+		break;
+	case enEnemyState_Down:
+		ProcessDownStateTransition();
+		break;
 	}
 }
 
 void E_002_enemy::ProcessCommonStateTransition()
 {
+	if (m_enemystate == enEnemyState_Attack){
+		return;
+	}
 	Vector3 diff = m_player->Getposition() - m_position;
 
 	//ベクトルを正規化する。
@@ -109,6 +140,8 @@ void E_002_enemy::ProcessCommonStateTransition()
 			if (m_attackTimer < 0.0f) {
 				m_enemystate = enEnemyState_Attack;
 				m_attackTimer = attacktime;
+				m_attackGotimer = attackGotime;
+				m_movespeed = diff * enemyattackspeed;
 				return;
 			}
 			if (m_enemystate == enEnemyState_Attack) {
@@ -149,22 +182,43 @@ void E_002_enemy::ProcessChaseStateTransition()
 
 void E_002_enemy::ProcessAttackStateTransition()
 {
-	//攻撃アニメーションの再生が終わったら。
+	if (m_attackGotimer >= 0){
+		ProcessCommonStateTransition();
+	}
+	else
+	{
+		m_enemystate = enEnemyState_Idle;
+		DeleteGO(m_attackcoll);
+		ProcessCommonStateTransition();
+	}
+}
+
+void E_002_enemy::ProcessReceiveDamageStateTransition()
+{
+	//被ダメージアニメーションの再生が終わったら。
 	if (m_modelrender->IsPlayingAnimation() == false)
 	{
-		//他のステートに遷移する。
 		ProcessCommonStateTransition();
+	}
+}
+
+void E_002_enemy::ProcessDownStateTransition()
+{
+	//被ダメージアニメーションの再生が終わったら。
+	if (m_modelrender->IsPlayingAnimation() == false)
+	{
 	}
 }
 
 void E_002_enemy::Chase()
 {
 	//追跡ステートでないなら、追跡処理はしない。
-	if (m_enemystate != enEnemyState_Chase)
-	{
+	if (IsAttack()){
 		return;
 	}
-
+	if (m_attackGotimer > 0){
+		m_attackGotimer -= g_gameTime->GetFrameDeltaTime();
+	}
 	//エネミーを移動させる。
 	m_position = m_charaCon.Execute(m_movespeed, g_gameTime->GetFrameDeltaTime());
 	if (m_charaCon.IsOnGround()) {
@@ -173,6 +227,8 @@ void E_002_enemy::Chase()
 		m_movespeed.y = 0.0f;
 	}
 	Vector3 modelPosition = m_position;
+	m_collisionObject->SetRotation(m_rotation);
+	m_collisionObject->SetPosition(m_position + corre);
 	//ちょっとだけモデルの座標を挙げる。
 	modelPosition.y += 2.5f;
 	//座標を設定する。
@@ -181,6 +237,9 @@ void E_002_enemy::Chase()
 
 void E_002_enemy::Rotation()
 {
+	if (m_enemystate == enEnemyState_Attack){
+		return;
+	}
 	if (fabsf(m_movespeed.x) < 0.001f
 		&& fabsf(m_movespeed.z) < 0.001f) {
 		//m_moveSpeed.xとm_moveSpeed.zの絶対値がともに0.001以下ということは
@@ -198,13 +257,57 @@ void E_002_enemy::Rotation()
 
 	//回転を設定する。
 	m_modelrender->SetRotation(m_rotation);
-	m_collisionObject->SetRotation(m_rotation);
-	m_collisionObject->SetPosition(m_position + corre);
 
 	//プレイヤーの前ベクトルを計算する。
 	m_forward = Vector3::AxisZ;
 	m_rotation.Apply(m_forward);
 }
+
+void E_002_enemy::Attack()
+{
+	if (m_enemystate == enEnemyState_Attack){
+		//攻撃当たり判定用のコリジョンオブジェクトを作成する。
+		m_attackcoll = NewGO<CollisionObject>(0);
+		//球状のコリジョンを作成する。
+		m_attackcoll->CreateSphere(m_position, Quaternion::Identity, 50.0f * m_scale.z);
+		m_attackcoll->SetName("enemy_attack");
+		Vector3 position = m_position + m_forward * 40.0f;
+		m_attackcoll->SetPosition(position + corre);
+	}
+}
+
+void E_002_enemy::Collision()
+{
+	//被ダメージ、あるいはダウンステートの時は。
+//当たり判定処理はしない。
+	if (m_enemystate == enEnemyState_ReceiveDamage ||
+		m_enemystate == enEnemyState_Down)
+	{
+		return;
+	}
+	//プレイヤーの攻撃用のコリジョンを取得する。
+	const auto& collisions = g_collisionObjectManager->FindCollisionObjects("player_attack");
+	//コリジョンの配列をfor文で回す。
+	for (auto collision : collisions)
+	{
+		//コリジョンとキャラコンが衝突したら。
+		if (collision->IsHit(m_collisionObject))
+		{
+			//HPを1減らす。
+			m_hp -= 1;
+			//HPが0になったら。
+			if (m_hp == 0) {
+				//ダウンステートに遷移する。
+				m_enemystate = enEnemyState_Down;
+			}
+			else {
+				//被ダメージステートに遷移する。
+				m_enemystate = enEnemyState_ReceiveDamage;
+			}
+		}
+	}
+}
+
 
 const bool E_002_enemy::SearchPlayer() const
 {

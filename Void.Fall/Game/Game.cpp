@@ -64,7 +64,6 @@ bool Game::Start()
 			enemy_002->Setscale(objData.scale);
 			enemy_002->SetHP(5);
 			m_numenemy++;
-
 			m_EnemyList.push_back(enemy_002);
 			return true;
 		}
