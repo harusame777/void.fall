@@ -18,6 +18,7 @@ public:
 	bool Start();
 	void Update();
 	void Render(RenderContext& rc);
+	void Delete_EnemyVec(const int num);
 	//ƒƒ“ƒoŠÖ”éŒ¾
 	std::vector<IEnemy*> m_EnemyList;
 	Map_home1* m_home1 = nullptr;//home

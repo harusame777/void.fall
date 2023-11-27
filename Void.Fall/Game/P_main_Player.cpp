@@ -68,7 +68,9 @@ void P_main_Player::Update()
 	//ロックオン選択
 	LockonLR();
 	//MP
-	MP();
+	MPrec();
+	//HP
+	HPrec();
 	//アニメーション
 	PlayAnimation();
 	//ステートの遷移処理
@@ -739,7 +741,7 @@ void P_main_Player::Lockon()
 	}
 }
 
-void P_main_Player::MP()
+void P_main_Player::MPrec()
 {
 	if (mpRecgo)
 	{
@@ -752,6 +754,22 @@ void P_main_Player::MP()
 		if (m_mpRec > 3.0f) {
 			m_mp++;
 			m_mpRec = mpRecReset;
+		}
+	}
+}
+
+void P_main_Player::HPrec()
+{
+	if (m_hp == 3){
+		return;
+	}
+	//enemyのコリジョンを取得する。							//↓enemyの共通コリジョン
+	const auto& collisions = g_collisionObjectManager->FindCollisionObjects("Item_col_G");
+	//コリジョンの配列をfor文で回す。
+	for (auto collision : collisions) {
+		//コリジョンとキャラコンが衝突したら。
+		if (collision->IsHit(m_charaCon)) {
+			m_hp++;
 		}
 	}
 }

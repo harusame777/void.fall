@@ -51,8 +51,8 @@ bool Game::Start()
 			enemy_001->Setrotation(objData.rotation);
 			enemy_001->Setscale(objData.scale);
 			enemy_001->SetHP(5);
+			enemy_001->SetVectornum(m_numenemy);
 			m_numenemy++;
-
 			m_EnemyList.push_back(enemy_001);
 			return true;
 		}
@@ -63,6 +63,7 @@ bool Game::Start()
 			enemy_002->Setrotation(objData.rotation);
 			enemy_002->Setscale(objData.scale);
 			enemy_002->SetHP(5);
+			enemy_002->SetVectornum(m_numenemy);
 			m_numenemy++;
 			m_EnemyList.push_back(enemy_002);
 			return true;
@@ -88,6 +89,14 @@ void Game::Update()
 	//フォントの色を設定。
 	m_fontrender.SetColor({ 0.0f,0.0f,0.0f,1.0f });
 
+}
+
+void Game::Delete_EnemyVec(const int num)
+{
+	m_EnemyList.erase(m_EnemyList.begin() + num);
+	for (int VecNow = num; VecNow < m_EnemyList.size() + 1; VecNow++){
+		m_EnemyList[VecNow]->m_Vectornum -= 1;
+	}
 }
 
 void Game::Render(RenderContext& rc)

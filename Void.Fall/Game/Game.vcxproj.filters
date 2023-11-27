@@ -10,6 +10,9 @@
     <Filter Include="attackP">
       <UniqueIdentifier>{680d2144-3b3c-4efe-81c3-0b2a30125776}</UniqueIdentifier>
     </Filter>
+    <Filter Include="item">
+      <UniqueIdentifier>{7eb75597-bf5c-4b59-aec6-10f7dcc325a1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -36,6 +39,12 @@
     <ClCompile Include="IEnemy.cpp">
       <Filter>Enemy</Filter>
     </ClCompile>
+    <ClCompile Include="IItem.cpp">
+      <Filter>item</Filter>
+    </ClCompile>
+    <ClCompile Include="I_G_Item.cpp">
+      <Filter>item</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -61,6 +70,12 @@
     </ClInclude>
     <ClInclude Include="IEnemy.h">
       <Filter>Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="IItem.h">
+      <Filter>item</Filter>
+    </ClInclude>
+    <ClInclude Include="I_G_Item.h">
+      <Filter>item</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

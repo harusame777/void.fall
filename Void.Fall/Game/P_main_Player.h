@@ -44,7 +44,8 @@ public:
 	void Avoidance();					//回避
 	void AvoidanceTex();				//回避スキン変更
 	void NormalTex();					//通常スキン変更
-	void MP();                          //MP処理
+	void MPrec();                       //MP処理
+	void HPrec();						//HP処理
 	//アニメーション類/////////////////////////////////////////
 //アニメーションステート
 	enum EnAnimationClip {

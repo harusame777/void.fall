@@ -73,6 +73,7 @@ bool E_001_enemy::Start()
 	m_collisionObject->SetIsEnableAutoDelete(false);
 
 	m_player = FindGO<P_main_Player>("player");
+	m_game = FindGO<Game>("game");
 	m_forward = Vector3::AxisZ;
 	m_rotation.Apply(m_forward);
 	return true;

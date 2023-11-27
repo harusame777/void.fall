@@ -52,6 +52,7 @@ bool E_002_enemy::Start()
 	m_collisionObject->SetIsEnableAutoDelete(false);
 
 	m_player = FindGO<P_main_Player>("player");
+	m_game = FindGO<Game>("game");
 
 	m_forward = Vector3::AxisZ;
 	m_rotation.Apply(m_forward);
@@ -207,6 +208,10 @@ void E_002_enemy::ProcessDownStateTransition()
 	//被ダメージアニメーションの再生が終わったら。
 	if (m_modelrender->IsPlayingAnimation() == false)
 	{
+		//ItemDrop();
+		//delete m_modelrender;
+		DeleteGoEnemyList();
+		DeleteGO(this);
 	}
 }
 

@@ -230,6 +230,8 @@
     <ClCompile Include="E_002_enemy.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="IEnemy.cpp" />
+    <ClCompile Include="IItem.cpp" />
+    <ClCompile Include="I_G_Item.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Map_home1.cpp" />
     <ClCompile Include="P_main_Player.cpp" />
@@ -248,6 +250,8 @@
     <ClInclude Include="E_002_enemy.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="IEnemy.h" />
+    <ClInclude Include="IItem.h" />
+    <ClInclude Include="I_G_Item.h" />
     <ClInclude Include="Map_home1.h" />
     <ClInclude Include="P_main_Player.h" />
     <ClInclude Include="resource.h" />
