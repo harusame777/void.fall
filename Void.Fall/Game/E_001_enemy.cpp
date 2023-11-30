@@ -43,23 +43,22 @@ bool E_001_enemy::Start()
 	EffectEngine::GetInstance()->ResistEffect(0, u"Assets/animData/Enemy/enemy_001/test1.efk");
 
 	//モデル読み込み
-	m_modelrender = new ModelRender;
-	m_modelrender->Init("Assets/modelData/Enemy/enemy_001/RE_enemy_001.tkm",m_animationclips, enAnimationClip_Num);
+	m_modelrender.Init("Assets/modelData/Enemy/enemy_001/RE_enemy_001.tkm",m_animationclips, enAnimationClip_Num);
 
 	//剣のボーンのIDを取得する。
-	m_attacknearboneID = m_modelrender->FindBoneID(L"sub1");
+	m_attacknearboneID = m_modelrender.FindBoneID(L"sub1");
 
 	//アニメーションイベント用関数設定
-	m_modelrender->AddAnimationEvent([&](const wchar_t* clipName, const wchar_t* eventName) {
+	m_modelrender.AddAnimationEvent([&](const wchar_t* clipName, const wchar_t* eventName) {
 		OnAnimationEvent(clipName, eventName);
 		});
 
 	//回転
-	m_modelrender->SetRotation(m_rotation);
+	m_modelrender.SetRotation(m_rotation);
 	//座標
-	m_modelrender->SetPosition(m_position);
+	m_modelrender.SetPosition(m_position);
 	//スケール
-	m_modelrender->SetScale(m_scale);
+	m_modelrender.SetScale(m_scale);
 	//キャラコン初期化
 	m_charaCon.Init(20.0f,100.0f,m_position);
 
@@ -76,6 +75,8 @@ bool E_001_enemy::Start()
 	m_game = FindGO<Game>("game");
 	m_forward = Vector3::AxisZ;
 	m_rotation.Apply(m_forward);
+
+	EnemyGoEffect();
 	return true;
 }
 
@@ -92,7 +93,7 @@ void E_001_enemy::Update()
 	//ステート遷移処理
 	ManageState();
 	//描画更新
-	m_modelrender->Update();
+	m_modelrender.Update();
 }
 
 void E_001_enemy::Rotation()
@@ -113,7 +114,7 @@ void E_001_enemy::Rotation()
 	m_rotation.SetRotationY(-angle);
 
 	//回転を設定する。
-	m_modelrender->SetRotation(m_rotation);
+	m_modelrender.SetRotation(m_rotation);
 	m_collisionObject->SetRotation(m_rotation);
 	m_collisionObject->SetPosition(m_position + corre1);
 
@@ -214,7 +215,7 @@ void E_001_enemy::MakeAttackCollision()
 	//攻撃当たり判定用のコリジョンオブジェクトを作成する。
 	auto collisionObject = NewGO<CollisionObject>(0);
 	//剣のボーンのワールド行列を取得する。
-	Matrix matrix = m_modelrender->GetBone(m_attacknearboneID)->GetWorldMatrix();
+	Matrix matrix = m_modelrender.GetBone(m_attacknearboneID)->GetWorldMatrix();
 	//ボックス状のコリジョンを作成する。
 	collisionObject->CreateBox(m_position, Quaternion::Identity, Vector3(100.0f, 10.0f, 10.0f));
 	collisionObject->SetWorldMatrix(matrix);
@@ -253,27 +254,27 @@ void E_001_enemy::ManageState()
 
 void E_001_enemy::PlayAnimation()
 {
-	m_modelrender->SetAnimationSpeed(1.0f);
+	m_modelrender.SetAnimationSpeed(1.0f);
 	switch (m_enemystate)
 	{
 	//待機
 	case enEnemyState_Idle:
-		m_modelrender->PlayAnimation(enAnimationClip_Idle, 0.1f);
+		m_modelrender.PlayAnimation(enAnimationClip_Idle, 0.1f);
 		break;
 	case enEnemyState_Chase:
-		m_modelrender->PlayAnimation(enAnimationClip_Chase, 0.1f);
+		m_modelrender.PlayAnimation(enAnimationClip_Chase, 0.1f);
 		break;
 	case enEnemyState_Attack:
-		m_modelrender->PlayAnimation(enAnimationClip_Attack, 0.1f);
+		m_modelrender.PlayAnimation(enAnimationClip_Attack, 0.1f);
 		break;
 	case enEnemyState_AttackNear:
-		m_modelrender->PlayAnimation(enAnimationClip_AttackNear, 0.1f);
+		m_modelrender.PlayAnimation(enAnimationClip_AttackNear, 0.1f);
 		break;
 	case enEnemyState_ReceiveDamage:
-		m_modelrender->PlayAnimation(enAnimationClip_ReceiveDamage, 0.1f);
+		m_modelrender.PlayAnimation(enAnimationClip_ReceiveDamage, 0.1f);
 		break;
 	case enEnemyState_Down :
-		m_modelrender->PlayAnimation(enAnimationClip_Down, 0.1f);
+		m_modelrender.PlayAnimation(enAnimationClip_Down, 0.1f);
 		break;
 	}
 }
@@ -379,7 +380,7 @@ void E_001_enemy::ProcessChaseStateTransition()
 void E_001_enemy::ProcessAttackStateTransition()
 {
 	//攻撃アニメーションの再生が終わったら。
-	if (m_modelrender->IsPlayingAnimation() == false)
+	if (m_modelrender.IsPlayingAnimation() == false)
 	{
 		//他のステートに遷移する。
 		ProcessCommonStateTransition();
@@ -389,7 +390,7 @@ void E_001_enemy::ProcessAttackStateTransition()
 void E_001_enemy::ProcessReceiveDamageStateTransition()
 {
 	//被ダメージアニメーションの再生が終わったら。
-	if (m_modelrender->IsPlayingAnimation() == false)
+	if (m_modelrender.IsPlayingAnimation() == false)
 	{
 		if (SearchAttackDistanceNear() == true){
 			m_enemystate = enEnemyState_AttackNear;
@@ -403,12 +404,16 @@ void E_001_enemy::ProcessReceiveDamageStateTransition()
 void E_001_enemy::ProcessDownStateTransition()
 {
 	//被ダメージアニメーションの再生が終わったら。
-	if (m_modelrender->IsPlayingAnimation() == false)
+	if (m_modelrender.IsPlayingAnimation() == false)
 	{
+		ItemDrop();
+		DeleteGoEnemyList();
+		DeleteGO(m_collisionObject);//消去処理
+		DeleteGO(this);
 	}
 }
 
 void E_001_enemy::Render(RenderContext& rc)
 {
-	m_modelrender->Draw(rc);
+	m_modelrender.Draw(rc);
 }

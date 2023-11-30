@@ -1,12 +1,16 @@
 #include "stdafx.h"
 #include "Game.h"
-///////////////////////////////////////////////////////////
+#include "Level3DRender/LevelRender.h"
 #include "P_main_Player.h"
 #include "E_001_enemy.h"
 #include "E_002_enemy.h"
 #include "Map_home1.h"
 #include "Ca_maincamera.h"
 #include "IEnemy.h"
+#include "M_parts1.h"
+#include "M_parts2.h"
+#include "M_parts3.h"
+///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 //マップとステージ類のヘッダーとプログラムはMap_~のプログラム。
 //プレイヤーのヘッダーとプログラムはP_~のプログラム。
@@ -20,7 +24,7 @@ bool Game::Start()
 	g_camera3D->SetFar(40000.0f);
 	//カメラ作成
 	m_camera = NewGO<Ca_maincamera>(0, "camera");
-	m_levelrender.Init("Assets/modelData/A_leveltest/testlevel1.tkl",[&](LevelObjectData& objData)
+	m_levelrender.Init("Assets/modelData/A_leveltest/testlevel2.tkl",[&](LevelObjectData& objData)
 	{
 		//現在名testPlayer
 		//プレイヤー
@@ -34,12 +38,36 @@ bool Game::Start()
 		}
 		//現在名testmap
 		//最初のマップ
-		else if (objData.EqualObjectName(L"testmapV1") == true)
+		//else if (objData.EqualObjectName(L"testmapV1") == true)
+		//{
+		//	m_home1 = NewGO<Map_home1>(0, "home1");
+		//	m_home1->Setposition(objData.position);
+		//	m_home1->Setrotarion(objData.rotation);
+		//	m_home1->Setscale(objData.scale);
+		//	return true;
+		//}
+		else if (objData.ForwardMatchName(L"mapparts1") == true)
 		{
-			m_home1 = NewGO<Map_home1>(0, "home1");
-			m_home1->Setposition(objData.position);
-			m_home1->Setrotarion(objData.rotation);
-			m_home1->Setscale(objData.scale);
+			M_parts1* m_mapparts1 = NewGO<M_parts1>(0, "parts1");
+			m_mapparts1->Setposition(objData.position);
+			m_mapparts1->Setrotarion(objData.rotation);
+			m_mapparts1->Setscale(objData.scale);
+			return true;
+		}
+		else if (objData.ForwardMatchName(L"mapparts2") == true)
+		{
+			M_parts2* m_mapparts2 = NewGO<M_parts2>(0, "parts2");
+			m_mapparts2->Setposition(objData.position);
+			m_mapparts2->Setrotarion(objData.rotation);
+			m_mapparts2->Setscale(objData.scale);
+			return true;
+		}
+		else if (objData.ForwardMatchName(L"mapparts3") == true)
+		{
+			M_parts3* m_mapparts3 = NewGO<M_parts3>(0, "parts3");
+			m_mapparts3->Setposition(objData.position);
+			m_mapparts3->Setrotarion(objData.rotation);
+			m_mapparts3->Setscale(objData.scale);
 			return true;
 		}
 		//現在名
@@ -50,7 +78,7 @@ bool Game::Start()
 			enemy_001->Setposition(objData.position);
 			enemy_001->Setrotation(objData.rotation);
 			enemy_001->Setscale(objData.scale);
-			enemy_001->SetHP(5);
+			enemy_001->SetHP(1);
 			enemy_001->SetVectornum(m_numenemy);
 			m_numenemy++;
 			m_EnemyList.push_back(enemy_001);
@@ -62,7 +90,7 @@ bool Game::Start()
 			enemy_002->Setposition(objData.position);
 			enemy_002->Setrotation(objData.rotation);
 			enemy_002->Setscale(objData.scale);
-			enemy_002->SetHP(5);
+			enemy_002->SetHP(1);
 			enemy_002->SetVectornum(m_numenemy);
 			m_numenemy++;
 			m_EnemyList.push_back(enemy_002);
@@ -94,7 +122,7 @@ void Game::Update()
 void Game::Delete_EnemyVec(const int num)
 {
 	m_EnemyList.erase(m_EnemyList.begin() + num);
-	for (int VecNow = num; VecNow < m_EnemyList.size() + 1; VecNow++){
+	for (int VecNow = num; VecNow < m_EnemyList.size(); VecNow++){
 		m_EnemyList[VecNow]->m_Vectornum -= 1;
 	}
 }

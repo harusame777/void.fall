@@ -10,7 +10,8 @@
 
 namespace
 {
-	const Vector3 corre = { 0.0f,60.0f,0.0f };//位置修正
+	const Vector3 corre1 = { 0.0f,60.0f,0.0f };//位置修正
+	const Vector3 corre2 = { 2.0f,2.0f,2.0f };
 }
 
 bool E_002_enemy::Start()
@@ -30,15 +31,14 @@ bool E_002_enemy::Start()
 
 
 	//モデル読み込み
-	m_modelrender = new ModelRender;
-	m_modelrender->Init("Assets/modelData/Enemy/enemy_002/RE_enemy_002.tkm", m_animationclips, enAnimationClip_Num);
+	m_modelrender.Init("Assets/modelData/Enemy/enemy_002/RE_enemy_002.tkm", m_animationclips, enAnimationClip_Num);
 
 	//回転
-	m_modelrender->SetRotation(m_rotation);
+	m_modelrender.SetRotation(m_rotation);
 	//座標
-	m_modelrender->SetPosition(m_position);
+	m_modelrender.SetPosition(m_position);
 	//スケール
-	m_modelrender->SetScale(m_scale);
+	m_modelrender.SetScale(m_scale);
 	//キャラコン初期化
 	m_charaCon.Init(20.0f, 100.0f, m_position);
 
@@ -47,7 +47,7 @@ bool E_002_enemy::Start()
 	//球状のコリジョンを作成する。
 	m_collisionObject->CreateSphere(m_position, Quaternion::Identity, 60.0f * m_scale.z);
 	m_collisionObject->SetName("enemy_col");
-	m_collisionObject->SetPosition(m_position + corre);
+	m_collisionObject->SetPosition(m_position + corre1);
 	//コリジョンオブジェクトが自動で削除されないようにする。
 	m_collisionObject->SetIsEnableAutoDelete(false);
 
@@ -56,6 +56,8 @@ bool E_002_enemy::Start()
 
 	m_forward = Vector3::AxisZ;
 	m_rotation.Apply(m_forward);
+
+	EnemyGoEffect();
 	return true;
 }
 
@@ -74,29 +76,29 @@ void E_002_enemy::Update()
 	//ステート遷移処理
 	ManageState();
 	//描画更新
-	m_modelrender->Update();
+	m_modelrender.Update();
 }
 
 void E_002_enemy::PlayAnimation()
 {
-	m_modelrender->SetAnimationSpeed(1.0f);
+	m_modelrender.SetAnimationSpeed(1.0f);
 	switch (m_enemystate)
 	{
 		//待機
 	case enEnemyState_Idle:
-		m_modelrender->PlayAnimation(enAnimationClip_Idle, 0.1f);
+		m_modelrender.PlayAnimation(enAnimationClip_Idle, 0.1f);
 		break;
 	case enEnemyState_Chase:
-		m_modelrender->PlayAnimation(enAnimationClip_Chase, 0.1f);
+		m_modelrender.PlayAnimation(enAnimationClip_Chase, 0.1f);
 		break;
 	case enEnemyState_Attack:
-		m_modelrender->PlayAnimation(enAnimationClip_Attack, 0.1f);
+		m_modelrender.PlayAnimation(enAnimationClip_Attack, 0.1f);
 		break;
 	case enEnemyState_ReceiveDamage:
-		m_modelrender->PlayAnimation(enAnimationClip_ReceiveDamage, 0.1f);
+		m_modelrender.PlayAnimation(enAnimationClip_ReceiveDamage, 0.1f);
 		break;
 	case enEnemyState_Down:
-		m_modelrender->PlayAnimation(enAnimationClip_ReceiveDamage, 0.1f);
+		m_modelrender.PlayAnimation(enAnimationClip_ReceiveDamage, 0.1f);
 		break;
 
 	}
@@ -197,7 +199,7 @@ void E_002_enemy::ProcessAttackStateTransition()
 void E_002_enemy::ProcessReceiveDamageStateTransition()
 {
 	//被ダメージアニメーションの再生が終わったら。
-	if (m_modelrender->IsPlayingAnimation() == false)
+	if (m_modelrender.IsPlayingAnimation() == false)
 	{
 		ProcessCommonStateTransition();
 	}
@@ -206,11 +208,11 @@ void E_002_enemy::ProcessReceiveDamageStateTransition()
 void E_002_enemy::ProcessDownStateTransition()
 {
 	//被ダメージアニメーションの再生が終わったら。
-	if (m_modelrender->IsPlayingAnimation() == false)
+	if (m_modelrender.IsPlayingAnimation() == false)
 	{
-		//ItemDrop();
-		//delete m_modelrender;
+		ItemDrop();
 		DeleteGoEnemyList();
+		DeleteGO(m_collisionObject);//消去処理
 		DeleteGO(this);
 	}
 }
@@ -233,11 +235,11 @@ void E_002_enemy::Chase()
 	}
 	Vector3 modelPosition = m_position;
 	m_collisionObject->SetRotation(m_rotation);
-	m_collisionObject->SetPosition(m_position + corre);
+	m_collisionObject->SetPosition(m_position + corre1);
 	//ちょっとだけモデルの座標を挙げる。
 	modelPosition.y += 2.5f;
 	//座標を設定する。
-	m_modelrender->SetPosition(modelPosition);
+	m_modelrender.SetPosition(modelPosition);
 }
 
 void E_002_enemy::Rotation()
@@ -261,7 +263,7 @@ void E_002_enemy::Rotation()
 	m_rotation.SetRotationY(-angle);
 
 	//回転を設定する。
-	m_modelrender->SetRotation(m_rotation);
+	m_modelrender.SetRotation(m_rotation);
 
 	//プレイヤーの前ベクトルを計算する。
 	m_forward = Vector3::AxisZ;
@@ -277,7 +279,7 @@ void E_002_enemy::Attack()
 		m_attackcoll->CreateSphere(m_position, Quaternion::Identity, 50.0f * m_scale.z);
 		m_attackcoll->SetName("enemy_attack");
 		Vector3 position = m_position + m_forward * 40.0f;
-		m_attackcoll->SetPosition(position + corre);
+		m_attackcoll->SetPosition(position + corre1);
 	}
 }
 
@@ -343,7 +345,7 @@ const bool E_002_enemy::SearchAttackDistance() const
 
 void E_002_enemy::Render(RenderContext& rc)
 {
-	m_modelrender->Draw(rc);
+	m_modelrender.Draw(rc);
 }
 
 

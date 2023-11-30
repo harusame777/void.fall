@@ -13,6 +13,9 @@
     <Filter Include="item">
       <UniqueIdentifier>{7eb75597-bf5c-4b59-aec6-10f7dcc325a1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="mapparts">
+      <UniqueIdentifier>{7ab34b1a-9601-45cf-865a-4a028eab0edb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -45,6 +48,18 @@
     <ClCompile Include="I_G_Item.cpp">
       <Filter>item</Filter>
     </ClCompile>
+    <ClCompile Include="M_parts1.cpp">
+      <Filter>mapparts</Filter>
+    </ClCompile>
+    <ClCompile Include="M_parts2.cpp">
+      <Filter>mapparts</Filter>
+    </ClCompile>
+    <ClCompile Include="M_parts3.cpp">
+      <Filter>mapparts</Filter>
+    </ClCompile>
+    <ClCompile Include="Imap.cpp">
+      <Filter>mapparts</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -76,6 +91,18 @@
     </ClInclude>
     <ClInclude Include="I_G_Item.h">
       <Filter>item</Filter>
+    </ClInclude>
+    <ClInclude Include="M_parts1.h">
+      <Filter>mapparts</Filter>
+    </ClInclude>
+    <ClInclude Include="M_parts2.h">
+      <Filter>mapparts</Filter>
+    </ClInclude>
+    <ClInclude Include="M_parts3.h">
+      <Filter>mapparts</Filter>
+    </ClInclude>
+    <ClInclude Include="Imap.h">
+      <Filter>mapparts</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

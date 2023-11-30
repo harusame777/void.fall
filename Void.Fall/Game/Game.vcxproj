@@ -231,9 +231,13 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="IEnemy.cpp" />
     <ClCompile Include="IItem.cpp" />
+    <ClCompile Include="Imap.cpp" />
     <ClCompile Include="I_G_Item.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Map_home1.cpp" />
+    <ClCompile Include="M_parts1.cpp" />
+    <ClCompile Include="M_parts2.cpp" />
+    <ClCompile Include="M_parts3.cpp" />
     <ClCompile Include="P_main_Player.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -251,8 +255,12 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="IEnemy.h" />
     <ClInclude Include="IItem.h" />
+    <ClInclude Include="Imap.h" />
     <ClInclude Include="I_G_Item.h" />
     <ClInclude Include="Map_home1.h" />
+    <ClInclude Include="M_parts1.h" />
+    <ClInclude Include="M_parts2.h" />
+    <ClInclude Include="M_parts3.h" />
     <ClInclude Include="P_main_Player.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="stdafx.h" />

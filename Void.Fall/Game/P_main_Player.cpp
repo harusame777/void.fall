@@ -10,6 +10,8 @@
 #define playerspeedAvoid 250.0f		//回避スピード
 #define playerjamp 400.0f			//プレイヤージャンプ
 #define LockOnOutnum 1				//ロックオン範囲外数
+#define HPFULL 3					//HP最大値
+#define MPFULL 3					//MP最大値
 
  
 namespace {
@@ -40,7 +42,6 @@ bool P_main_Player::Start()
 	m_modelrender->Init("Assets/modelData/A_testPlayer/RE_Player.tkm", m_animationclips, enAnimationClip_Num);
 	m_charaCon.Init(25.0f, 70.0f, m_position);
 
-
 	m_spriterender.Init("Assets/sprite/testlock/lock.dds", 200, 200);
 	//アニメーションイベント用関数設定
 	m_modelrender->AddAnimationEvent([&](const wchar_t* clipName, const wchar_t* eventName) {
@@ -69,8 +70,6 @@ void P_main_Player::Update()
 	LockonLR();
 	//MP
 	MPrec();
-	//HP
-	HPrec();
 	//アニメーション
 	PlayAnimation();
 	//ステートの遷移処理
@@ -547,6 +546,7 @@ void P_main_Player::Takeaim()
 {
 	//エネミーの数が0だったら処理しない。
 	if (m_game->m_numenemy == 0){
+		LockOnFalse();
 		enemypossub = { 1000.0f,1000.0f,1000.0f };
 		return;
 	}
@@ -577,8 +577,7 @@ void P_main_Player::Takeaim()
 	//そのdiff4の距離が700.0fよりも大きいなら、
 	if (diff4.Length() >= 1000.0f){
 		//ロックオンしない。
-		enemypossub = { 1000.0f,1000.0f,1000.0f };
-		m_isTakeAim = false;
+		LockOnFalse();
 		return;
 	}
 
@@ -599,8 +598,7 @@ void P_main_Player::Takeaim()
 	//ターゲッティングしない。
 	if (angle > Math::PI / 2 && m_isLockOn == false)
 	{
-		enemypossub = { 1000.0f,1000.0f,1000.0f };
-		m_isTakeAim = false;
+		LockOnFalse();
 		return;
 	}
 	m_isTakeAim = true;
@@ -716,6 +714,11 @@ void P_main_Player::LockonLRDis(LockonLRen LR)
 
 void P_main_Player::Lockon()
 {
+	//エネミーの数が0だったら処理しない。
+	if (m_game->m_numenemy == 0) {
+		m_isLockOn = false;
+		return;
+	}
 	//ターゲッティングがされていなかったら。
 //ロックオンしない。
 	if (m_isTakeAim == false)
@@ -745,7 +748,7 @@ void P_main_Player::MPrec()
 {
 	if (mpRecgo)
 	{
-		if (m_mp == 3) {
+		if (m_mp == MPFULL) {
 			m_mpRec = mpRecReset;
 			mpRecgo = false;
 			return;
@@ -758,19 +761,4 @@ void P_main_Player::MPrec()
 	}
 }
 
-void P_main_Player::HPrec()
-{
-	if (m_hp == 3){
-		return;
-	}
-	//enemyのコリジョンを取得する。							//↓enemyの共通コリジョン
-	const auto& collisions = g_collisionObjectManager->FindCollisionObjects("Item_col_G");
-	//コリジョンの配列をfor文で回す。
-	for (auto collision : collisions) {
-		//コリジョンとキャラコンが衝突したら。
-		if (collision->IsHit(m_charaCon)) {
-			m_hp++;
-		}
-	}
-}
 

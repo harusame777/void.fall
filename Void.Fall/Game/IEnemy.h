@@ -13,8 +13,11 @@ public:
 	//IEnemy() {}
 	void DeleteGoEnemyList()
 	{
+		m_game = FindGO<Game>("game");
 		m_game->Delete_EnemyVec(m_Vectornum);
 		m_game->m_numenemy--;
+		m_player->m_isTakeAim = false;
+		m_player->m_isTakeAim = false;
 	}
 	void Setposition(const Vector3& position)//座標
 	{
@@ -43,13 +46,25 @@ public:
 	void ItemDrop()
 	{
 		I_G_Item* item_g = NewGO<I_G_Item>(0, "itemg");
-		item_g->Setposition(m_game->m_EnemyList[m_Vectornum]->m_position);
+		item_g->Setposition(m_position);
+	}
+	void EnemyGoEffect()
+	{
+		//エフェクト読み込み
+		EffectEngine::GetInstance()->ResistEffect(1, u"Assets/modelData/Enemy/effect/enemyGo.efk");
+		m_effect = NewGO<EffectEmitter>(1);
+		m_effect->Init(1);
+		m_effect->SetScale({ 20.0f,20.0f,20.0f });
+		m_effect->SetPosition(m_position);
+		m_effect->SetRotation(m_rotation);
+		m_effect->Play();
 	}
 public:
+	EffectEmitter* m_effect = nullptr;		//エフェクト(現在最大要素１)
 	Vector3 m_movespeed;					//移動速度
 	Quaternion m_rotation;					//回転
 	Vector3 m_scale = Vector3::One;			//大きさ
-	ModelRender* m_modelrender = nullptr;	//モデルレンダー
+	ModelRender m_modelrender;	//モデルレンダー
 	CollisionObject* m_collisionObject;		//コリジョンオブジェクト。
 	P_main_Player* m_player = nullptr;		//プレイヤー
 	CharacterController m_charaCon ;        //キャラコン

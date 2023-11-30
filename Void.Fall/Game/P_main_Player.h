@@ -45,7 +45,6 @@ public:
 	void AvoidanceTex();				//回避スキン変更
 	void NormalTex();					//通常スキン変更
 	void MPrec();                       //MP処理
-	void HPrec();						//HP処理
 	//アニメーション類/////////////////////////////////////////
 //アニメーションステート
 	enum EnAnimationClip {
@@ -141,6 +140,11 @@ public:
 		else{
 			return true;
 		}
+	}
+	void LockOnFalse()
+	{
+		enemypossub = { 1000.0f,1000.0f,1000.0f };
+		m_isTakeAim = false;
 	}
 	///////////////////////////////////////////////////////////
 	//メンバ関数宣言
