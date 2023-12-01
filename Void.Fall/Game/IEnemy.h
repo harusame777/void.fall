@@ -9,6 +9,13 @@ class Game;
 class IEnemy : public IGameObject
 {
 public:
+	enum EnemyType{
+		en_enemy001,
+		en_enemy002,
+		EnemyType_Num,
+		EnemyType_None
+	};
+public:
 	//共通初期設定
 	//IEnemy() {}
 	void DeleteGoEnemyList()
@@ -43,6 +50,10 @@ public:
 	{
 		m_Vectornum = num;
 	}
+	void SetEnemyType(const EnemyType enemytype)
+	{
+		m_enemy_type = enemytype;
+	}
 	void ItemDrop()
 	{
 		I_G_Item* item_g = NewGO<I_G_Item>(0, "itemg");
@@ -70,6 +81,7 @@ public:
 	CharacterController m_charaCon ;        //キャラコン
 	Vector3 m_position;						//座標
 	Game* m_game = nullptr;
+	EnemyType m_enemy_type = EnemyType_None;    //種類規定
 	int m_hp = 0;                           //HP
 	int m_Vectornum = 0;					//配列のナンバー
 

@@ -12,8 +12,7 @@ bool M_parts1::Start()
 	//‘å‚«‚³İ’è
 	m_modelrender.SetScale(m_scale);
 	m_modelrender.Update();
-	//“–‚½‚è”»’èì¬
-	m_physicsStaticObject.CreateFromModel(m_modelrender.GetModel(), m_modelrender.GetModel().GetWorldMatrix());
+	SetPhysics();
 	return true;
 }
 

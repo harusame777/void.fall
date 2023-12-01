@@ -80,6 +80,7 @@ bool Game::Start()
 			enemy_001->Setscale(objData.scale);
 			enemy_001->SetHP(1);
 			enemy_001->SetVectornum(m_numenemy);
+			enemy_001->SetEnemyType(E_001_enemy::en_enemy001);
 			m_numenemy++;
 			m_EnemyList.push_back(enemy_001);
 			return true;
@@ -92,6 +93,7 @@ bool Game::Start()
 			enemy_002->Setscale(objData.scale);
 			enemy_002->SetHP(1);
 			enemy_002->SetVectornum(m_numenemy);
+			enemy_002->SetEnemyType(E_002_enemy::en_enemy002);
 			m_numenemy++;
 			m_EnemyList.push_back(enemy_002);
 			return true;
