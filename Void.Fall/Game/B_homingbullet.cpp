@@ -28,14 +28,13 @@ bool B_homingbullet::Start()
 		m_collisionObject->SetIsEnableAutoDelete(false);
 
 		//アニメーション読み込み
-		//m_animationclips[enAnimationClip_Move].Load
-		//("Assets/modelData/A_attack/bullet/homingbullet/homingbullet.tka");
-		//m_animationclips[enAnimationClip_Move].SetLoopFlag(true);
+		m_animationclips[enAnimationClip_Move].Load
+		("Assets/modelData/A_attack/bullet/homingbullet/homingbullet.tka");
+		m_animationclips[enAnimationClip_Move].SetLoopFlag(true);
 
 		//モデル読み込み
-		m_modelrender = new ModelRender;
-		m_modelrender->Init("Assets/modelData/A_attack/bullet/homingbullet/homingbullet1.tkm"
-			/*,m_animationclips, enAnimationClip_Num*/);
+		m_modelrender.Init("Assets/modelData/A_attack/bullet/homingbullet/homingbullet1.tkm"
+			,m_animationclips, enAnimationClip_Num);
 	}
 	if (m_shooter == enShooter_Player){
 		//コリジョンオブジェクトを作成する。
@@ -47,19 +46,18 @@ bool B_homingbullet::Start()
 		m_collisionObject->SetIsEnableAutoDelete(false);
 
 		////アニメーション読み込み
-		//m_animationclips[enAnimationClip_Move].Load
-		//("Assets/modelData/A_attack/bullet/normalbullet/normalbullet.tka");
-		//m_animationclips[enAnimationClip_Move].SetLoopFlag(true);
+		m_animationclips[enAnimationClip_Move].Load
+		("Assets/modelData/A_attack/bullet/normalbullet/normalbullet.tka");
+		m_animationclips[enAnimationClip_Move].SetLoopFlag(true);
 
 		//モデル読み込み
-		m_modelrender = new ModelRender;
-		m_modelrender->Init("Assets/modelData/A_attack/bullet/normalbullet/normalbullet1.tkm"
+		m_modelrender.Init("Assets/modelData/A_attack/bullet/normalbullet/normalbullet1.tkm"
 			/*,m_animationclips, enAnimationClip_Num*/);
 	}
 
-	m_modelrender->SetPosition(m_position);
-	m_modelrender->SetRotation(m_rotation);
-	m_modelrender->SetScale(scale);
+	m_modelrender.SetPosition(m_position);
+	m_modelrender.SetRotation(m_rotation);
+	m_modelrender.SetScale(scale);
 
 	m_player = FindGO<P_main_Player>("player");
 
@@ -79,16 +77,16 @@ void B_homingbullet::Update()
 	//弾丸消去処理
 	deletebullet();
 	//アニメーション
-	//PlayAnimation();
+	PlayAnimation();
 	//描画処理
-	m_modelrender->Update();
+	m_modelrender.Update();
 }
 
 void B_homingbullet::PlayAnimation()
 {
 	if (m_isDelete == false)
 	{
-		m_modelrender->PlayAnimation(enAnimationClip_Move, 0.1f);
+		m_modelrender.PlayAnimation(enAnimationClip_Move, 0.1f);
 	}
 }
 
@@ -117,7 +115,7 @@ void B_homingbullet::Movebullet()
 		break;
 	}
 	m_collisionObject->SetPosition(m_position);
-	m_modelrender->SetPosition(m_position);
+	m_modelrender.SetPosition(m_position);
 }
 
 void B_homingbullet::Rotation()
@@ -126,7 +124,7 @@ void B_homingbullet::Rotation()
 			//移動速度を↓に入れるとできる。
 	float angle = atan2(-m_velocity.x, m_velocity.z);
 	m_rotation.SetRotationY(-angle);
-	m_modelrender->SetRotation(m_rotation);
+	m_modelrender.SetRotation(m_rotation);
 	m_forward = Vector3::AxisZ;
 	m_rotation.Apply(m_forward);
 }
@@ -168,7 +166,6 @@ void B_homingbullet::Inpacttime()
 	{
 		return;
 	}
-	delete m_modelrender;
 	DeleteGO(m_collisionObject);
 	DeleteGO(this);
 }
@@ -208,7 +205,6 @@ void B_homingbullet::deletebullet()
 			//↓タイマーがゼロになったら。(deletetimerより0の方が大きくなったら)
 		if (m_deleteTimer <= 0.0f) {
 			DeleteGO(m_collisionObject);//消去処理
-			delete m_modelrender;
 			DeleteGO(this);
 		}
 	}
@@ -216,5 +212,5 @@ void B_homingbullet::deletebullet()
 
 void B_homingbullet::Render(RenderContext& rc)
 {
-	m_modelrender->Draw(rc);
+	m_modelrender.Draw(rc);
 }

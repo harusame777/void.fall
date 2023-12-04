@@ -46,7 +46,7 @@ public:
 	const float deletetimer = 0.1f;							//ディレイタイマー
 	AnimationClip m_animationclips[enAnimationClip_Num];    //アニメーションクリップ
 	Vector3	m_forward = Vector3::AxisZ;						//エネミーの正面ベクトル。
-	ModelRender* m_modelrender = nullptr;					//モデルレンダー
+	ModelRender m_modelrender;								//モデルレンダー
 	CollisionObject* m_collisionObject;						//コリジョンオブジェクト。
 	P_main_Player* m_player = nullptr;                      //プレイヤー
 	Quaternion	m_rotation;									//回転。

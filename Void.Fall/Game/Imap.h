@@ -2,6 +2,23 @@
 class Imap : public IGameObject
 {
 public:
+	enum mapType {
+		en_typeNone,
+		en_Start,
+		en_Goal,
+		en_oneOut,
+		en_twoOut,
+		en_threeOut,
+		en_Outend
+	};
+	enum mapZrot
+	{
+		en_rotNone,
+		en_0rot,
+		en_90rot,
+		en_180rot,
+		en_270rot,
+	};
 	//ŠÖ”éŒ¾
 	virtual bool Start() = 0;
 	void Update(){
@@ -25,11 +42,39 @@ public:
 	{
 		m_scale = scale;
 	}
+	void SetMapType(const mapType maptype)
+	{
+		m_mapType = maptype;
+	}
+	float rot0 = 0;
+	float rot90 = 90;
+	float rot180 = 180;
+	float rot270 = 270;
+	void SetMapRotZ(const mapZrot mapzrot)
+	{
+		m_maprot = mapzrot;
+		switch (m_maprot){
+		case Imap::en_0rot:
+			m_rotation.z = rot0;
+			break;
+		case Imap::en_90rot:
+			m_rotation.z = rot90;
+			break;
+		case Imap::en_180rot:
+			m_rotation.z = rot180;
+			break;
+		case Imap::en_270rot:
+			m_rotation.z = rot270;
+			break;
+		}
+	}
 	void SetPhysics(){
 		//“–‚½‚è”»’èì¬
 		m_physicsStaticObject.CreateFromModel(m_modelrender.GetModel(), m_modelrender.GetModel().GetWorldMatrix());
 	}
 	//ƒƒ“ƒoŠÖ”éŒ¾
+	mapType m_mapType = en_typeNone;
+	mapZrot m_maprot = en_rotNone;
 	Vector3 m_position;//À•W
 	Vector3 m_scale = Vector3::One;//‘å‚«‚³
 	Quaternion m_rotation;//‰ñ“]

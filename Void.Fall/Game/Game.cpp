@@ -7,6 +7,7 @@
 #include "Map_home1.h"
 #include "Ca_maincamera.h"
 #include "IEnemy.h"
+#include "Imap.h"
 #include "M_parts1.h"
 #include "M_parts2.h"
 #include "M_parts3.h"

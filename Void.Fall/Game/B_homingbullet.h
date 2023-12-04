@@ -60,7 +60,7 @@ public:
 	Vector3 targetPosition;
 	P_main_Player* m_player = nullptr;                      //プレイヤー
 	AnimationClip m_animationclips[enAnimationClip_Num];    //アニメーションクリップ
-	ModelRender* m_modelrender = nullptr;					//モデルレンダー
+	ModelRender m_modelrender;								//モデルレンダー
 	Vector3 m_position;										//座標
 	Vector3 m_velocity;										//速度
 	Vector3 m_targetPosition;								//追尾対象座標

@@ -7,6 +7,7 @@ class E_002_enemy;
 class Map_home1;
 class Ca_maincamera;
 class IEnemy;
+class Imap;
 class M_parts1;
 class M_parts2;
 class M_parts3;

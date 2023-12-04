@@ -13,18 +13,17 @@ bool B_normalbullet::Start()
 {
 
 	//アニメーション読み込み
-	//m_animationclips[enAnimationClip_Move].Load
-	//("Assets/modelData/A_attack/bullet/normalbullet/normalbullet.tka");
-	//m_animationclips[enAnimationClip_Move].SetLoopFlag(true);
+	m_animationclips[enAnimationClip_Move].Load
+	("Assets/modelData/A_attack/bullet/normalbullet/normalbullet.tka");
+	m_animationclips[enAnimationClip_Move].SetLoopFlag(true);
 
 	//モデル読み込み
-	m_modelrender = new ModelRender;
-	m_modelrender->Init("Assets/modelData/A_attack/bullet/normalbullet/normalbullet1.tkm"
-		/*,m_animationclips, enAnimationClip_Num*/);
+	m_modelrender.Init("Assets/modelData/A_attack/bullet/normalbullet/normalbullet1.tkm"
+		,m_animationclips, enAnimationClip_Num);
 
-	m_modelrender->SetPosition(m_position);
-	m_modelrender->SetScale(scale);
-	m_modelrender->SetRotation(m_rotation);
+	m_modelrender.SetPosition(m_position);
+	m_modelrender.SetScale(scale);
+	m_modelrender.SetRotation(m_rotation);
 	
 
 	//移動速度を計算。
@@ -59,16 +58,16 @@ void B_normalbullet::Update()
 	//弾丸消去処理
 	deletebullet();
 	//アニメーション
-	//PlayAnimation();
+	PlayAnimation();
 	//描画処理
-	m_modelrender->Update();
+	m_modelrender.Update();
 }
 
 void B_normalbullet::Movebullet()
 {
 	//座標を移動させる。
 	m_position += m_velocity *g_gameTime->GetFrameDeltaTime();
-	m_modelrender->SetPosition(m_position);
+	m_modelrender.SetPosition(m_position);
 	m_collisionObject->SetPosition(m_position);
 	bullettime -= g_gameTime->GetFrameDeltaTime();	//自然消去タイマーを減らすヤツ
 }
@@ -79,7 +78,7 @@ void B_normalbullet::Rotation()
 		//移動速度を↓に入れるとできる。
 	float angle = atan2(-m_velocity.x, m_velocity.z);
 	m_rotation.SetRotationY(-angle);
-	m_modelrender->SetRotation(m_rotation);
+	m_modelrender.SetRotation(m_rotation);
 	m_forward = Vector3::AxisZ;
 	m_rotation.Apply(m_forward);
 }
@@ -91,7 +90,6 @@ void B_normalbullet::Inpacttime()
 		return;
 	}
 	DeleteGO(m_collisionObject);
-	delete m_modelrender;
 	DeleteGO(this);
 }
 
@@ -121,7 +119,6 @@ void B_normalbullet::deletebullet()
 			//↓タイマーがゼロになったら。(deletetimerより0の方が大きくなったら)
 		if (m_deleteTimer <= 0.0f) {
 			DeleteGO(m_collisionObject);//消去処理
-			delete m_modelrender;
 			DeleteGO(this);
 		}
 	}
@@ -129,10 +126,10 @@ void B_normalbullet::deletebullet()
 
 void B_normalbullet::PlayAnimation()
 {
-	m_modelrender->PlayAnimation(enAnimationClip_Move, 0.1f);
+	m_modelrender.PlayAnimation(enAnimationClip_Move, 0.1f);
 }
 
 void B_normalbullet::Render(RenderContext& rc)
 {
-	m_modelrender->Draw(rc);
+	m_modelrender.Draw(rc);
 }
