@@ -66,6 +66,12 @@
     <ClCompile Include="M_parts_start.cpp">
       <Filter>mapparts</Filter>
     </ClCompile>
+    <ClCompile Include="E_003_enemy.cpp">
+      <Filter>Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="M_parts_wall.cpp">
+      <Filter>mapparts</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -114,6 +120,12 @@
       <Filter>mapparts</Filter>
     </ClInclude>
     <ClInclude Include="M_parts_start.h">
+      <Filter>mapparts</Filter>
+    </ClInclude>
+    <ClInclude Include="E_003_enemy.h">
+      <Filter>Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="M_parts_wall.h">
       <Filter>mapparts</Filter>
     </ClInclude>
   </ItemGroup>

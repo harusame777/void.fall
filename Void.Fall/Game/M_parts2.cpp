@@ -12,6 +12,7 @@ bool M_parts2::Start()
 	//‘å‚«‚³Ý’è
 	m_modelrender.SetScale(m_scale);
 	m_modelrender.Update();
+	PhysicsWorld::GetInstance()->EnableDrawDebugWireFrame();
 	SetPhysics();
 	return true;
 }

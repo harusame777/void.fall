@@ -228,6 +228,7 @@
     <ClCompile Include="Ca_maincamera.cpp" />
     <ClCompile Include="E_001_enemy.cpp" />
     <ClCompile Include="E_002_enemy.cpp" />
+    <ClCompile Include="E_003_enemy.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="IEnemy.cpp" />
     <ClCompile Include="IItem.cpp" />
@@ -240,6 +241,7 @@
     <ClCompile Include="M_parts2.cpp" />
     <ClCompile Include="M_parts3.cpp" />
     <ClCompile Include="M_parts_start.cpp" />
+    <ClCompile Include="M_parts_wall.cpp" />
     <ClCompile Include="P_main_Player.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -254,6 +256,7 @@
     <ClInclude Include="Ca_maincamera.h" />
     <ClInclude Include="E_001_enemy.h" />
     <ClInclude Include="E_002_enemy.h" />
+    <ClInclude Include="E_003_enemy.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="IEnemy.h" />
     <ClInclude Include="IItem.h" />
@@ -265,6 +268,7 @@
     <ClInclude Include="M_parts2.h" />
     <ClInclude Include="M_parts3.h" />
     <ClInclude Include="M_parts_start.h" />
+    <ClInclude Include="M_parts_wall.h" />
     <ClInclude Include="P_main_Player.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="stdafx.h" />

@@ -4,7 +4,7 @@
 bool M_parts_start::Start()
 {
 	//ƒ‚ƒfƒ‹“Ç‚İ‚İ
-	m_modelrender.Init("Assets/modelData/A_mapParts/stage1/mapparts1.tkm");
+	m_modelrender.Init("Assets/modelData/A_mapmaker/parts_start.tkm");
 	//À•Wİ’è
 	m_modelrender.SetPosition(m_position);
 	//‰ñ“]’lİ’è

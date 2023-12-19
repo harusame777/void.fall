@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "M_parts1.h"
 
+
 bool M_parts1::Start()
 {
 	//ƒ‚ƒfƒ‹“Ç‚İ‚İ

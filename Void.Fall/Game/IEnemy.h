@@ -12,6 +12,7 @@ public:
 	enum EnemyType{
 		en_enemy001,
 		en_enemy002,
+		en_enemy003,
 		EnemyType_Num,
 		EnemyType_None
 	};

@@ -4,6 +4,7 @@
 #include "P_main_Player.h"
 #include "E_001_enemy.h"
 #include "E_002_enemy.h"
+#include "E_003_enemy.h"
 #include "Map_home1.h"
 #include "Ca_maincamera.h"
 #include "IEnemy.h"
@@ -11,6 +12,7 @@
 #include "M_parts1.h"
 #include "M_parts2.h"
 #include "M_parts3.h"
+#include "mapMaker.h"
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 //マップとステージ類のヘッダーとプログラムはMap_~のプログラム。
@@ -29,6 +31,7 @@ bool Game::Start()
 	{
 		//現在名testPlayer
 		//プレイヤー
+		//m_mapMaker = NewGO<mapMaker>(0, "mapmaker");
 		if (objData.EqualObjectName(L"voidPlayer") == true)
 		{
 			m_player = NewGO<P_main_Player>(0, "player");
@@ -39,14 +42,14 @@ bool Game::Start()
 		}
 		//現在名testmap
 		//最初のマップ
-		//else if (objData.EqualObjectName(L"testmapV1") == true)
-		//{
-		//	m_home1 = NewGO<Map_home1>(0, "home1");
-		//	m_home1->Setposition(objData.position);
-		//	m_home1->Setrotarion(objData.rotation);
-		//	m_home1->Setscale(objData.scale);
-		//	return true;
-		//}
+		else if (objData.EqualObjectName(L"testmapV1") == true)
+		{
+			m_home1 = NewGO<Map_home1>(0, "home1");
+			m_home1->Setposition(objData.position);
+			m_home1->Setrotarion(objData.rotation);
+			m_home1->Setscale(objData.scale);
+			return true;
+		}
 		else if (objData.ForwardMatchName(L"mapparts1") == true)
 		{
 			M_parts1* m_mapparts1 = NewGO<M_parts1>(0, "parts1");
@@ -97,6 +100,19 @@ bool Game::Start()
 			enemy_002->SetEnemyType(E_002_enemy::en_enemy002);
 			m_numenemy++;
 			m_EnemyList.push_back(enemy_002);
+			return true;
+		}
+		else if (objData.ForwardMatchName(L"RE_enemy_003") == true)
+		{
+			E_003_enemy* enemy_003 = NewGO<E_003_enemy>(0, "enemy_003");
+			enemy_003->Setposition(objData.position);
+			enemy_003->Setrotation(objData.rotation);
+			enemy_003->Setscale(objData.scale);
+			enemy_003->SetHP(1);
+			enemy_003->SetVectornum(m_numenemy);
+			enemy_003->SetEnemyType(E_003_enemy::en_enemy003);
+			m_numenemy++;
+			m_EnemyList.push_back(enemy_003);
 			return true;
 		}
 		return true;
