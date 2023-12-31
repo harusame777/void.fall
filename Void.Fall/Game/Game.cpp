@@ -5,6 +5,7 @@
 #include "E_001_enemy.h"
 #include "E_002_enemy.h"
 #include "E_003_enemy.h"
+#include "E_004_enemy.h"
 #include "Map_home1.h"
 #include "Ca_maincamera.h"
 #include "IEnemy.h"
@@ -12,6 +13,7 @@
 #include "M_parts1.h"
 #include "M_parts2.h"
 #include "M_parts3.h"
+#include "M_parts4.h"
 #include "mapMaker.h"
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
@@ -20,6 +22,11 @@
 //カメラのヘッダーとプログラムはCa_~のプログラム。
 // エネミーのヘッダーとプログラムはE_~のプログラム。
 ///////////////////////////////////////////////////////////
+
+namespace
+{
+	const Vector3 corre1 = { 0.0f,60.0f,0.0f };//位置修正
+}
 
 bool Game::Start()
 {	
@@ -74,11 +81,26 @@ bool Game::Start()
 			m_mapparts3->Setscale(objData.scale);
 			return true;
 		}
+		else if (objData.ForwardMatchName(L"mapparts4") == true)
+		{
+			M_parts4* m_mapparts4 = NewGO<M_parts4>(0, "parts4");
+			m_mapparts4->Setposition(objData.position);
+			m_mapparts4->Setrotarion(objData.rotation);
+			m_mapparts4->Setscale(objData.scale);
+			m_mapparts4->Setnum(map4_num);
+			m_Map4List.push_back(m_mapparts4);
+			E_004_enemy* enemy_004 = NewGO<E_004_enemy>(0, "enemy_004");
+			enemy_004->Setposition(objData.position + corre1);
+			m_mapparts4->Setnum(map4_num);
+			m_MapLock.push_back(enemy_004);
+			map4_num++;
+			return true;
+		}
 		//現在名
 		//敵１
 		else if (objData.ForwardMatchName(L"RE_enemy_001") == true)
 		{
-			E_001_enemy* enemy_001 = NewGO<E_001_enemy>(0, "enemy");
+			E_001_enemy* enemy_001 = NewGO<E_001_enemy>(0, "enemy_001");
 			enemy_001->Setposition(objData.position);
 			enemy_001->Setrotation(objData.rotation);
 			enemy_001->Setscale(objData.scale);

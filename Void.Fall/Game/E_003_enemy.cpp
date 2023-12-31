@@ -89,11 +89,14 @@ void E_003_enemy::ProcessCommonStateTransition()
 	if (SearchPlayer()){
 		if (SearchAttackDistance(en_attackN))
 		{
-
+			if (m_attackTimer < 0.0f) {
+				m_enemystate = enEnemyState_Attack;
+				m_attackTimer = attacktime;
+			}
 		}
-		if (m_attackTimer < 0.0f) {
-			m_enemystate = enEnemyState_Attack;
-			m_attackTimer = attacktime;
+		else if (SearchAttackDistance(en_attackF))
+		{
+			//遠距離
 		}
 		if (m_enemystate == enEnemyState_Attack) {
 			m_enemystate = enEnemyState_Chase;
@@ -124,14 +127,25 @@ const bool E_003_enemy::SearchPlayer() const
 	return false;
 }
 
-const bool E_003_enemy::SearchAttackDistance() const
+const bool E_003_enemy::SearchAttackDistance(const Attacktype attacktype) const
 {
 	Vector3 diff = m_player->Getposition() - m_position;
 
 	//プレイヤーにある程度近かったら.。
-	if (diff.LengthSq() <= enemyserch)
+	switch (attacktype)
 	{
-		return true;
+		case en_attackN:
+			if (diff.LengthSq() <= enemyserchAttackN)
+			{
+				return true;
+			}
+			break;
+		case en_attackF:
+			if (diff.LengthSq() <= enemyserchAttackF)
+			{
+				return true;
+			}
+			break;
 	}
 	//プレイヤーを見つけられなかった。
 	return false;

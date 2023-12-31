@@ -72,6 +72,15 @@
     <ClCompile Include="M_parts_wall.cpp">
       <Filter>mapparts</Filter>
     </ClCompile>
+    <ClCompile Include="M_parts4.cpp">
+      <Filter>mapparts</Filter>
+    </ClCompile>
+    <ClCompile Include="M_parts4_sub.cpp">
+      <Filter>mapparts</Filter>
+    </ClCompile>
+    <ClCompile Include="E_004_enemy.cpp">
+      <Filter>Enemy</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -127,6 +136,15 @@
     </ClInclude>
     <ClInclude Include="M_parts_wall.h">
       <Filter>mapparts</Filter>
+    </ClInclude>
+    <ClInclude Include="M_parts4.h">
+      <Filter>mapparts</Filter>
+    </ClInclude>
+    <ClInclude Include="M_parts4_sub.h">
+      <Filter>mapparts</Filter>
+    </ClInclude>
+    <ClInclude Include="E_004_enemy.h">
+      <Filter>Enemy</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

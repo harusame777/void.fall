@@ -1,2 +1,7 @@
 #include "stdafx.h"
 #include "IEnemy.h"
+#include "Game.h"
+#include "P_main_Player.h"
+#include "collision/CollisionObject.h"
+#include "graphics/effect/EffectEmitter.h"
+#include "I_G_Item.h"
