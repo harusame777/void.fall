@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "M_parts4.h"
 #include "M_parts4_sub.h"
+#include "Game.h"
 
 bool M_parts4::Start()
 {
@@ -14,6 +15,8 @@ bool M_parts4::Start()
 	m_modelrender.SetScale(m_scale);
 	m_modelrender.Update();
 	SetPhysics();
+
+
 	return true;
 }
 
@@ -22,5 +25,10 @@ void M_parts4::mapLockOn()
 	M_parts4_sub* m_mapparts4_sub = NewGO<M_parts4_sub>(0, "parts4_sub");
 	m_mapparts4_sub->Setposition(m_position);
 	m_mapparts4_sub->Setrotarion(m_rotation);
+	m_mapparts4_sub->Setnum(map_num);
 }
 
+void M_parts4::DeleteWall()
+{
+	DeleteGO(m_mapparts4_sub);
+}

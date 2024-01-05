@@ -2,12 +2,14 @@
 #include "IEnemy.h"
 class P_main_Player;
 class M_parts4;
+class M_parts4_sub;
 class E_004_enemy : public IEnemy
 {
 public :
 	enum EnEnemyState {
 		enEnemyState_Standby,					//待機状態
 		enEnemyState_Active,					//起動状態
+		enEnemyState_Wait
 	};
 	enum EnAnimationClip {
 		enAnimationClip_Standby,//棒立ち
@@ -20,6 +22,8 @@ public :
 	void Render(RenderContext& rc);
 	void ActiveLock();
 	void EnemySummon();
+	void EnemyRand(int randnum,int Vecnum);
+	Vector3 EnemySetVec(int Vecnum);
 	void Setnum(int num) {
 		map_num = num;
 	}
@@ -27,8 +31,10 @@ public :
 	EnEnemyState m_enemystate = enEnemyState_Standby;          //エネミーステート
 	AnimationClip m_animationclips[enAnimationClip_Num];     //アニメーションクリップ
 	M_parts4* m_parts4 = nullptr;
+	M_parts4_sub* m_parts4_sub = nullptr;
 	int map_num = 0;
 	float m_Locktimer = 0.0f;
 	float Locktime = 60.0f;
+	bool EnemyOneSum = false;
 };
 

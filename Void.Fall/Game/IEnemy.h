@@ -9,6 +9,10 @@ class Game;
 class IEnemy : public IGameObject
 {
 public:
+	enum SummonType {
+		NormalSum,
+		Enemy4Sum
+	};
 	enum EnemyType{
 		en_enemy001,
 		en_enemy002,
@@ -24,7 +28,9 @@ public:
 		m_game = FindGO<Game>("game");
 		m_game->Delete_EnemyVec(m_Vectornum);
 		m_game->m_numenemy--;
-		m_player->m_isTakeAim = false;
+		if (m_summon_type == Enemy4Sum) {
+			m_game->SummonEnemynum--;
+		}
 		m_player->m_isTakeAim = false;
 	}
 	void Setposition(const Vector3& position)//座標
@@ -55,6 +61,10 @@ public:
 	{
 		m_enemy_type = enemytype;
 	}
+	void SetSummonType(const SummonType summontype)
+	{
+		m_summon_type = summontype;
+	}
 	void ItemDrop()
 	{
 		I_G_Item* item_g = NewGO<I_G_Item>(0, "itemg");
@@ -83,6 +93,8 @@ public:
 	Vector3 m_position;						//座標
 	Game* m_game = nullptr;
 	EnemyType m_enemy_type = EnemyType_None;    //種類規定
+	SummonType m_summon_type = NormalSum;     //召喚タイプ
+	E_004_enemy* enemy004 = nullptr;
 	int m_hp = 0;                           //HP
 	int m_Vectornum = 0;					//配列のナンバー
 

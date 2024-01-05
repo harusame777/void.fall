@@ -13,6 +13,8 @@ bool M_parts4_sub::Start()
 	m_modelrender.SetScale(m_scale);
 	m_modelrender.Update();
 	SetPhysics();
+
+
 	return true;
 }
 

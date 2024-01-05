@@ -14,6 +14,7 @@ class M_parts1;
 class M_parts2;
 class M_parts3;
 class M_parts4;
+class M_parts4_sub;
 class mapMaker;
 ///////////////////////////////////////////////////////////
 class Game : public IGameObject
@@ -47,5 +48,6 @@ public:
 	FontRender m_fontrender;//スプライトレンダー
 	int m_numenemy = 0; //エネミー数
 	int map4_num = 0;
+	int SummonEnemynum = 0;
 };
 

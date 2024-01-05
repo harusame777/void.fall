@@ -1,12 +1,22 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 #include "stdafx.h"
 #include "E_004_enemy.h"
 #include "M_parts4.h"
+#include "M_parts4_sub.h"
 #include "math.h"
+#include "E_001_enemy.h"
+#include "E_002_enemy.h"
 
 namespace
 {
 	const Vector3 corre1 = { 0.0f,60.0f,0.0f };//ˆÊ’uC³
-}
+	const Vector3 SummonCorreA = { 200.0f,-40.0f,0.0f }; //¢Š«ˆÊ’uC³A
+	const Vector3 SummonCorreB = { -200.0f,-40.0f,0.0f }; //¢Š«ˆÊ’uC³B
+	const Vector3 SummonCorreC = { 0.0f,-40.0f,200.0f }; //¢Š«ˆÊ’uC³C
+	const Vector3 SummonCorreD = { 0.0f,-40.0f,-200.0f }; //¢Š«ˆÊ’uC³D
+ }
 
 bool E_004_enemy::Start()
 {
@@ -85,9 +95,7 @@ void E_004_enemy::Collision()
 		{
 			if (m_enemystate == enEnemyState_Standby){
 				m_enemystate = enEnemyState_Active;
-				m_Locktimer = Locktime;
-				m_parts4->mapLockOn();
-				EnemySummon();
+				m_game->m_Map4List[map_num]->mapLockOn();
 			}
 		}
 	}
@@ -95,19 +103,72 @@ void E_004_enemy::Collision()
 
 void E_004_enemy::ActiveLock()
 {
-	m_Locktimer -= g_gameTime->GetFrameDeltaTime();
-	float timer0 = fmod(m_Locktimer,20.0f);
-	if (timer0 == 0){
+	if (EnemyOneSum == false){
 		EnemySummon();
+		EnemyOneSum = true;
 	}
-	if (m_Locktimer > 0){
-
+	if (m_game->SummonEnemynum == 0){
+		m_parts4_sub = FindGO<M_parts4_sub>("parts4sub");
+		m_parts4_sub->DeleteLock();
 	}
 }
 
 void E_004_enemy::EnemySummon()
 {
+	for (int i = 0; i < 4; i++){
+		int enemyrand = rand()% 2;
+		EnemyRand(enemyrand, i);
+	}
+}
 
+void E_004_enemy::EnemyRand(int randnum,int Vecnum)
+{
+	switch (randnum)
+	{
+	case 0:
+	{E_001_enemy* enemy_001 = NewGO<E_001_enemy>(0, "enemy_001");
+	enemy_001->Setposition(m_position + EnemySetVec(Vecnum));
+	enemy_001->Setrotation(m_rotation);
+	enemy_001->SetHP(1);
+	enemy_001->SetVectornum(m_game->m_numenemy);
+	enemy_001->SetEnemyType(E_001_enemy::en_enemy001);
+	enemy_001->SetSummonType(E_001_enemy::Enemy4Sum);
+	m_game->m_numenemy++;
+	m_game->SummonEnemynum++;
+	m_game->m_EnemyList.push_back(enemy_001); 		
+	break;}
+	case 1:
+	{E_002_enemy* enemy_002 = NewGO<E_002_enemy>(0, "enemy_002");
+	enemy_002->Setposition(m_position + EnemySetVec(Vecnum));
+	enemy_002->Setrotation(m_rotation);
+	enemy_002->SetHP(1);
+	enemy_002->SetVectornum(m_game->m_numenemy);
+	enemy_002->SetEnemyType(E_002_enemy::en_enemy002);
+	enemy_002->SetSummonType(E_002_enemy::Enemy4Sum);
+	m_game->m_numenemy++;
+	m_game->SummonEnemynum++;
+	m_game->m_EnemyList.push_back(enemy_002); 		
+	break;}
+	}
+}
+
+Vector3 E_004_enemy::EnemySetVec(int Vecnum)
+{
+	switch (Vecnum)
+	{
+	case 0:
+		return SummonCorreA;
+		break;
+	case 1:
+		return SummonCorreB;
+		break;
+	case 2:
+		return SummonCorreC;
+		break;
+	case 3:
+		return SummonCorreD;
+		break;
+	}
 }
 
 void E_004_enemy::Render(RenderContext& rc)
