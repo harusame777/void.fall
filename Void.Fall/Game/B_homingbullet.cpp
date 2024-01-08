@@ -11,8 +11,8 @@ namespace
 	const float bullet_homingtime = 3.0f;     //Å‘å’ÇÕŠÔ
 	const float bullet_sppedE = 10.0f;         //‘¬“x
 	const float curvatureE = 10.0f;            //‹È‚ª‚é‹­‚³
-	const float bullet_sppedP = 10.0f;         //‘¬“x
-	const float curvatureP = 20.0f;            //‹È‚ª‚é‹­‚³
+	const float bullet_sppedP = 15.0f;         //‘¬“x
+	const float curvatureP = 25.0f;            //‹È‚ª‚é‹­‚³
 	const float damping = 0.1f;               //Œ¸Š
 }
 

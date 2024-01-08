@@ -16,6 +16,7 @@ class M_parts3;
 class M_parts4;
 class M_parts4_sub;
 class mapMaker;
+class Ob_savepoint;
 ///////////////////////////////////////////////////////////
 class Game : public IGameObject
 {
@@ -26,11 +27,14 @@ public:
 	bool Start();
 	void Update();
 	void Render(RenderContext& rc);
+	void Font();
+	void Save();
 	void Delete_EnemyVec(const int num);
 	//メンバ関数宣言
 	std::vector<IEnemy*> m_EnemyList;
 	std::vector<M_parts4*> m_Map4List;
 	std::vector<E_004_enemy*> m_MapLock;
+	std::vector<Ob_savepoint*> m_saveList;
 	Map_home1* m_home1 = nullptr;//home
 	P_main_Player* m_player = nullptr;//プレイヤー
 	E_001_enemy* m_enemy_001 = nullptr; //エネミー001
@@ -46,8 +50,13 @@ public:
 	IEnemy* m_ienemy = nullptr;
 	LevelRender m_levelrender;//レベルレンダー
 	FontRender m_fontrender;//スプライトレンダー
+	Ob_savepoint* m_savepoint = nullptr;
+	Vector3 Recoverypos = { 0.0,-200.0,0.0 };
+	int m_Nowsavepointnum = -1;//現在のセーブナンバー
+	int m_savenum = 0;//セーブポイント数
 	int m_numenemy = 0; //エネミー数
 	int map4_num = 0;
 	int SummonEnemynum = 0;
+	int GoalLockNum = 0;
 };
 

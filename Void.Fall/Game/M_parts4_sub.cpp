@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "M_parts4_sub.h"
+#include "Game.h"
 
 bool M_parts4_sub::Start()
 {
@@ -14,8 +15,26 @@ bool M_parts4_sub::Start()
 	m_modelrender.Update();
 	SetPhysics();
 
+	m_game = FindGO<Game>("game");
 
 	return true;
+}
+
+void M_parts4_sub::Update()
+{
+	if (GameSumEneNum()){
+		DeleteLock();
+	}
+}
+
+bool M_parts4_sub::GameSumEneNum()
+{
+	if (m_game->SummonEnemynum == 0) {
+		return true;
+	}
+	else {
+		return false;
+	}
 }
 
 void M_parts4_sub::DeleteLock()

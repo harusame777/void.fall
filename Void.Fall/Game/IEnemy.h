@@ -1,4 +1,7 @@
 #pragma once
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 #include "Game.h"
 #include "P_main_Player.h"
 #include "collision/CollisionObject.h"
@@ -9,6 +12,10 @@ class Game;
 class IEnemy : public IGameObject
 {
 public:
+	enum EnemySheld {
+		NormalEnemy,
+		SheldEnemy,
+	};
 	enum SummonType {
 		NormalSum,
 		Enemy4Sum
@@ -53,6 +60,39 @@ public:
 	{
 		m_hp = hp;
 	}
+	void SetSHEnum(const EnemySheld enemysheld)
+	{
+		if (enemysheld == SheldEnemy){
+			m_sh = 3;
+			m_enemysheld_type = SheldEnemy;
+			return;
+		}
+		m_enemysheld_type = NormalEnemy;
+		return;
+	}
+	void SetSH()
+	{
+		m_sh = 3;
+		m_enemysheld_type = SheldEnemy;
+	}
+	bool SheldCon()
+	{
+		if (m_sh > 0){
+			return true;
+		}
+		else{
+			return false;
+		}
+	}
+	void SheldRand() {
+		srand((unsigned int)time(NULL));
+		int sheldrand = rand() % 100 + 1;
+		if (sheldrand >= 70){
+			m_sh = 3;
+			return;
+		}
+		return;
+	}
 	void SetVectornum(const int num)//配列番号
 	{
 		m_Vectornum = num;
@@ -94,8 +134,10 @@ public:
 	Game* m_game = nullptr;
 	EnemyType m_enemy_type = EnemyType_None;    //種類規定
 	SummonType m_summon_type = NormalSum;     //召喚タイプ
+	EnemySheld m_enemysheld_type = NormalEnemy; //敵がシールドを付与されているか
 	E_004_enemy* enemy004 = nullptr;
 	int m_hp = 0;                           //HP
+	int m_sh = 0;							//シールド
 	int m_Vectornum = 0;					//配列のナンバー
 
 };

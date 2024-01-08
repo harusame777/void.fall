@@ -16,6 +16,7 @@
 #include "M_parts4.h"
 #include "M_parts4_sub.h"
 #include "mapMaker.h"
+#include "Ob_savepoint.h"
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 //マップとステージ類のヘッダーとプログラムはMap_~のプログラム。
@@ -138,6 +139,18 @@ bool Game::Start()
 			m_EnemyList.push_back(enemy_003);
 			return true;
 		}
+		//オブジェクト
+		else if (objData.ForwardMatchName(L"savepoint") == true)
+		{
+			Ob_savepoint* m_savepoint = NewGO<Ob_savepoint>(0, "savepoint");
+			m_savepoint->Setposition(objData.position);
+			m_savepoint->Setrotarion(objData.rotation);
+			m_savepoint->Setscale(objData.scale);
+			m_savepoint->SetNum(m_savenum);
+			m_saveList.push_back(m_savepoint);
+			m_savenum++;
+			return true;
+		}
 		return true;
 	});	
 	return true;
@@ -145,10 +158,16 @@ bool Game::Start()
 
 void Game::Update()
 {
+	Font();
+	Save();
+}
+
+void Game::Font()
+{
 	wchar_t wcsbuf[256];
 
 	swprintf_s(wcsbuf, 256, L"HP:%01d||MP:%01d", int(m_player->m_hp)
-	,int(m_player->m_mp));
+		, int(m_player->m_mp));
 
 	//表示するテキストを設定。
 	m_fontrender.SetText(wcsbuf);
@@ -158,7 +177,21 @@ void Game::Update()
 	m_fontrender.SetScale(1.0f);
 	//フォントの色を設定。
 	m_fontrender.SetColor({ 0.0f,0.0f,0.0f,1.0f });
+}
 
+void Game::Save()
+{
+	Vector3 m_NowPlayerpos = m_player->m_position;
+	if (m_NowPlayerpos.y < Recoverypos.y){
+		if (m_Nowsavepointnum = -1){
+			Vector3 pos = { 0.0 ,60.0,0.0 };
+			m_player->m_position = pos;
+			m_player->m_charaCon.SetPosition(pos);
+		}
+		else{
+			m_player->m_position = m_saveList[m_Nowsavepointnum]->m_Saveposition;
+		}
+	}
 }
 
 void Game::Delete_EnemyVec(const int num)

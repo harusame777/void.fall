@@ -9,10 +9,12 @@ public :
 	enum EnEnemyState {
 		enEnemyState_Standby,					//待機状態
 		enEnemyState_Active,					//起動状態
-		enEnemyState_Wait
+		enEnemyState_Down,					    //ダウン。
 	};
 	enum EnAnimationClip {
 		enAnimationClip_Standby,//棒立ち
+		enAnimationClip_Active,
+		enAnimationClip_Down,
 		enAnimationClip_Num,//アニメーション数
 	};
 	void PlayAnimation();
@@ -20,6 +22,8 @@ public :
 	void Collision();										//本体の当たり判定
 	void Update();
 	void Render(RenderContext& rc);
+	void ManageState();//遷移処理
+	void ProcessDownStateTransition();//ダウン遷移
 	void ActiveLock();
 	void EnemySummon();
 	void EnemyRand(int randnum,int Vecnum);

@@ -20,12 +20,15 @@ namespace
 
 bool E_004_enemy::Start()
 {
-	//m_animationclips[enAnimationClip_Standby].Load("Assets/animData/Enemy/enemy_004/standby.tka");
-	//m_animationclips[enAnimationClip_Standby].SetLoopFlag(true);
-
+	m_animationclips[enAnimationClip_Standby].Load("Assets/animData/Enemy/enemy_004/standby.tka");
+	m_animationclips[enAnimationClip_Standby].SetLoopFlag(true);
+	m_animationclips[enAnimationClip_Active].Load("Assets/animData/Enemy/enemy_004/active.tka");
+	m_animationclips[enAnimationClip_Active].SetLoopFlag(true);
+	m_animationclips[enAnimationClip_Down].Load("Assets/animData/Enemy/enemy_004/down.tka");
+	m_animationclips[enAnimationClip_Down].SetLoopFlag(false);
 
 	m_modelrender.Init("Assets/modelData/Enemy/enemy_004/enemy_004.tkm"
-	/*, m_animationclips, enAnimationClip_Num*/);
+	, m_animationclips, enAnimationClip_Num);
 	//回転
 
 	m_modelrender.SetRotation(m_rotation);
@@ -59,28 +62,48 @@ bool E_004_enemy::Start()
 
 void E_004_enemy::Update()
 {
-	//もしステートが起動状態だったら。
-	if (m_enemystate == enEnemyState_Active){
-		//起動状態時の処理を実行する。
-		ActiveLock();
-	}
 	//当たり判定処理
 	Collision();
 	//アニメーション
 	PlayAnimation();
+	//遷移処理
+	ManageState();
 	//描画処理
 	m_modelrender.Update();
 }
 
+void E_004_enemy::ManageState()
+{
+	switch (m_enemystate)
+	{
+	case E_004_enemy::enEnemyState_Standby:
+		return;
+		break;
+	case E_004_enemy::enEnemyState_Active:
+		//起動状態時の処理を実行する。
+		ActiveLock();
+		break;
+	case E_004_enemy::enEnemyState_Down:
+		ProcessDownStateTransition();
+		break;
+	}
+}
+
 void E_004_enemy::PlayAnimation()
 {
-	//m_modelrender.SetAnimationSpeed(1.0f);
-	//switch (m_enemystate)
-	//{
-	//case E_004_enemy::enEnemyState_Standby:
-	//	m_modelrender.PlayAnimation(enAnimationClip_Standby, 0.1f);
-	//	break;
-	//}
+	m_modelrender.SetAnimationSpeed(1.0f);
+	switch (m_enemystate)
+	{
+	case E_004_enemy::enEnemyState_Standby:
+		m_modelrender.PlayAnimation(enAnimationClip_Standby, 0.1f);
+		break;
+	case E_004_enemy::enEnemyState_Active:
+		m_modelrender.PlayAnimation(enAnimationClip_Active, 0.1f);
+		break;
+	case E_004_enemy::enEnemyState_Down:
+		m_modelrender.PlayAnimation(enAnimationClip_Down, 0.1f);
+		break;
+	}
 }
 
 void E_004_enemy::Collision()
@@ -108,8 +131,8 @@ void E_004_enemy::ActiveLock()
 		EnemyOneSum = true;
 	}
 	if (m_game->SummonEnemynum == 0){
-		m_parts4_sub = FindGO<M_parts4_sub>("parts4sub");
-		m_parts4_sub->DeleteLock();
+		m_game->GoalLockNum++;
+		m_enemystate = enEnemyState_Down;
 	}
 }
 
@@ -129,7 +152,8 @@ void E_004_enemy::EnemyRand(int randnum,int Vecnum)
 	{E_001_enemy* enemy_001 = NewGO<E_001_enemy>(0, "enemy_001");
 	enemy_001->Setposition(m_position + EnemySetVec(Vecnum));
 	enemy_001->Setrotation(m_rotation);
-	enemy_001->SetHP(1);
+	enemy_001->SetHP(3);
+	enemy_001->SheldRand();
 	enemy_001->SetVectornum(m_game->m_numenemy);
 	enemy_001->SetEnemyType(E_001_enemy::en_enemy001);
 	enemy_001->SetSummonType(E_001_enemy::Enemy4Sum);
@@ -141,7 +165,8 @@ void E_004_enemy::EnemyRand(int randnum,int Vecnum)
 	{E_002_enemy* enemy_002 = NewGO<E_002_enemy>(0, "enemy_002");
 	enemy_002->Setposition(m_position + EnemySetVec(Vecnum));
 	enemy_002->Setrotation(m_rotation);
-	enemy_002->SetHP(1);
+	enemy_002->SetHP(3);
+	enemy_002->SheldRand();
 	enemy_002->SetVectornum(m_game->m_numenemy);
 	enemy_002->SetEnemyType(E_002_enemy::en_enemy002);
 	enemy_002->SetSummonType(E_002_enemy::Enemy4Sum);
@@ -168,6 +193,17 @@ Vector3 E_004_enemy::EnemySetVec(int Vecnum)
 	case 3:
 		return SummonCorreD;
 		break;
+	}
+}
+
+void E_004_enemy::ProcessDownStateTransition()
+{
+	//被ダメージアニメーションの再生が終わったら。
+	if (m_modelrender.IsPlayingAnimation() == false)
+	{
+		ItemDrop();
+		DeleteGO(m_collisionObject);//消去処理
+		DeleteGO(this);
 	}
 }
 

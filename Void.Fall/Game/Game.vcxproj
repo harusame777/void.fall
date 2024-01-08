@@ -245,6 +245,7 @@
     <ClCompile Include="M_parts4_sub.cpp" />
     <ClCompile Include="M_parts_start.cpp" />
     <ClCompile Include="M_parts_wall.cpp" />
+    <ClCompile Include="Ob_savepoint.cpp" />
     <ClCompile Include="P_main_Player.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -275,6 +276,7 @@
     <ClInclude Include="M_parts4_sub.h" />
     <ClInclude Include="M_parts_start.h" />
     <ClInclude Include="M_parts_wall.h" />
+    <ClInclude Include="Ob_savepoint.h" />
     <ClInclude Include="P_main_Player.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="stdafx.h" />

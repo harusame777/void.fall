@@ -300,16 +300,24 @@ void E_002_enemy::Collision()
 		//コリジョンとキャラコンが衝突したら。
 		if (collision->IsHit(m_collisionObject))
 		{
-			//HPを1減らす。
-			m_hp -= 1;
-			//HPが0になったら。
-			if (m_hp == 0) {
-				//ダウンステートに遷移する。
-				m_enemystate = enEnemyState_Down;
-			}
-			else {
+			if (m_sh > 0) {
+				m_sh--;
 				//被ダメージステートに遷移する。
 				m_enemystate = enEnemyState_ReceiveDamage;
+				return;
+			}
+			else {
+				//HPを1減らす。
+				m_hp -= 1;
+				//HPが0になったら。
+				if (m_hp == 0) {
+					//ダウンステートに遷移する。
+					m_enemystate = enEnemyState_Down;
+				}
+				else {
+					//被ダメージステートに遷移する。
+					m_enemystate = enEnemyState_ReceiveDamage;
+				}
 			}
 		}
 	}

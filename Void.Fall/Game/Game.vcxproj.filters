@@ -16,6 +16,9 @@
     <Filter Include="mapparts">
       <UniqueIdentifier>{7ab34b1a-9601-45cf-865a-4a028eab0edb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="object">
+      <UniqueIdentifier>{3e530cf6-d3ff-4598-a664-1714b75e08eb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp" />
@@ -81,6 +84,9 @@
     <ClCompile Include="E_004_enemy.cpp">
       <Filter>Enemy</Filter>
     </ClCompile>
+    <ClCompile Include="Ob_savepoint.cpp">
+      <Filter>object</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -145,6 +151,9 @@
     </ClInclude>
     <ClInclude Include="E_004_enemy.h">
       <Filter>Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Ob_savepoint.h">
+      <Filter>object</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
