@@ -183,13 +183,14 @@ void Game::Save()
 {
 	Vector3 m_NowPlayerpos = m_player->m_position;
 	if (m_NowPlayerpos.y < Recoverypos.y){
-		if (m_Nowsavepointnum = -1){
+		if (m_Nowsavepointnum == -1){
 			Vector3 pos = { 0.0 ,60.0,0.0 };
 			m_player->m_position = pos;
 			m_player->m_charaCon.SetPosition(pos);
 		}
 		else{
 			m_player->m_position = m_saveList[m_Nowsavepointnum]->m_Saveposition;
+			m_player->m_charaCon.SetPosition(m_saveList[m_Nowsavepointnum]->m_Saveposition);
 		}
 	}
 }
