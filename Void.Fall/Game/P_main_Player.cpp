@@ -126,6 +126,9 @@ void P_main_Player::Render(RenderContext& rc)
 
 void P_main_Player::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eventName)
 {
+	if (GamePlaystate()){
+		return;
+	}
 	//アニメーションクリップがmagic_attackだったら
 	if (wcscmp(eventName, L"magic_attack") == 0) {
 		if (0 < m_mp){
@@ -163,6 +166,9 @@ void P_main_Player::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eve
 
 void P_main_Player::Attack()
 {
+	if (GamePlaystate()) {
+		return;
+	}
 	if (m_attacktime > 0) {
 		m_attacktime -= g_gameTime->GetFrameDeltaTime();
 		return;
@@ -194,6 +200,9 @@ void P_main_Player::MakeAttackCollision()
 
 void P_main_Player::Move()
 {
+	if (GamePlaystate()) {
+		return;
+	}
 	//移動できない状態であれば、移動処理はしない。
 	if (IsEnableMove() == true){
 		return;
@@ -250,6 +259,9 @@ void P_main_Player::Move()
 
 void P_main_Player::Avoidance()
 {
+	if (GamePlaystate()) {
+		return;
+	}
 	//左スティックの入力量を受け取る。
 	float lStick_x = g_pad[0]->GetLStickXF();
 	float lStick_y = g_pad[0]->GetLStickYF();
@@ -273,6 +285,9 @@ void P_main_Player::Avoidance()
 
 void P_main_Player::Rotation()
 {
+	if (GamePlaystate()) {
+		return;
+	}
 	//if (m_isLockOn == true){
 	//	if (m_playerstate == enPlayerState_Attack){
 	//		AttackRotation();
@@ -320,6 +335,9 @@ void P_main_Player::AttackRotation()
 
 void P_main_Player::Collision()
 {
+	if (GamePlaystate()) {
+		return;
+	}
 	//無敵時間中は処理しない
 	if (m_mutekitimer > 0)
 	{
@@ -343,8 +361,8 @@ void P_main_Player::Collision()
 		if (collision->IsHit(m_charaCon)){
 			//HPを1減らす。
 			m_hp -= 1;
-			//HPが0になったら。
-			if (m_hp == 0) {
+			//HPが0以下になったら。
+			if (m_hp <= 0) {
 				//ダウンステートに遷移する。
 				m_playerstate = enPlayerState_Down;
 			}
@@ -444,8 +462,8 @@ void P_main_Player::ProcessReceiveDamageStateTransition()
 void P_main_Player::ProcessDownStateTransition()
 {
 	//ダウンアニメーションの再生が終わったら。
-	if (m_modelrender->IsPlayingAnimation() == false)
-	{
+	if (m_modelrender->IsPlayingAnimation() == false){
+		m_game->DownSet();
 	}
 }
 
@@ -544,6 +562,9 @@ void P_main_Player::AvoidanceTex()
 
 void P_main_Player::Takeaim()
 {
+	if (m_LockonTF == false){
+		return;
+	}
 	//エネミーの数が0だったら処理しない。
 	if (m_game->m_numenemy == 0){
 		LockOnFalse();
@@ -714,6 +735,9 @@ void P_main_Player::LockonLRDis(LockonLRen LR)
 
 void P_main_Player::Lockon()
 {
+	if (m_LockonTF == false) {
+		return;
+	}
 	//エネミーの数が0だったら処理しない。
 	if (m_game->m_numenemy == 0) {
 		m_isLockOn = false;

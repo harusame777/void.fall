@@ -243,6 +243,7 @@
     <ClCompile Include="M_parts3.cpp" />
     <ClCompile Include="M_parts4.cpp" />
     <ClCompile Include="M_parts4_sub.cpp" />
+    <ClCompile Include="M_parts5.cpp" />
     <ClCompile Include="M_parts_start.cpp" />
     <ClCompile Include="M_parts_wall.cpp" />
     <ClCompile Include="Ob_savepoint.cpp" />
@@ -274,6 +275,7 @@
     <ClInclude Include="M_parts3.h" />
     <ClInclude Include="M_parts4.h" />
     <ClInclude Include="M_parts4_sub.h" />
+    <ClInclude Include="M_parts5.h" />
     <ClInclude Include="M_parts_start.h" />
     <ClInclude Include="M_parts_wall.h" />
     <ClInclude Include="Ob_savepoint.h" />

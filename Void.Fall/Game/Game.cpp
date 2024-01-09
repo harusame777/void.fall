@@ -15,6 +15,7 @@
 #include "M_parts3.h"
 #include "M_parts4.h"
 #include "M_parts4_sub.h"
+#include "M_parts5.h"
 #include "mapMaker.h"
 #include "Ob_savepoint.h"
 ///////////////////////////////////////////////////////////
@@ -98,11 +99,19 @@ bool Game::Start()
 			map4_num++;
 			return true;
 		}
+		else if (objData.ForwardMatchName(L"mapparts5") == true)
+		{
+			M_parts5* m_mapparts5 = NewGO<M_parts5>(0, "parts5");
+			m_mapparts5->Setposition(objData.position);
+			m_mapparts5->Setrotarion(objData.rotation);
+			m_mapparts5->Setscale(objData.scale);
+			return true;
+		}
 		//åªç›ñº
 		//ìGÇP
 		else if (objData.ForwardMatchName(L"RE_enemy_001") == true)
 		{
-			E_001_enemy* enemy_001 = NewGO<E_001_enemy>(0, "enemy_001");
+			E_001_enemy* enemy_001 = NewGO<E_001_enemy>(0, "enemy");
 			enemy_001->Setposition(objData.position);
 			enemy_001->Setrotation(objData.rotation);
 			enemy_001->Setscale(objData.scale);
@@ -115,7 +124,7 @@ bool Game::Start()
 		}
 		else if (objData.ForwardMatchName(L"RE_enemy_002") == true)
 		{
-			E_002_enemy* enemy_002 = NewGO<E_002_enemy>(0, "enemy_002");
+			E_002_enemy* enemy_002 = NewGO<E_002_enemy>(0, "enemy");
 			enemy_002->Setposition(objData.position);
 			enemy_002->Setrotation(objData.rotation);
 			enemy_002->Setscale(objData.scale);
@@ -128,7 +137,7 @@ bool Game::Start()
 		}
 		else if (objData.ForwardMatchName(L"RE_enemy_003") == true)
 		{
-			E_003_enemy* enemy_003 = NewGO<E_003_enemy>(0, "enemy_003");
+			E_003_enemy* enemy_003 = NewGO<E_003_enemy>(0, "enemy");
 			enemy_003->Setposition(objData.position);
 			enemy_003->Setrotation(objData.rotation);
 			enemy_003->Setscale(objData.scale);
@@ -160,6 +169,7 @@ void Game::Update()
 {
 	Font();
 	Save();
+	Down();
 }
 
 void Game::Font()
@@ -195,12 +205,77 @@ void Game::Save()
 	}
 }
 
+void Game::Down()
+{
+	if (m_playstate == en_down){
+		if (g_pad[0]->IsTrigger(enButtonB)) {
+			RelocationEnemy();
+			if (m_Nowsavepointnum == -1) {
+				Vector3 pos = { 0.0 ,60.0,0.0 };
+				m_player->m_position = pos;
+				m_player->m_charaCon.SetPosition(pos);
+			}
+			else {
+				m_player->m_position = m_saveList[m_Nowsavepointnum]->m_Saveposition;
+				m_player->m_charaCon.SetPosition(m_saveList[m_Nowsavepointnum]->m_Saveposition);
+			}
+			m_player->RelocationPlayer();
+			m_playstate = en_play;
+		}
+	}
+}
+
+bool Game::RelocationEnemy()
+{
+	m_player = FindGO<P_main_Player>("player");
+	m_player->m_LockonTF = false;
+	m_EnemyList.clear();
+	QueryGOs<IEnemy>("enemy", [&](IEnemy* ienemy) {
+		ienemy->DeleteGoEnemy();
+		return true;
+	});
+	m_numenemy = 0;
+	m_player->m_LockonTF = true;
+	m_levelrender.Init("Assets/modelData/A_leveltest/testlevel2.tkl", [&](LevelObjectData& objData)
+	{
+		if (objData.ForwardMatchName(L"RE_enemy_001") == true)
+		{
+			E_001_enemy* enemy_001 = NewGO<E_001_enemy>(0, "enemy");
+			enemy_001->Setposition(objData.position);
+			enemy_001->Setrotation(objData.rotation);
+			enemy_001->Setscale(objData.scale);
+			enemy_001->SetHP(1);
+			enemy_001->SetVectornum(m_numenemy);
+	     	enemy_001->SetEnemyType(E_001_enemy::en_enemy001);
+			m_numenemy++;
+			m_EnemyList.push_back(enemy_001);
+			return true;
+		}
+		else if (objData.ForwardMatchName(L"RE_enemy_002") == true)
+		{
+			E_002_enemy* enemy_002 = NewGO<E_002_enemy>(0, "enemy");
+			enemy_002->Setposition(objData.position);
+			enemy_002->Setrotation(objData.rotation);
+			enemy_002->Setscale(objData.scale);
+			enemy_002->SetHP(1);
+			enemy_002->SetVectornum(m_numenemy);
+			enemy_002->SetEnemyType(E_002_enemy::en_enemy002);
+			m_numenemy++;
+			m_EnemyList.push_back(enemy_002);
+			return true;
+		}
+		return true;
+	});
+	return true;
+}
+
 void Game::Delete_EnemyVec(const int num)
 {
 	m_EnemyList.erase(m_EnemyList.begin() + num);
 	for (int VecNow = num; VecNow < m_EnemyList.size(); VecNow++){
 		m_EnemyList[VecNow]->m_Vectornum -= 1;
 	}
+	m_player->m_LockonTF = true;
 }
 
 void Game::Render(RenderContext& rc)

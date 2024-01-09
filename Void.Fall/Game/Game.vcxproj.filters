@@ -87,6 +87,9 @@
     <ClCompile Include="Ob_savepoint.cpp">
       <Filter>object</Filter>
     </ClCompile>
+    <ClCompile Include="M_parts5.cpp">
+      <Filter>mapparts</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -154,6 +157,9 @@
     </ClInclude>
     <ClInclude Include="Ob_savepoint.h">
       <Filter>object</Filter>
+    </ClInclude>
+    <ClInclude Include="M_parts5.h">
+      <Filter>mapparts</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

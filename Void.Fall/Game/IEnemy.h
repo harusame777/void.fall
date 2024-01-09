@@ -33,12 +33,18 @@ public:
 	void DeleteGoEnemyList()
 	{
 		m_game = FindGO<Game>("game");
+		m_player->m_LockonTF = false;
 		m_game->Delete_EnemyVec(m_Vectornum);
 		m_game->m_numenemy--;
 		if (m_summon_type == Enemy4Sum) {
 			m_game->SummonEnemynum--;
 		}
-		m_player->m_isTakeAim = false;
+		//m_player->m_isTakeAim = false;
+	}
+	void DeleteGoEnemy()
+	{
+		DeleteGO(m_collisionObject);//Á‹ˆ—
+		DeleteGO(this);
 	}
 	void Setposition(const Vector3& position)//À•W
 	{
