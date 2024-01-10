@@ -62,7 +62,7 @@ bool Game::Start()
 		}
 		else if (objData.ForwardMatchName(L"mapparts1") == true)
 		{
-			M_parts1* m_mapparts1 = NewGO<M_parts1>(0, "parts1");
+			M_parts1* m_mapparts1 = NewGO<M_parts1>(0, "parts");
 			m_mapparts1->Setposition(objData.position);
 			m_mapparts1->Setrotarion(objData.rotation);
 			m_mapparts1->Setscale(objData.scale);
@@ -70,7 +70,7 @@ bool Game::Start()
 		}
 		else if (objData.ForwardMatchName(L"mapparts2") == true)
 		{
-			M_parts2* m_mapparts2 = NewGO<M_parts2>(0, "parts2");
+			M_parts2* m_mapparts2 = NewGO<M_parts2>(0, "parts");
 			m_mapparts2->Setposition(objData.position);
 			m_mapparts2->Setrotarion(objData.rotation);
 			m_mapparts2->Setscale(objData.scale);
@@ -78,7 +78,7 @@ bool Game::Start()
 		}
 		else if (objData.ForwardMatchName(L"mapparts3") == true)
 		{
-			M_parts3* m_mapparts3 = NewGO<M_parts3>(0, "parts3");
+			M_parts3* m_mapparts3 = NewGO<M_parts3>(0, "parts");
 			m_mapparts3->Setposition(objData.position);
 			m_mapparts3->Setrotarion(objData.rotation);
 			m_mapparts3->Setscale(objData.scale);
@@ -86,7 +86,7 @@ bool Game::Start()
 		}
 		else if (objData.ForwardMatchName(L"mapparts4") == true)
 		{
-			M_parts4* m_mapparts4 = NewGO<M_parts4>(0, "parts4");
+			M_parts4* m_mapparts4 = NewGO<M_parts4>(0, "parts");
 			m_mapparts4->Setposition(objData.position);
 			m_mapparts4->Setrotarion(objData.rotation);
 			m_mapparts4->Setscale(objData.scale);
@@ -97,11 +97,12 @@ bool Game::Start()
 			m_mapparts4->Setnum(map4_num);
 			m_MapLock.push_back(enemy_004);
 			map4_num++;
+			GoalLockNum++;
 			return true;
 		}
 		else if (objData.ForwardMatchName(L"mapparts5") == true)
 		{
-			M_parts5* m_mapparts5 = NewGO<M_parts5>(0, "parts5");
+			M_parts5* m_mapparts5 = NewGO<M_parts5>(0, "parts");
 			m_mapparts5->Setposition(objData.position);
 			m_mapparts5->Setrotarion(objData.rotation);
 			m_mapparts5->Setscale(objData.scale);
@@ -135,19 +136,19 @@ bool Game::Start()
 			m_EnemyList.push_back(enemy_002);
 			return true;
 		}
-		else if (objData.ForwardMatchName(L"RE_enemy_003") == true)
-		{
-			E_003_enemy* enemy_003 = NewGO<E_003_enemy>(0, "enemy");
-			enemy_003->Setposition(objData.position);
-			enemy_003->Setrotation(objData.rotation);
-			enemy_003->Setscale(objData.scale);
-			enemy_003->SetHP(1);
-			enemy_003->SetVectornum(m_numenemy);
-			enemy_003->SetEnemyType(E_003_enemy::en_enemy003);
-			m_numenemy++;
-			m_EnemyList.push_back(enemy_003);
-			return true;
-		}
+		//else if (objData.ForwardMatchName(L"RE_enemy_003") == true)
+		//{
+		//	E_003_enemy* enemy_003 = NewGO<E_003_enemy>(0, "enemy");
+		//	enemy_003->Setposition(objData.position);
+		//	enemy_003->Setrotation(objData.rotation);
+		//	enemy_003->Setscale(objData.scale);
+		//	enemy_003->SetHP(1);
+		//	enemy_003->SetVectornum(m_numenemy);
+		//	enemy_003->SetEnemyType(E_003_enemy::en_enemy003);
+		//	m_numenemy++;
+		//	m_EnemyList.push_back(enemy_003);
+		//	return true;
+		//}
 		//オブジェクト
 		else if (objData.ForwardMatchName(L"savepoint") == true)
 		{
@@ -264,7 +265,6 @@ bool Game::RelocationEnemy()
 			m_EnemyList.push_back(enemy_002);
 			return true;
 		}
-		return true;
 	});
 	return true;
 }
@@ -283,3 +283,38 @@ void Game::Render(RenderContext& rc)
 	m_fontrender.Draw(rc);
 }
 
+Game::~Game()
+{
+	DeleteGO(m_player);
+	DeleteMap();
+	DeleteEnemy();
+	DeleteItem();
+}
+
+void Game::DeleteMap()
+{
+	QueryGOs<Imap>("parts", [&](Imap* maps) {
+		maps->DeleteMap();
+		return true;
+	});
+}
+
+void Game::DeleteEnemy()
+{
+	QueryGOs<IEnemy>("enemy", [&](IEnemy* ienemy) {
+		ienemy->DeleteGoEnemy();
+		return true;
+	});
+	QueryGOs<E_004_enemy>("enemy_004", [&](E_004_enemy* enemy004) {
+		enemy004->DeleteGoEnemy();
+		return true;
+	});
+}
+
+void Game::DeleteItem()
+{
+	QueryGOs<IItem>("item", [&](IItem* item) {
+		item->DeleteItem();
+		return true;
+	});
+}

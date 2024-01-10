@@ -38,6 +38,10 @@ public:
 			}
 		}
 	}
+	void DeleteItem()
+	{
+		DeleteGO(this);
+	}
 	EffectEmitter* m_effect = nullptr;		//エフェクト
 	Vector3 m_position;						//座標
 	Quaternion m_rotation;					//回転

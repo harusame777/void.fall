@@ -131,7 +131,7 @@ void E_004_enemy::ActiveLock()
 		EnemyOneSum = true;
 	}
 	if (m_game->SummonEnemynum == 0){
-		m_game->GoalLockNum++;
+		m_game->GoalLockNum--;
 		m_enemystate = enEnemyState_Down;
 	}
 }

@@ -90,6 +90,8 @@
     <ClCompile Include="M_parts5.cpp">
       <Filter>mapparts</Filter>
     </ClCompile>
+    <ClCompile Include="Title.cpp" />
+    <ClCompile Include="GameClear.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -161,6 +163,8 @@
     <ClInclude Include="M_parts5.h">
       <Filter>mapparts</Filter>
     </ClInclude>
+    <ClInclude Include="Title.h" />
+    <ClInclude Include="GameClear.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Game.rc" />

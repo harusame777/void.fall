@@ -31,6 +31,9 @@ public:
 		//“–‚½‚è”»’èì¬
 		m_physicsStaticObject.CreateFromModel(m_modelrender.GetModel(), m_modelrender.GetModel().GetWorldMatrix());
 	}
+	void DeleteMap(){
+		DeleteGO(this);
+	}
 	//ƒƒ“ƒoŠÖ”éŒ¾
 	Vector3 m_position;//À•W
 	Vector3 m_scale = Vector3::One;//‘å‚«‚³

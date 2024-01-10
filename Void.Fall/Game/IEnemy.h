@@ -113,7 +113,7 @@ public:
 	}
 	void ItemDrop()
 	{
-		I_G_Item* item_g = NewGO<I_G_Item>(0, "itemg");
+		I_G_Item* item_g = NewGO<I_G_Item>(0, "item");
 		item_g->Setposition(m_position);
 	}
 	void EnemyGoEffect()

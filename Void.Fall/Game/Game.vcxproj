@@ -231,6 +231,7 @@
     <ClCompile Include="E_003_enemy.cpp" />
     <ClCompile Include="E_004_enemy.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="GameClear.cpp" />
     <ClCompile Include="IEnemy.cpp" />
     <ClCompile Include="IItem.cpp" />
     <ClCompile Include="Imap.cpp" />
@@ -254,6 +255,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Preview|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="system\system.cpp" />
+    <ClCompile Include="Title.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="B_homingbullet.h" />
@@ -264,6 +266,7 @@
     <ClInclude Include="E_003_enemy.h" />
     <ClInclude Include="E_004_enemy.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="GameClear.h" />
     <ClInclude Include="IEnemy.h" />
     <ClInclude Include="IItem.h" />
     <ClInclude Include="Imap.h" />
@@ -283,6 +286,7 @@
     <ClInclude Include="resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="system\system.h" />
+    <ClInclude Include="Title.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Game.rc" />

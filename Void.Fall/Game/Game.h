@@ -28,7 +28,10 @@ public:
 	};
 	//ŠÖ”éŒ¾
 	Game() {}
-	~Game() {}
+	~Game();
+	void DeleteMap();
+	void DeleteEnemy();
+	void DeleteItem();
 	bool Start();
 	void Update();
 	void Render(RenderContext& rc);
