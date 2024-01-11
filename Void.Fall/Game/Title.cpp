@@ -13,6 +13,7 @@ void Title::Update()
 	if (g_pad[0]->IsTrigger(enButtonA)){
 		NewGO<Game>(0, "game");
 		DeleteGO(this);
+		auto list = GameObjectManager::GetInstance()->GetGOList();
 	}
 	m_spriteRender.Update();
 }

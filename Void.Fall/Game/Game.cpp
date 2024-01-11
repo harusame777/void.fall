@@ -10,6 +10,7 @@
 #include "Ca_maincamera.h"
 #include "IEnemy.h"
 #include "Imap.h"
+#include "IItem.h"
 #include "M_parts1.h"
 #include "M_parts2.h"
 #include "M_parts3.h"
@@ -37,7 +38,8 @@ bool Game::Start()
 	g_camera3D->SetFar(40000.0f);
 	//カメラ作成
 	m_camera = NewGO<Ca_maincamera>(0, "camera");
-	m_levelrender.Init("Assets/modelData/A_leveltest/testlevel2.tkl",[&](LevelObjectData& objData)
+	m_spriterender.Init("Assets/modelData/A_screen/Down.DDS", 1920.0f, 1080.0f);
+	m_levelrender1.Init("Assets/modelData/A_leveltest/testlevel2.tkl",[&](LevelObjectData& objData)
 	{
 		//現在名testPlayer
 		//プレイヤー
@@ -163,14 +165,18 @@ bool Game::Start()
 		}
 		return true;
 	});	
+	auto list = GameObjectManager::GetInstance()->GetGOList();
+
 	return true;
 }
 
 void Game::Update()
 {
+	auto list = GameObjectManager::GetInstance()->GetGOList();
 	Font();
 	Save();
 	Down();
+	m_spriterender.Update();
 }
 
 void Game::Font()
@@ -211,6 +217,7 @@ void Game::Down()
 	if (m_playstate == en_down){
 		if (g_pad[0]->IsTrigger(enButtonB)) {
 			RelocationEnemy();
+			RelocationEnemy004();
 			if (m_Nowsavepointnum == -1) {
 				Vector3 pos = { 0.0 ,60.0,0.0 };
 				m_player->m_position = pos;
@@ -232,12 +239,12 @@ bool Game::RelocationEnemy()
 	m_player->m_LockonTF = false;
 	m_EnemyList.clear();
 	QueryGOs<IEnemy>("enemy", [&](IEnemy* ienemy) {
-		ienemy->DeleteGoEnemy();
+		DeleteGO(ienemy);
 		return true;
 	});
 	m_numenemy = 0;
 	m_player->m_LockonTF = true;
-	m_levelrender.Init("Assets/modelData/A_leveltest/testlevel2.tkl", [&](LevelObjectData& objData)
+	m_levelrender2.Init("Assets/modelData/A_leveltest/testlevel2.tkl", [&](LevelObjectData& objData)
 	{
 		if (objData.ForwardMatchName(L"RE_enemy_001") == true)
 		{
@@ -269,6 +276,22 @@ bool Game::RelocationEnemy()
 	return true;
 }
 
+void  Game::RelocationEnemy004()
+{
+	QueryGOs<E_004_enemy>("enemy_004", [&](E_004_enemy* enemy004) {
+		if (enemy004->m_enemystate ==
+			enemy004->enAnimationClip_Active){
+			enemy004->Standby();
+		}
+		return true;
+	});
+	m_mapparts4_sub = FindGO<M_parts4_sub>("parts4_sub");
+	if (m_mapparts4_sub != nullptr) {
+		m_mapparts4_sub->map_delete = true;
+	}
+	SummonEnemynum = 0;
+}
+
 void Game::Delete_EnemyVec(const int num)
 {
 	m_EnemyList.erase(m_EnemyList.begin() + num);
@@ -281,12 +304,17 @@ void Game::Delete_EnemyVec(const int num)
 void Game::Render(RenderContext& rc)
 {
 	m_fontrender.Draw(rc);
+	if (m_playstate == en_down) {
+		m_spriterender.Draw(rc);
+	}
 }
 
 Game::~Game()
 {
+	DeleteGO(m_camera);
 	DeleteGO(m_player);
 	DeleteMap();
+	Deletesavepoint();
 	DeleteEnemy();
 	DeleteItem();
 }
@@ -294,19 +322,20 @@ Game::~Game()
 void Game::DeleteMap()
 {
 	QueryGOs<Imap>("parts", [&](Imap* maps) {
-		maps->DeleteMap();
+		DeleteGO(maps);
 		return true;
 	});
+	DeleteGO(m_mapparts5);
 }
 
 void Game::DeleteEnemy()
 {
 	QueryGOs<IEnemy>("enemy", [&](IEnemy* ienemy) {
-		ienemy->DeleteGoEnemy();
+		DeleteGO(ienemy);
 		return true;
 	});
 	QueryGOs<E_004_enemy>("enemy_004", [&](E_004_enemy* enemy004) {
-		enemy004->DeleteGoEnemy();
+		DeleteGO(m_enemy_004);
 		return true;
 	});
 }
@@ -314,7 +343,15 @@ void Game::DeleteEnemy()
 void Game::DeleteItem()
 {
 	QueryGOs<IItem>("item", [&](IItem* item) {
-		item->DeleteItem();
+		DeleteGO(item);
+		return true;
+	});
+}
+
+void Game::Deletesavepoint()
+{
+	QueryGOs<Ob_savepoint>("savepoint", [&](Ob_savepoint* savepoint){
+		DeleteGO(savepoint);
 		return true;
 	});
 }

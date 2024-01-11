@@ -54,9 +54,11 @@ void M_parts5::Lock()
 
 void M_parts5::Collision()
 {
-	if (m_collisionObject->IsHit(m_player->m_charaCon))
-	{
-		NewGO <GameClear>(0, "gameclear");
+	if (Deletemap == true){
+		if (m_collisionObject->IsHit(m_player->m_charaCon)){
+			Deletemap = false;
+			NewGO <GameClear>(0, "gameclear");
+		}
 	}
 }
 

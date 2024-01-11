@@ -8,6 +8,7 @@
 #include "math.h"
 #include "E_001_enemy.h"
 #include "E_002_enemy.h"
+#include "IEnemy.h"
 
 namespace
 {
@@ -108,18 +109,11 @@ void E_004_enemy::PlayAnimation()
 
 void E_004_enemy::Collision()
 {
-	//プレイヤーの攻撃用のコリジョンを取得する。
-	const auto& collisions = g_collisionObjectManager->FindCollisionObjects("player_attack");
-	//コリジョンの配列をfor文で回す。
-	for (auto collision : collisions)
-	{
-		//コリジョンとキャラコンが衝突したら。
-		if (collision->IsHit(m_collisionObject))
-		{
-			if (m_enemystate == enEnemyState_Standby){
-				m_enemystate = enEnemyState_Active;
-				m_game->m_Map4List[map_num]->mapLockOn();
-			}
+	if (m_player != nullptr) {
+		Vector3 diff = m_player->m_position - m_position;
+		if (diff.Length() <= 300.0f && m_enemystate == enEnemyState_Standby) {
+			m_enemystate = enEnemyState_Active;
+			m_game->m_Map4List[map_num]->mapLockOn();
 		}
 	}
 }
@@ -149,7 +143,7 @@ void E_004_enemy::EnemyRand(int randnum,int Vecnum)
 	switch (randnum)
 	{
 	case 0:
-	{E_001_enemy* enemy_001 = NewGO<E_001_enemy>(0, "enemy_001");
+	{E_001_enemy* enemy_001 = NewGO<E_001_enemy>(0, "summonenemy");
 	enemy_001->Setposition(m_position + EnemySetVec(Vecnum));
 	enemy_001->Setrotation(m_rotation);
 	enemy_001->SetHP(3);
@@ -162,7 +156,7 @@ void E_004_enemy::EnemyRand(int randnum,int Vecnum)
 	m_game->m_EnemyList.push_back(enemy_001); 		
 	break;}
 	case 1:
-	{E_002_enemy* enemy_002 = NewGO<E_002_enemy>(0, "enemy_002");
+	{E_002_enemy* enemy_002 = NewGO<E_002_enemy>(0, "summonenemy");
 	enemy_002->Setposition(m_position + EnemySetVec(Vecnum));
 	enemy_002->Setrotation(m_rotation);
 	enemy_002->SetHP(3);

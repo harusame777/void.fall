@@ -10,6 +10,7 @@ class Map_home1;
 class Ca_maincamera;
 class IEnemy;
 class Imap;
+class IItem;
 class M_parts1;
 class M_parts2;
 class M_parts3;
@@ -32,6 +33,7 @@ public:
 	void DeleteMap();
 	void DeleteEnemy();
 	void DeleteItem();
+	void Deletesavepoint();
 	bool Start();
 	void Update();
 	void Render(RenderContext& rc);
@@ -39,7 +41,11 @@ public:
 	void Save();
 	void Down();
 	void Delete_EnemyVec(const int num);
+	void Deletegame(){
+		DeleteGO(this);
+	}
 	bool RelocationEnemy();
+	void RelocationEnemy004();
 	void DownSet(){
 		m_playstate = en_down;
 	}
@@ -58,12 +64,17 @@ public:
 	M_parts2* m_mapparts2 = nullptr;
 	M_parts3* m_mapparts3 = nullptr;
 	M_parts4* m_mapparts4 = nullptr;
+	M_parts4_sub* m_mapparts4_sub = nullptr;
 	M_parts5* m_mapparts5 = nullptr;
 	mapMaker* m_mapMaker = nullptr;
 	Ca_maincamera* m_camera = nullptr;//カメラ
 	IEnemy* m_ienemy = nullptr;
-	LevelRender m_levelrender;//レベルレンダー
+	Imap* m_imap = nullptr;
+	IItem* m_iitem = nullptr;
+	LevelRender m_levelrender1;//レベルレンダー
+	LevelRender m_levelrender2;//レベルレンダー
 	FontRender m_fontrender;//スプライトレンダー
+	SpriteRender m_spriterender;
 	Ob_savepoint* m_savepoint = nullptr;
 	Vector3 Recoverypos = { 0.0,-200.0,0.0 };
 	PlayerPlaystate m_playstate = en_play;

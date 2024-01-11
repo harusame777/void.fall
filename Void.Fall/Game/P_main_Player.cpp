@@ -785,4 +785,3 @@ void P_main_Player::MPrec()
 	}
 }
 
-

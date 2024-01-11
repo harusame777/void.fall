@@ -3,6 +3,7 @@
 class P_main_Player;
 class M_parts4;
 class M_parts4_sub;
+class IEnemy;
 class E_004_enemy : public IEnemy
 {
 public :
@@ -30,6 +31,14 @@ public :
 	Vector3 EnemySetVec(int Vecnum);
 	void Setnum(int num) {
 		map_num = num;
+	}
+	void Standby(){
+		m_enemystate = enEnemyState_Standby;
+		EnemyOneSum = false;
+		QueryGOs<IEnemy>("summonenemy", [&](IEnemy* ienemy) {
+			DeleteGO(ienemy);
+			return true;
+		});
 	}
 	Vector3	m_forward = Vector3::AxisZ;						//エネミーの正面ベクトル。
 	EnEnemyState m_enemystate = enEnemyState_Standby;          //エネミーステート

@@ -25,6 +25,9 @@ void M_parts4_sub::Update()
 	if (GameSumEneNum()){
 		DeleteLock();
 	}
+	if (map_delete == true){
+		DeleteLock();
+	}
 }
 
 bool M_parts4_sub::GameSumEneNum()
@@ -39,5 +42,6 @@ bool M_parts4_sub::GameSumEneNum()
 
 void M_parts4_sub::DeleteLock()
 {
+	map_delete = false;
 	DeleteGO(this);
 }

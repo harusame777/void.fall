@@ -50,6 +50,7 @@ namespace nsK2EngineLow {
 		{
 			return m_instance;
 		}
+
 	public:
 		/// <summary>
 		/// 更新処理を実行
@@ -181,6 +182,12 @@ namespace nsK2EngineLow {
 		std::array<GameObjectList, GAME_OBJECT_PRIO_MAX>	m_gameObjectListArray;							//!<ゲームオブジェクトの優先度付きリスト。
 		static GameObjectManager* m_instance;		//唯一のインスタンスのアドレスを記録する変数。
 		bool												m_isActive = true;
+
+	public:
+		std::array<GameObjectList, GAME_OBJECT_PRIO_MAX> GetGOList()
+		{
+			return m_gameObjectListArray;
+		}
 	};
 
 

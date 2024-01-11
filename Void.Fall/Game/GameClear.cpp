@@ -7,7 +7,7 @@ bool GameClear::Start()
 {
 	m_spriteRender.Init("Assets/modelData/A_screen/gameclear.DDS", 1920.0f, 1080.0f);
 	m_game = FindGO<Game>("game");
-	DeleteGO(m_game);
+	m_game->Deletegame();
 	return true;
 }
 

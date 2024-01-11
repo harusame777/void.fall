@@ -175,7 +175,7 @@ namespace nsK2EngineLow {
 		/// <param name="normalizedPower">ê≥ãKâªÇ≥ÇÍÇΩÉpÉèÅ[(0.0Å`1.0)</param>
 		void SetVibration( float durationSec, float normalizedPower )
 		{
-			auto vibration = NewGO< GamePadVibration>(0);
+			auto vibration = NewGO< GamePadVibration>(0,"GamePad");
 			vibration->Init(m_padNo, durationSec, normalizedPower);
 		}
 	private:
