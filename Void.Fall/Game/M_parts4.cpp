@@ -23,7 +23,7 @@ bool M_parts4::Start()
 
 void M_parts4::mapLockOn()
 {
-	M_parts4_sub* m_mapparts4_sub = NewGO<M_parts4_sub>(0, "parts4_sub");
+	auto m_mapparts4_sub = NewGO<M_parts4_sub>(0, "parts4_sub");
 	m_mapparts4_sub->Setposition(m_game->m_Map4List[map_num]->m_position);
 	m_mapparts4_sub->Setrotarion(m_game->m_Map4List[map_num]->m_rotation);
 	m_mapparts4_sub->Setnum(map_num);

@@ -133,6 +133,7 @@ void E_004_enemy::ActiveLock()
 void E_004_enemy::EnemySummon()
 {
 	for (int i = 0; i < 4; i++){
+		srand((unsigned int)time(NULL));
 		int enemyrand = rand()% 2;
 		EnemyRand(enemyrand, i);
 	}

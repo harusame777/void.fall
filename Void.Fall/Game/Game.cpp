@@ -96,7 +96,7 @@ bool Game::Start()
 			m_Map4List.push_back(m_mapparts4);
 			E_004_enemy* enemy_004 = NewGO<E_004_enemy>(0, "enemy_004");
 			enemy_004->Setposition(objData.position + corre1);
-			m_mapparts4->Setnum(map4_num);
+			enemy_004->Setnum(map4_num);
 			m_MapLock.push_back(enemy_004);
 			map4_num++;
 			GoalLockNum++;
