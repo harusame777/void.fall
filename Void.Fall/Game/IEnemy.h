@@ -119,13 +119,26 @@ public:
 	void EnemyGoEffect()
 	{
 		//エフェクト読み込み
-		EffectEngine::GetInstance()->ResistEffect(1, u"Assets/modelData/Enemy/effect/enemyGo.efk");
 		m_effect = NewGO<EffectEmitter>(1);
 		m_effect->Init(1);
 		m_effect->SetScale({ 20.0f,20.0f,20.0f });
 		m_effect->SetPosition(m_position);
 		m_effect->SetRotation(m_rotation);
 		m_effect->Play();
+	}
+	void Shplay()
+	{
+		if (m_looptimer <= 0) {
+			m_effect->Init(3);
+			m_effect->SetScale({ 20.0f,20.0f,20.0f });
+			m_effect->SetPosition(m_position);
+			m_effect->SetRotation(m_rotation);
+			m_effect->Play();
+			m_looptimer = looptime;
+		}
+		else {
+			m_looptimer -= 0.01;
+		}
 	}
 public:
 	EffectEmitter* m_effect = nullptr;		//エフェクト(現在最大要素１)
@@ -144,6 +157,8 @@ public:
 	E_004_enemy* enemy004 = nullptr;
 	int m_hp = 0;                           //HP
 	int m_sh = 0;							//シールド
+	float m_looptimer = 0.0f;								//ループタイマー
+	float looptime = 1.16;									//ループ時間
 	int m_Vectornum = 0;					//配列のナンバー
 
 };

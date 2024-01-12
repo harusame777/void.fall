@@ -4,6 +4,7 @@
 #include "collision/CollisionObject.h"
 #include "B_homingbullet.h"
 #include "Game.h"
+#include "graphics/effect/EffectEmitter.h"
 ///////////////////////////////////////////////////////////
 #include <time.h>
 #include <stdlib.h>
@@ -40,7 +41,6 @@ bool E_001_enemy::Start()
 	m_animationclips[enAnimationClip_ReceiveDamage].SetLoopFlag(false);
 
 	//エフェクト読み込み
-	EffectEngine::GetInstance()->ResistEffect(0, u"Assets/animData/Enemy/enemy_001/test1.efk");
 
 	//モデル読み込み
 	m_modelrender.Init("Assets/modelData/Enemy/enemy_001/RE_enemy_001.tkm",m_animationclips, enAnimationClip_Num);
@@ -77,6 +77,11 @@ bool E_001_enemy::Start()
 	m_rotation.Apply(m_forward);
 
 	EnemyGoEffect();
+
+	if (m_enemysheld_type == SheldEnemy) {
+		m_looptimer = looptime;
+	}
+
 	return true;
 }
 
@@ -140,6 +145,10 @@ void E_001_enemy::Collision()
 		//コリジョンとキャラコンが衝突したら。
 		if (collision->IsHit(m_collisionObject))
 		{
+			SoundSource* se = NewGO<SoundSource>(5);
+			se = NewGO<SoundSource>(5);
+			se->Init(5);
+			se->Play(false);
 			if (m_sh > 0){
 				m_sh--;
 				//被ダメージステートに遷移する。
@@ -299,6 +308,10 @@ void E_001_enemy::OnAnimationEvent(const wchar_t* clipName, const wchar_t* event
 		m_isUnderAttack = false;
 	}
 	else if (wcscmp(eventName, L"attack_point") == 0) {
+		SoundSource* se = NewGO<SoundSource>(7);
+		se = NewGO<SoundSource>(7);
+		se->Init(7);
+		se->Play(false);
 		auto bullet = NewGO<B_homingbullet>(0);
 		bullet->SetPosition(m_position + corre2);
 		bullet->SetVelocity(m_forward * 10);
@@ -415,6 +428,10 @@ void E_001_enemy::ProcessDownStateTransition()
 	//被ダメージアニメーションの再生が終わったら。
 	if (m_modelrender.IsPlayingAnimation() == false)
 	{
+		SoundSource* se = NewGO<SoundSource>(11);
+		se = NewGO<SoundSource>(11);
+		se->Init(11);
+		se->Play(false);
 		ItemDrop();
 		DeleteGoEnemyList();
 		DeleteGO(m_collisionObject);//消去処理
@@ -425,4 +442,7 @@ void E_001_enemy::ProcessDownStateTransition()
 void E_001_enemy::Render(RenderContext& rc)
 {
 	m_modelrender.Draw(rc);
+	if (m_enemysheld_type == SheldEnemy){
+		Shplay();
+	}
 }

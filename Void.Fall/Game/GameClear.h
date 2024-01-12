@@ -10,5 +10,6 @@ public:
 	Game* m_game = nullptr;
 	Title* m_title = nullptr;
 	SpriteRender m_spriteRender;
+	SoundSource* gameBGM = nullptr;		//ƒQ[ƒ€’†‚ÌBGMB
 };
 

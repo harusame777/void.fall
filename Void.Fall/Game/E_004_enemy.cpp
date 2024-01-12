@@ -1,6 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
 #include "stdafx.h"
 #include "E_004_enemy.h"
 #include "M_parts4.h"
@@ -121,6 +118,10 @@ void E_004_enemy::Collision()
 void E_004_enemy::ActiveLock()
 {
 	if (EnemyOneSum == false){
+		SoundSource* se = NewGO<SoundSource>(9);
+		se = NewGO<SoundSource>(9);
+		se->Init(9);
+		se->Play(false);
 		EnemySummon();
 		EnemyOneSum = true;
 	}
@@ -133,22 +134,22 @@ void E_004_enemy::ActiveLock()
 void E_004_enemy::EnemySummon()
 {
 	for (int i = 0; i < 4; i++){
-		srand((unsigned int)time(NULL));
-		int enemyrand = rand()% 2;
-		EnemyRand(enemyrand, i);
+		//int enemyrand = Random();
+		EnemyRand(i);
 	}
 }
 
-void E_004_enemy::EnemyRand(int randnum,int Vecnum)
+void E_004_enemy::EnemyRand(/*int randnum,*/int Vecnum)
 {
-	switch (randnum)
+	switch (Vecnum)
 	{
 	case 0:
+	case 1:
 	{E_001_enemy* enemy_001 = NewGO<E_001_enemy>(0, "summonenemy");
 	enemy_001->Setposition(m_position + EnemySetVec(Vecnum));
 	enemy_001->Setrotation(m_rotation);
 	enemy_001->SetHP(3);
-	enemy_001->SheldRand();
+	//enemy_001->SheldRand();
 	enemy_001->SetVectornum(m_game->m_numenemy);
 	enemy_001->SetEnemyType(E_001_enemy::en_enemy001);
 	enemy_001->SetSummonType(E_001_enemy::Enemy4Sum);
@@ -156,12 +157,13 @@ void E_004_enemy::EnemyRand(int randnum,int Vecnum)
 	m_game->SummonEnemynum++;
 	m_game->m_EnemyList.push_back(enemy_001); 		
 	break;}
-	case 1:
+	case 2:
+	case 3:
 	{E_002_enemy* enemy_002 = NewGO<E_002_enemy>(0, "summonenemy");
 	enemy_002->Setposition(m_position + EnemySetVec(Vecnum));
 	enemy_002->Setrotation(m_rotation);
 	enemy_002->SetHP(3);
-	enemy_002->SheldRand();
+	//enemy_002->SheldRand();
 	enemy_002->SetVectornum(m_game->m_numenemy);
 	enemy_002->SetEnemyType(E_002_enemy::en_enemy002);
 	enemy_002->SetSummonType(E_002_enemy::Enemy4Sum);
@@ -196,6 +198,10 @@ void E_004_enemy::ProcessDownStateTransition()
 	//被ダメージアニメーションの再生が終わったら。
 	if (m_modelrender.IsPlayingAnimation() == false)
 	{
+		SoundSource* se = NewGO<SoundSource>(11);
+		se = NewGO<SoundSource>(11);
+		se->Init(11);
+		se->Play(false);
 		ItemDrop();
 		DeleteGO(m_collisionObject);//消去処理
 		DeleteGO(this);

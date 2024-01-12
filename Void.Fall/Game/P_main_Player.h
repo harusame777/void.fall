@@ -186,7 +186,7 @@ public:
 	int m_numenemy = 0;										//現在エネミーの数
 	int ListnumB = 0;										//リストナンバーB(ロックオン時固定)
 	int ListnumA = 0;										//リストナンバーA(ロックオン計算時)
-	int m_hp = 1;											//HP
+	int m_hp = 3;											//HP
 	int m_mp = 3;											//MP
 	float m_Avoidancetimer = 0.0f;							//回避タイマー
 	float Avoidancetime = 0.2f;								//回避時間

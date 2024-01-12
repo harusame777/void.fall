@@ -133,6 +133,10 @@ void P_main_Player::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eve
 	if (wcscmp(eventName, L"magic_attack") == 0) {
 		if (0 < m_mp){
 			if (m_isLockOn == true) {
+				SoundSource* se = NewGO<SoundSource>(7);
+				se = NewGO<SoundSource>(7);
+				se->Init(7);
+				se->Play(false);
 				auto bullet = NewGO<B_homingbullet>(0);
 				bullet->SetPosition(m_position);
 				bullet->SetVelocity(m_forward * 10);
@@ -143,6 +147,10 @@ void P_main_Player::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eve
 				return;
 			}
 			//normalbulletを作成する。
+			SoundSource* se = NewGO<SoundSource>(7);
+			se = NewGO<SoundSource>(7);
+			se->Init(7);
+			se->Play(false);
 			auto bullet = NewGO<B_normalbullet>(0);
 			//bulletの初期設定など
 			bullet->SetPosition(m_position);
@@ -188,6 +196,10 @@ void P_main_Player::MakeAttackCollision()
 	if (m_attack1time){
 		return;
 	}
+	SoundSource* se = NewGO<SoundSource>(4);
+	se = NewGO<SoundSource>(4);
+	se->Init(4);
+	se->Play(false);
 	//攻撃当たり判定用のコリジョンオブジェクトを作成する。
 	auto collisionObject = NewGO<CollisionObject>(0);
 	//球状のコリジョンを作成する。
@@ -359,6 +371,10 @@ void P_main_Player::Collision()
 	{
 		//コリジョンとキャラコンが衝突したら。
 		if (collision->IsHit(m_charaCon)){
+			SoundSource* se = NewGO<SoundSource>(5);
+			se = NewGO<SoundSource>(5);
+			se->Init(5);
+			se->Play(false);
 			//HPを1減らす。
 			m_hp -= 1;
 			//HPが0以下になったら。
@@ -499,6 +515,10 @@ void P_main_Player::ProcessCommonStateTransition()
 				m_playerstate = enPlayerState_Avoidance;
 				//回避タイマーを初期値にする
 				m_Avoidancetimer = Avoidancetime;
+				SoundSource* se = NewGO<SoundSource>(6);
+				se = NewGO<SoundSource>(6);
+				se->Init(6);
+				se->Play(false);
 				return;
 			}
 		}

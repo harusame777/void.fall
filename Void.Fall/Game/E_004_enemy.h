@@ -1,4 +1,7 @@
 #pragma once
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 #include "IEnemy.h"
 class P_main_Player;
 class M_parts4;
@@ -27,7 +30,7 @@ public :
 	void ProcessDownStateTransition();//ダウン遷移
 	void ActiveLock();
 	void EnemySummon();
-	void EnemyRand(int randnum,int Vecnum);
+	void EnemyRand(/*int randnum,*/int Vecnum);
 	Vector3 EnemySetVec(int Vecnum);
 	void Setnum(int num) {
 		map_num = num;
@@ -39,6 +42,12 @@ public :
 			DeleteGO(ienemy);
 			return true;
 		});
+	}
+	int Random()
+	{
+		srand((unsigned int)time(NULL));
+		int enemyrand = rand() % 2 + 1;
+		return enemyrand;
 	}
 	Vector3	m_forward = Vector3::AxisZ;						//エネミーの正面ベクトル。
 	EnEnemyState m_enemystate = enEnemyState_Standby;          //エネミーステート

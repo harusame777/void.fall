@@ -91,6 +91,9 @@ void Ca_maincamera::ProcessLockOn()
 	Vector3 position = target - toPos * r;
 	position.y = m_player->Getposition().y + 200.0f;
 
-	m_springCamera.SetPosition(position);
-	m_springCamera.SetTarget(target);
+	//m_springCamera.SetPosition(position);
+	//m_springCamera.SetTarget(target);
+	g_camera3D->SetPosition(position);
+	g_camera3D->SetTarget(target);
+	g_camera3D->Update();
 }

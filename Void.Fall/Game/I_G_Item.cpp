@@ -8,8 +8,6 @@ namespace {
 bool I_G_Item::Start()
 {
 	//エフェクト読み込み
-	EffectEngine::GetInstance()->ResistEffect(2,
-		u"Assets/modelData/A_item/item_G/item_g.efk");
 
 	m_effect = NewGO<EffectEmitter>(2);
 	m_effect->Init(2);
@@ -30,6 +28,8 @@ bool I_G_Item::Start()
 	m_player = FindGO<P_main_Player>("player");
 	m_forward = Vector3::AxisZ;
 	m_rotation.Apply(m_forward);
+
+	m_autodeletetimer = autodeletetime;
 	return true;
 }
 
@@ -39,6 +39,7 @@ void I_G_Item::Update()
 	Collision();
 	//アイテム消去処理
 	deleteitem();
+	deleteitemAuto();
 	//描画処理
 	EffectDraw();
 }

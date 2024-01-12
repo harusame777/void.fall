@@ -17,6 +17,10 @@ public:
 		}
 		if (m_collisionObject->IsHit(m_player->m_charaCon)) {
 			if (m_isDelete == false) {
+				SoundSource* se = NewGO<SoundSource>(8);
+				se = NewGO<SoundSource>(8);
+				se->Init(8);
+				se->Play(false);
 				m_player->m_hp++;
 				m_isDelete = true;	//deletebulletのif文が通るようにする。
 				m_deleteTimer = deletetimer; //deletetimerは現在0.2f。
@@ -31,6 +35,18 @@ public:
 			//減らす。
 				//↓タイマーがゼロになったら。(deletetimerより0の方が大きくなったら)
 			if (m_deleteTimer <= 0.0f) {
+				DeleteGO(m_collisionObject);//消去処理
+				m_effect->Stop();
+				//高橋先生にエフェクトのこと聞く
+				DeleteGO(this);
+			}
+		}
+	}
+	void deleteitemAuto()
+	{
+		if (m_autodeletetimer > 0){
+			m_autodeletetimer -= g_gameTime->GetFrameDeltaTime(); //deletetimerを1フレームずつ
+			if (m_autodeletetimer <= 0.0f) {
 				DeleteGO(m_collisionObject);//消去処理
 				m_effect->Stop();
 				//高橋先生にエフェクトのこと聞く
@@ -54,5 +70,7 @@ public:
 	const float deletetimer = 0.1f;							//ディレイタイマー
 	float m_looptimer = 0.0f;								//ループタイマー
 	float looptime = 1.16;									//ループ時間
+	float m_autodeletetimer = 0.0f;
+	float autodeletetime = 10.0f;
 };
 

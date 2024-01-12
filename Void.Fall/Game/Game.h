@@ -75,9 +75,18 @@ public:
 	LevelRender m_levelrender2;//レベルレンダー
 	FontRender m_fontrender;//スプライトレンダー
 	SpriteRender m_spriterender;
+	SpriteRender m_spriterenderhp0;
+	SpriteRender m_spriterenderhp1;
+	SpriteRender m_spriterenderhp2;
+	SpriteRender m_spriterenderhp3;
+	SpriteRender m_spriterendermp0;
+	SpriteRender m_spriterendermp1;
+	SpriteRender m_spriterendermp2;
+	SpriteRender m_spriterendermp3;
 	Ob_savepoint* m_savepoint = nullptr;
 	Vector3 Recoverypos = { 0.0,-200.0,0.0 };
 	PlayerPlaystate m_playstate = en_play;
+	SoundSource* gameBGM = nullptr;		//ゲーム中のBGM。
 	int m_Nowsavepointnum = -1;//現在のセーブナンバー
 	int m_savenum = 0;//セーブポイント数
 	int m_numenemy = 0; //エネミー数

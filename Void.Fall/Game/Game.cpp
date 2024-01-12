@@ -19,6 +19,7 @@
 #include "M_parts5.h"
 #include "mapMaker.h"
 #include "Ob_savepoint.h"
+#include "graphics/effect/EffectEmitter.h"
 ///////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 //マップとステージ類のヘッダーとプログラムはMap_~のプログラム。
@@ -39,6 +40,31 @@ bool Game::Start()
 	//カメラ作成
 	m_camera = NewGO<Ca_maincamera>(0, "camera");
 	m_spriterender.Init("Assets/modelData/A_screen/Down.DDS", 1920.0f, 1080.0f);
+	m_spriterenderhp0.Init("Assets/modelData/A_screen/hp0.DDS", 1920.0f, 1080.0f);
+	m_spriterenderhp1.Init("Assets/modelData/A_screen/hp1.DDS", 1920.0f, 1080.0f);
+	m_spriterenderhp2.Init("Assets/modelData/A_screen/hp2.DDS", 1920.0f, 1080.0f);
+	m_spriterenderhp3.Init("Assets/modelData/A_screen/hp3.DDS", 1920.0f, 1080.0f);
+	m_spriterendermp0.Init("Assets/modelData/A_screen/mp0.DDS", 1920.0f, 1080.0f);
+	m_spriterendermp1.Init("Assets/modelData/A_screen/mp1.DDS", 1920.0f, 1080.0f);
+	m_spriterendermp2.Init("Assets/modelData/A_screen/mp2.DDS", 1920.0f, 1080.0f);
+	m_spriterendermp3.Init("Assets/modelData/A_screen/mp3.DDS", 1920.0f, 1080.0f);
+	g_soundEngine->ResistWaveFileBank(2, "Assets/sound/bgmgame.wav");
+	g_soundEngine->ResistWaveFileBank(4, "Assets/sound/attackN.wav");
+	g_soundEngine->ResistWaveFileBank(5, "Assets/sound/damage.wav");
+	g_soundEngine->ResistWaveFileBank(6, "Assets/sound/avoidance.wav");
+	g_soundEngine->ResistWaveFileBank(7, "Assets/sound/attackF.wav");
+	g_soundEngine->ResistWaveFileBank(8, "Assets/sound/itemG.wav");
+	g_soundEngine->ResistWaveFileBank(9, "Assets/sound/summon4.wav");
+	g_soundEngine->ResistWaveFileBank(10, "Assets/sound/save.wav");
+	g_soundEngine->ResistWaveFileBank(11, "Assets/sound/down.wav");
+	gameBGM = NewGO<SoundSource>(2);
+	gameBGM->Init(2);
+	gameBGM->Play(true);
+
+	EffectEngine::GetInstance()->ResistEffect(0, u"Assets/effect/test2.efk");
+	EffectEngine::GetInstance()->ResistEffect(1, u"Assets/effect/enemyGo.efk");
+	EffectEngine::GetInstance()->ResistEffect(2, u"Assets/effect/item_g.efk");//
+	EffectEngine::GetInstance()->ResistEffect(3, u"Assets/effect/enemySh.efk");
 	m_levelrender1.Init("Assets/modelData/A_leveltest/testlevel2.tkl",[&](LevelObjectData& objData)
 	{
 		//現在名testPlayer
@@ -118,7 +144,7 @@ bool Game::Start()
 			enemy_001->Setposition(objData.position);
 			enemy_001->Setrotation(objData.rotation);
 			enemy_001->Setscale(objData.scale);
-			enemy_001->SetHP(1);
+			enemy_001->SetHP(2);
 			enemy_001->SetVectornum(m_numenemy);
 			enemy_001->SetEnemyType(E_001_enemy::en_enemy001);
 			m_numenemy++;
@@ -131,7 +157,7 @@ bool Game::Start()
 			enemy_002->Setposition(objData.position);
 			enemy_002->Setrotation(objData.rotation);
 			enemy_002->Setscale(objData.scale);
-			enemy_002->SetHP(1);
+			enemy_002->SetHP(2);
 			enemy_002->SetVectornum(m_numenemy);
 			enemy_002->SetEnemyType(E_002_enemy::en_enemy002);
 			m_numenemy++;
@@ -173,7 +199,7 @@ bool Game::Start()
 void Game::Update()
 {
 	auto list = GameObjectManager::GetInstance()->GetGOList();
-	Font();
+	//Font();
 	Save();
 	Down();
 	m_spriterender.Update();
@@ -307,10 +333,41 @@ void Game::Render(RenderContext& rc)
 	if (m_playstate == en_down) {
 		m_spriterender.Draw(rc);
 	}
+	switch (m_player->m_hp)
+	{
+	case 1:
+		m_spriterenderhp1.Draw(rc);
+		break;
+	case 2:
+		m_spriterenderhp2.Draw(rc);
+		break;
+	case 3:
+		m_spriterenderhp3.Draw(rc);
+		break;
+	default:
+		m_spriterenderhp0.Draw(rc);
+		break;
+	}
+	switch (m_player->m_mp)
+	{
+	case 1:
+		m_spriterendermp1.Draw(rc);
+		break;
+	case 2:
+		m_spriterendermp2.Draw(rc);
+		break;
+	case 3:
+		m_spriterendermp3.Draw(rc);
+		break;
+	default:
+		m_spriterendermp0.Draw(rc);
+		break;
+	}
 }
 
 Game::~Game()
 {
+	DeleteGO(gameBGM);
 	DeleteGO(m_camera);
 	DeleteGO(m_player);
 	DeleteMap();
@@ -343,6 +400,7 @@ void Game::DeleteEnemy()
 void Game::DeleteItem()
 {
 	QueryGOs<IItem>("item", [&](IItem* item) {
+		item->m_effect->Stop();
 		DeleteGO(item);
 		return true;
 	});

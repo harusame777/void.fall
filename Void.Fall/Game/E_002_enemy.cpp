@@ -58,6 +58,11 @@ bool E_002_enemy::Start()
 	m_rotation.Apply(m_forward);
 
 	EnemyGoEffect();
+
+	if (m_enemysheld_type == SheldEnemy) {
+		m_looptimer = looptime;
+	}
+
 	return true;
 }
 
@@ -210,6 +215,10 @@ void E_002_enemy::ProcessDownStateTransition()
 	//被ダメージアニメーションの再生が終わったら。
 	if (m_modelrender.IsPlayingAnimation() == false)
 	{
+		SoundSource* se = NewGO<SoundSource>(11);
+		se = NewGO<SoundSource>(11);
+		se->Init(11);
+		se->Play(false);
 		ItemDrop();
 		DeleteGoEnemyList();
 		DeleteGO(m_collisionObject);//消去処理
@@ -300,6 +309,10 @@ void E_002_enemy::Collision()
 		//コリジョンとキャラコンが衝突したら。
 		if (collision->IsHit(m_collisionObject))
 		{
+			SoundSource* se = NewGO<SoundSource>(5);
+			se = NewGO<SoundSource>(5);
+			se->Init(5);
+			se->Play(false);
 			if (m_sh > 0) {
 				m_sh--;
 				//被ダメージステートに遷移する。
@@ -354,6 +367,9 @@ const bool E_002_enemy::SearchAttackDistance() const
 void E_002_enemy::Render(RenderContext& rc)
 {
 	m_modelrender.Draw(rc);
+	if (m_enemysheld_type == SheldEnemy) {
+		Shplay();
+	}
 }
 
 

@@ -67,6 +67,10 @@ void Ob_savepoint::Collision()
 		//コリジョンとキャラコンが衝突したら。
 		if (collision->IsHit(m_collisionObject))
 		{
+			SoundSource* se = NewGO<SoundSource>(10);
+			se = NewGO<SoundSource>(10);
+			se->Init(10);
+			se->Play(false);
 			m_state = en_save;
 		}
 	}

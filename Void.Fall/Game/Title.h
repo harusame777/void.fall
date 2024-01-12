@@ -8,5 +8,6 @@ public:
 	void Render(RenderContext& rc);
 	SpriteRender m_spriteRender;
 	Game* m_game = nullptr;
+	SoundSource* gameBGM = nullptr;		//ƒQ[ƒ€’†‚ÌBGMB
 };
 
