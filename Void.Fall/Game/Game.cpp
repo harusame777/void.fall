@@ -61,10 +61,11 @@ bool Game::Start()
 	gameBGM->Init(2);
 	gameBGM->Play(true);
 
-	EffectEngine::GetInstance()->ResistEffect(0, u"Assets/effect/test2.efk");
+	EffectEngine::GetInstance()->ResistEffect(0, u"Assets/effect/test1.efk");
 	EffectEngine::GetInstance()->ResistEffect(1, u"Assets/effect/enemyGo.efk");
 	EffectEngine::GetInstance()->ResistEffect(2, u"Assets/effect/item_g.efk");//
 	EffectEngine::GetInstance()->ResistEffect(3, u"Assets/effect/enemySh.efk");
+	EffectEngine::GetInstance()->ResistEffect(4, u"Assets/effect/avoidance.efk");
 	m_levelrender1.Init("Assets/modelData/A_leveltest/testlevel2.tkl",[&](LevelObjectData& objData)
 	{
 		//åªç›ñºtestPlayer

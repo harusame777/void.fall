@@ -161,6 +161,7 @@ public:
 		m_playerstate = enPlayerState_Idle;
 	}
 	///////////////////////////////////////////////////////////
+	EffectEmitter* m_effect = nullptr;		//エフェクト
 	//メンバ関数宣言
 	CollisionObject* m_collisionObject;						//コリジョンオブジェクト。
 	std::vector<Vector3*> m_enemyPositionList;              //エネミー座標動的配列

@@ -5,6 +5,7 @@
 #include "collision/CollisionObject.h"
 #include "IEnemy.h"
 #include "Game.h"
+#include "graphics/effect/EffectEmitter.h"
 ///////////////////////////////////////////////////////////
 #define playerspeed 250.0f			//プレイヤースピード
 #define playerspeedAvoid 250.0f		//回避スピード
@@ -489,6 +490,7 @@ void P_main_Player::ProcessCommonStateTransition()
 	if (m_playerstate == enPlayerState_Avoidance)
 	{
 		//(ほかの処理をさせないため)return;
+		m_effect->SetPosition(m_position + corre);
 		return;
 	}
 	//Bボタンが押されたら
@@ -515,6 +517,12 @@ void P_main_Player::ProcessCommonStateTransition()
 				m_playerstate = enPlayerState_Avoidance;
 				//回避タイマーを初期値にする
 				m_Avoidancetimer = Avoidancetime;
+				m_effect = NewGO<EffectEmitter>(4);
+				m_effect->Init(4);
+				m_effect->SetScale({ 4.0f,4.0f,4.0f });
+				//座標
+				m_effect->SetPosition(m_position + corre);
+				m_effect->Play();
 				SoundSource* se = NewGO<SoundSource>(6);
 				se = NewGO<SoundSource>(6);
 				se->Init(6);
