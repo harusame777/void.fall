@@ -64,8 +64,10 @@ bool Game::Start()
 	EffectEngine::GetInstance()->ResistEffect(0, u"Assets/effect/test1.efk");
 	EffectEngine::GetInstance()->ResistEffect(1, u"Assets/effect/enemyGo.efk");
 	EffectEngine::GetInstance()->ResistEffect(2, u"Assets/effect/item_g.efk");//
-	EffectEngine::GetInstance()->ResistEffect(3, u"Assets/effect/enemySh.efk");
+	EffectEngine::GetInstance()->ResistEffect(3, u"Assets/effect/enemySh2.efk");
 	EffectEngine::GetInstance()->ResistEffect(4, u"Assets/effect/avoidance.efk");
+	EffectEngine::GetInstance()->ResistEffect(5, u"Assets/effect/attackN.efk");
+	EffectEngine::GetInstance()->ResistEffect(6, u"Assets/effect/test2.efk");
 	m_levelrender1.Init("Assets/modelData/A_leveltest/testlevel2.tkl",[&](LevelObjectData& objData)
 	{
 		//åªç›ñºtestPlayer
@@ -126,7 +128,6 @@ bool Game::Start()
 			enemy_004->Setnum(map4_num);
 			m_MapLock.push_back(enemy_004);
 			map4_num++;
-			GoalLockNum++;
 			return true;
 		}
 		else if (objData.ForwardMatchName(L"mapparts5") == true)
@@ -135,6 +136,7 @@ bool Game::Start()
 			m_mapparts5->Setposition(objData.position);
 			m_mapparts5->Setrotarion(objData.rotation);
 			m_mapparts5->Setscale(objData.scale);
+			m_mapparts5->GoalLockNum = map4_num;
 			return true;
 		}
 		//åªç›ñº

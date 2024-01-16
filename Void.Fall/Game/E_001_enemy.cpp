@@ -77,10 +77,7 @@ bool E_001_enemy::Start()
 	m_rotation.Apply(m_forward);
 
 	EnemyGoEffect();
-
-	if (m_enemysheld_type == SheldEnemy) {
-		m_looptimer = looptime;
-	}
+	Sheldeffect();
 
 	return true;
 }
@@ -442,7 +439,9 @@ void E_001_enemy::ProcessDownStateTransition()
 void E_001_enemy::Render(RenderContext& rc)
 {
 	m_modelrender.Draw(rc);
-	if (m_enemysheld_type == SheldEnemy){
-		Shplay();
-	}
+	//if (m_enemysheld_type == SheldEnemy) {
+	//	if (m_effectSH->IsPlay() == false) {
+	//		Shplay();
+	//	}
+	//}
 }

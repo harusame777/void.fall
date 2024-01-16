@@ -38,5 +38,6 @@ public:
 	ModelRender m_modelrender;//ƒ‚ƒfƒ‹ƒŒƒ“ƒ_[
 	PhysicsStaticObject m_physicsStaticObject;//“–‚½‚è”»’è
 	bool Deletemap = true;
+	int GoalLockNum = 0;
 };
 

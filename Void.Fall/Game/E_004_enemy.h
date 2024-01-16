@@ -7,6 +7,7 @@ class P_main_Player;
 class M_parts4;
 class M_parts4_sub;
 class IEnemy;
+class M_parts5;
 class E_004_enemy : public IEnemy
 {
 public :
@@ -54,6 +55,7 @@ public :
 	AnimationClip m_animationclips[enAnimationClip_Num];     //アニメーションクリップ
 	M_parts4* m_parts4 = nullptr;
 	M_parts4_sub* m_parts4_sub = nullptr;
+	M_parts5* m_parts5 = nullptr;
 	int map_num = 0;
 	float m_Locktimer = 0.0f;
 	float Locktime = 60.0f;

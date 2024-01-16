@@ -60,5 +60,7 @@ public:
 	float attacktime = 5.0f;
 	float m_attackGotimer = 0.0;							//攻撃時間タイマー
 	float attackGotime = 2.0;								//攻撃時間
+	float m_attackcooltimer = 0.0f;
+	float attackcooltime = 3.0f;
 };
 

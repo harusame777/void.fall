@@ -58,10 +58,7 @@ bool E_002_enemy::Start()
 	m_rotation.Apply(m_forward);
 
 	EnemyGoEffect();
-
-	if (m_enemysheld_type == SheldEnemy) {
-		m_looptimer = looptime;
-	}
+	Sheldeffect();
 
 	return true;
 }
@@ -133,6 +130,10 @@ void E_002_enemy::ManageState()
 
 void E_002_enemy::ProcessCommonStateTransition()
 {
+	if (m_attackcooltimer > 0){
+		m_attackcooltimer -= g_gameTime->GetFrameDeltaTime();
+		return;
+	}
 	if (m_enemystate == enEnemyState_Attack){
 		return;
 	}
@@ -197,6 +198,7 @@ void E_002_enemy::ProcessAttackStateTransition()
 	{
 		m_enemystate = enEnemyState_Idle;
 		DeleteGO(m_attackcoll);
+		m_attackcooltimer = attackcooltime;
 		ProcessCommonStateTransition();
 	}
 }
@@ -368,7 +370,9 @@ void E_002_enemy::Render(RenderContext& rc)
 {
 	m_modelrender.Draw(rc);
 	if (m_enemysheld_type == SheldEnemy) {
-		Shplay();
+		if (m_effectSH->IsPlay() == false) {
+			Shplay();
+		}
 	}
 }
 

@@ -76,11 +76,6 @@ public:
 		m_enemysheld_type = NormalEnemy;
 		return;
 	}
-	void SetSH()
-	{
-		m_sh = 3;
-		m_enemysheld_type = SheldEnemy;
-	}
 	bool SheldCon()
 	{
 		if (m_sh > 0){
@@ -94,10 +89,22 @@ public:
 		srand((unsigned int)time(NULL));
 		int sheldrand = rand() % 100 + 1;
 		if (sheldrand >= 70){
-			m_sh = 3;
+			m_sh = 1;
+			m_enemysheld_type = SheldEnemy;
 			return;
 		}
 		return;
+	}
+	void Sheldeffect()
+	{
+		if (m_enemysheld_type == SheldEnemy){
+			m_effectSH = NewGO<EffectEmitter>(3);
+			m_effectSH->Init(3);
+			m_effectSH->SetScale({ 10.0f,10.0f,10.0f });
+			m_effectSH->SetPosition(m_position);
+			m_effectSH->SetRotation(m_rotation);
+			m_effectSH->Play();
+		}
 	}
 	void SetVectornum(const int num)//配列番号
 	{
@@ -128,20 +135,14 @@ public:
 	}
 	void Shplay()
 	{
-		if (m_looptimer <= 0) {
-			m_effect->Init(3);
-			m_effect->SetScale({ 20.0f,20.0f,20.0f });
-			m_effect->SetPosition(m_position);
-			m_effect->SetRotation(m_rotation);
-			m_effect->Play();
-			m_looptimer = looptime;
-		}
-		else {
-			m_looptimer -= 0.01;
-		}
+		m_effectSH->SetScale({ 20.0f,20.0f,20.0f });
+		m_effectSH->SetPosition(m_position);
+		m_effectSH->SetRotation(m_rotation);
+		m_effectSH->Play();
 	}
 public:
 	EffectEmitter* m_effect = nullptr;		//エフェクト(現在最大要素１)
+	EffectEmitter* m_effectSH = nullptr;		//シールド用エフェクト(現在最大要素１)
 	Vector3 m_movespeed;					//移動速度
 	Quaternion m_rotation;					//回転
 	Vector3 m_scale = Vector3::One;			//大きさ

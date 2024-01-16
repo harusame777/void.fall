@@ -40,16 +40,15 @@ bool M_parts5::Start()
 void M_parts5::Update()
 {
 	//ゴール判定出現
-	Lock();
+	if (GoalLockNum <= 0){
+		Collision();
+	}
 	//描画更新
 	m_modelrender.Update();
 }
 
 void M_parts5::Lock()
 {
-	if (m_game->GoalLockNum <= 0){
-		Collision();
-	}
 }
 
 void M_parts5::Collision()

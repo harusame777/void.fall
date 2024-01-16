@@ -139,6 +139,13 @@ void P_main_Player::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eve
 				se->Init(7);
 				se->Play(false);
 				auto bullet = NewGO<B_homingbullet>(0);
+				m_effect = NewGO<EffectEmitter>(6);
+				m_effect->Init(6);
+				m_effect->SetScale({ 10.0f,10.0f,10.0f });
+				//座標
+				m_effect->SetPosition(m_position + corre + m_forward * 40.0f);
+				m_effect->SetRotation(m_rotation);
+				m_effect->Play();
 				bullet->SetPosition(m_position);
 				bullet->SetVelocity(m_forward * 10);
 				bullet->m_position.y += 80.0f;
@@ -153,6 +160,13 @@ void P_main_Player::OnAnimationEvent(const wchar_t* clipName, const wchar_t* eve
 			se->Init(7);
 			se->Play(false);
 			auto bullet = NewGO<B_normalbullet>(0);
+			m_effect = NewGO<EffectEmitter>(6);
+			m_effect->Init(6);
+			m_effect->SetScale({ 10.0f,10.0f,10.0f });
+			//座標
+			m_effect->SetPosition(m_position + corre + m_forward * 40.0f);
+			m_effect->SetRotation(m_rotation);
+			m_effect->Play();
 			//bulletの初期設定など
 			bullet->SetPosition(m_position);
 			bullet->Setrotation(m_rotation);
@@ -195,8 +209,15 @@ void P_main_Player::Attack()
 void P_main_Player::MakeAttackCollision()
 {
 	if (m_attack1time){
+		m_effect->SetPosition(m_position + corre + m_forward * 60.0f);
 		return;
 	}
+	m_effect = NewGO<EffectEmitter>(5);
+	m_effect->Init(5);
+	m_effect->SetScale({ 15.0f,15.0f,15.0f });
+	//座標
+	m_effect->SetPosition(m_position + corre + m_forward * 60.0f);
+	m_effect->Play();
 	SoundSource* se = NewGO<SoundSource>(4);
 	se = NewGO<SoundSource>(4);
 	se->Init(4);
@@ -378,6 +399,8 @@ void P_main_Player::Collision()
 			se->Play(false);
 			//HPを1減らす。
 			m_hp -= 1;
+			//無敵タイマーを初期化
+			m_mutekitimer = mutekitime;
 			//HPが0以下になったら。
 			if (m_hp <= 0) {
 				//ダウンステートに遷移する。
@@ -467,8 +490,6 @@ void P_main_Player::ProcessReceiveDamageStateTransition()
 	//被ダメージアニメーションの再生が終わったら。
 	if (m_modelrender->IsPlayingAnimation() == false)
 	{
-		//無敵タイマーを初期化
-		m_mutekitimer = mutekitime;
 		//ステートを待機ステートにして
 		m_playerstate = enPlayerState_Idle;
 		//ステートを遷移する。

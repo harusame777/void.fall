@@ -92,6 +92,5 @@ public:
 	int m_numenemy = 0; //エネミー数
 	int map4_num = 0;
 	int SummonEnemynum = 0;
-	int GoalLockNum = 0;
 };
 

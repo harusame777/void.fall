@@ -6,6 +6,7 @@
 #include "E_001_enemy.h"
 #include "E_002_enemy.h"
 #include "IEnemy.h"
+#include "M_parts5.h"
 
 namespace
 {
@@ -49,6 +50,7 @@ bool E_004_enemy::Start()
 	m_player = FindGO<P_main_Player>("player");
 	m_game = FindGO<Game>("game");
 	m_parts4 = FindGO<M_parts4>("parts4");
+	m_parts5 = FindGO<M_parts5>("parts5");
 
 	m_forward = Vector3::AxisZ;
 	m_rotation.Apply(m_forward);
@@ -126,7 +128,7 @@ void E_004_enemy::ActiveLock()
 		EnemyOneSum = true;
 	}
 	if (m_game->SummonEnemynum == 0){
-		m_game->GoalLockNum--;
+		m_parts5->GoalLockNum--;
 		m_enemystate = enEnemyState_Down;
 	}
 }
