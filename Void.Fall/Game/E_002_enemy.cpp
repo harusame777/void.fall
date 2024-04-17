@@ -303,6 +303,12 @@ void E_002_enemy::Collision()
 	{
 		return;
 	}
+	//無敵時間中は処理しない
+	if (m_mutekitimer > 0)
+	{
+		m_mutekitimer -= g_gameTime->GetFrameDeltaTime();
+		return;
+	}
 	//プレイヤーの攻撃用のコリジョンを取得する。
 	const auto& collisions = g_collisionObjectManager->FindCollisionObjects("player_attack");
 	//コリジョンの配列をfor文で回す。
@@ -324,6 +330,7 @@ void E_002_enemy::Collision()
 			else {
 				//HPを1減らす。
 				m_hp -= 1;
+				m_mutekitimer = mutekitime;
 				//HPが0になったら。
 				if (m_hp == 0) {
 					//ダウンステートに遷移する。

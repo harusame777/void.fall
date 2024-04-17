@@ -161,6 +161,7 @@ public:
 	float m_looptimer = 0.0f;								//ループタイマー
 	float looptime = 1.16;									//ループ時間
 	int m_Vectornum = 0;					//配列のナンバー
-
+	float m_mutekitimer = 0.0f;								//無敵タイマー
+	float mutekitime = 0.1f;								//無敵時間
 };
 

@@ -40,7 +40,7 @@ bool M_parts5::Start()
 void M_parts5::Update()
 {
 	//ゴール判定出現
-	if (GoalLockNum <= 0){
+	if (GoalLockNum < 0){
 		Collision();
 	}
 	//描画更新

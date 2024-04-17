@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "E_004_enemy.h"
 #include "M_parts4.h"
-#include "M_parts4_sub.h"
 #include "math.h"
 #include "E_001_enemy.h"
 #include "E_002_enemy.h"
@@ -49,7 +48,6 @@ bool E_004_enemy::Start()
 
 	m_player = FindGO<P_main_Player>("player");
 	m_game = FindGO<Game>("game");
-	m_parts4 = FindGO<M_parts4>("parts4");
 	m_parts5 = FindGO<M_parts5>("parts5");
 
 	m_forward = Vector3::AxisZ;

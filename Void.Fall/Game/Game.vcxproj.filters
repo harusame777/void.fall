@@ -63,17 +63,8 @@
     <ClCompile Include="Imap.cpp">
       <Filter>mapparts</Filter>
     </ClCompile>
-    <ClCompile Include="mapMaker.cpp">
-      <Filter>mapparts</Filter>
-    </ClCompile>
-    <ClCompile Include="M_parts_start.cpp">
-      <Filter>mapparts</Filter>
-    </ClCompile>
     <ClCompile Include="E_003_enemy.cpp">
       <Filter>Enemy</Filter>
-    </ClCompile>
-    <ClCompile Include="M_parts_wall.cpp">
-      <Filter>mapparts</Filter>
     </ClCompile>
     <ClCompile Include="M_parts4.cpp">
       <Filter>mapparts</Filter>
@@ -92,6 +83,9 @@
     </ClCompile>
     <ClCompile Include="Title.cpp" />
     <ClCompile Include="GameClear.cpp" />
+    <ClCompile Include="M_parts1_move.cpp">
+      <Filter>mapparts</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -136,17 +130,8 @@
     <ClInclude Include="Imap.h">
       <Filter>mapparts</Filter>
     </ClInclude>
-    <ClInclude Include="mapMaker.h">
-      <Filter>mapparts</Filter>
-    </ClInclude>
-    <ClInclude Include="M_parts_start.h">
-      <Filter>mapparts</Filter>
-    </ClInclude>
     <ClInclude Include="E_003_enemy.h">
       <Filter>Enemy</Filter>
-    </ClInclude>
-    <ClInclude Include="M_parts_wall.h">
-      <Filter>mapparts</Filter>
     </ClInclude>
     <ClInclude Include="M_parts4.h">
       <Filter>mapparts</Filter>
@@ -165,6 +150,9 @@
     </ClInclude>
     <ClInclude Include="Title.h" />
     <ClInclude Include="GameClear.h" />
+    <ClInclude Include="M_parts1_move.h">
+      <Filter>mapparts</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Game.rc" />

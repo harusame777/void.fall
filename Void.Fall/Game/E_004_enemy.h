@@ -53,8 +53,6 @@ public :
 	Vector3	m_forward = Vector3::AxisZ;						//エネミーの正面ベクトル。
 	EnEnemyState m_enemystate = enEnemyState_Standby;          //エネミーステート
 	AnimationClip m_animationclips[enAnimationClip_Num];     //アニメーションクリップ
-	M_parts4* m_parts4 = nullptr;
-	M_parts4_sub* m_parts4_sub = nullptr;
 	M_parts5* m_parts5 = nullptr;
 	int map_num = 0;
 	float m_Locktimer = 0.0f;

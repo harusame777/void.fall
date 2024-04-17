@@ -12,6 +12,7 @@
 #include "Imap.h"
 #include "IItem.h"
 #include "M_parts1.h"
+#include "M_parts1_move.h"
 #include "M_parts2.h"
 #include "M_parts3.h"
 #include "M_parts4.h"
@@ -99,6 +100,13 @@ bool Game::Start()
 			m_mapparts1->Setscale(objData.scale);
 			return true;
 		}
+		//else if (objData.ForwardMatchName(L"mappartsmove") == true)
+		//{
+		//	M_parts1_move* m_mapparts1_move = NewGO<M_parts1_move>(0, "parts");
+		//	m_mapparts1_move->Setposition(objData.position);
+		//	m_mapparts1_move->Setrotarion(objData.rotation);
+		//	m_mapparts1_move->Setscale(objData.scale);
+		//}
 		else if (objData.ForwardMatchName(L"mapparts2") == true)
 		{
 			M_parts2* m_mapparts2 = NewGO<M_parts2>(0, "parts");
@@ -132,7 +140,7 @@ bool Game::Start()
 		}
 		else if (objData.ForwardMatchName(L"mapparts5") == true)
 		{
-			M_parts5* m_mapparts5 = NewGO<M_parts5>(0, "parts");
+			M_parts5* m_mapparts5 = NewGO<M_parts5>(0, "parts5");
 			m_mapparts5->Setposition(objData.position);
 			m_mapparts5->Setrotarion(objData.rotation);
 			m_mapparts5->Setscale(objData.scale);
@@ -230,11 +238,13 @@ void Game::Save()
 	Vector3 m_NowPlayerpos = m_player->m_position;
 	if (m_NowPlayerpos.y < Recoverypos.y){
 		if (m_Nowsavepointnum == -1){
+			m_camera->m_springCamera.Refresh();
 			Vector3 pos = { 0.0 ,60.0,0.0 };
 			m_player->m_position = pos;
 			m_player->m_charaCon.SetPosition(pos);
 		}
 		else{
+			m_camera->m_springCamera.Refresh();
 			m_player->m_position = m_saveList[m_Nowsavepointnum]->m_Saveposition;
 			m_player->m_charaCon.SetPosition(m_saveList[m_Nowsavepointnum]->m_Saveposition);
 		}

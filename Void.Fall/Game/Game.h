@@ -12,6 +12,7 @@ class IEnemy;
 class Imap;
 class IItem;
 class M_parts1;
+class M_parts1_move;
 class M_parts2;
 class M_parts3;
 class M_parts4;
@@ -61,6 +62,7 @@ public:
 	E_003_enemy* m_enemy_003 = nullptr; //エネミー003
 	E_004_enemy* m_enemy_004 = nullptr; //エネミー004
 	M_parts1* m_mapparts1 = nullptr;
+	M_parts1_move* mapparts1_move;
 	M_parts2* m_mapparts2 = nullptr;
 	M_parts3* m_mapparts3 = nullptr;
 	M_parts4* m_mapparts4 = nullptr;
